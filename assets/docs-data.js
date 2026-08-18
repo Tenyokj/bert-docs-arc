@@ -6,21 +6,30 @@ window.BERT_DOCS = [
     summary: "What BERT is, what it solves, and which modules define the live Arc-first protocol.",
     content: `
       <h1>BERT Protocol Documentation</h1>
-      <p class="lead">BERT is programmable USDC-native funding infrastructure for Arc. It turns ideas into funded outcomes through deterministic state transitions, stablecoin voting rounds, treasury accounting, and milestone-based capital release.</p>
+      <p class="lead">BERT is programmable USDC-native funding infrastructure for Arc. It turns ideas into funded outcomes through deterministic state transitions, stablecoin voting rounds, proof-of-personhood-gated access, treasury accounting, and milestone-based capital release.</p>
 
       <div>
         <span class="badge">Arc-first</span>
         <span class="badge">USDC-native</span>
         <span class="badge">50 USDC proposal deposit</span>
         <span class="badge">10 USDC vote commitment</span>
+        <span class="badge">Human-only voting</span>
+        <span class="badge">10,000 USDC per-idea cap</span>
         <span class="badge">30 / 40 / 30 release rail</span>
+        <span class="badge">PoP verifier</span>
         <span class="badge">Upgradeable proxies</span>
         <span class="badge">Subgraph indexed</span>
+      </div>
+
+      <div class="callout info">
+        <strong>Live release status:</strong> the current Arc stack includes Core <strong>v2.1.0</strong>, which added proof-of-personhood-gated voting and a per-wallet vote cap for each idea.
       </div>
 
       <h2>What BERT solves</h2>
       <ul>
         <li>Reduces low-commitment idea spam by requiring a real USDC-backed proposal deposit at submission.</li>
+        <li>Reduces sybil voting pressure by requiring a live human-verification record before a wallet can vote.</li>
+        <li>Reduces single-wallet dominance by capping how much one wallet can commit to one idea.</li>
         <li>Replaces opaque lump-sum treasury release with staged execution tied to proof and reviewer validation.</li>
         <li>Keeps live state authoritative on-chain while using The Graph for history, lists, and analytics.</li>
         <li>Provides a capital allocation surface that is easier to audit, integrate, and extend safely over time.</li>
@@ -35,10 +44,61 @@ window.BERT_DOCS = [
         <li><strong>ReputationSystemUpgradeable</strong>: outcome-based reputation lifecycle.</li>
         <li><strong>VoterProgressionUpgradeable</strong>: winning-vote progression and role unlock counters.</li>
         <li><strong>RolesRegistryUpgradeable</strong>: central source of functional and system roles.</li>
+        <li><strong>PoPVerifierUpgradeable</strong>: on-chain verification state for human-only voting access.</li>
       </ul>
 
       <div class="callout info">
         <strong>Scope note:</strong> this site documents the current Arc testnet deployment, the live USDC-native contract behavior, and the frontend/subgraph integration model aligned with the Circle and Arc ecosystem.
+      </div>
+    `,
+  },
+  {
+    slug: "v2-1-release",
+    group: "Start",
+    title: "V2.1 Release",
+    summary: "What changed in BERT Core v2.1.0 and why human-gated voting now exists in the live Arc stack.",
+    content: `
+      <h1>BERT Core v2.1.0</h1>
+      <p class="lead">Core <strong>v2.1.0</strong> added a new voting security layer to BERT: proof-of-personhood-gated voting plus a per-wallet cap for each idea. The goal is to reduce both sybil scaling and single-wallet concentration without abandoning USDC-weighted capital allocation.</p>
+
+      <h2>What changed</h2>
+      <ul>
+        <li>Deployed <strong>PoPVerifierUpgradeable</strong> as the new on-chain verification contract.</li>
+        <li>Extended <strong>VotingSystemUpgradeable</strong> with <code>humanVerifier</code>, <code>humanOnlyVoting</code>, and <code>maxVoteAmount</code>.</li>
+        <li>Integrated a backend signer service that validates World ID proofs and issues signed verification payloads.</li>
+        <li>Updated frontend voting UX to expose verification status, expiry, and cap-aware voting rules.</li>
+      </ul>
+
+      <h2>Why this release exists</h2>
+      <table>
+        <thead>
+          <tr><th>Problem</th><th>New protection</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Wallet multiplication / sybil pressure</td><td><strong>Human-only voting</strong></td><td>Fresh throwaway wallets can no longer vote without a valid personhood proof.</td></tr>
+          <tr><td>Single-wallet dominance</td><td><strong>10,000 USDC max per idea</strong></td><td>One wallet cannot unilaterally overpower one target idea with an outsized vote.</td></tr>
+          <tr><td>Opaque verification trust</td><td><strong>On-chain verifier + trusted signer</strong></td><td>The protocol now has an explicit, auditable bridge from off-chain proof validation into on-chain eligibility.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>What did not change</h2>
+      <ul>
+        <li>BERT still uses <strong>USDC-weighted voting</strong>.</li>
+        <li>The proposal deposit remains <strong>50 USDC</strong>.</li>
+        <li>The vote minimum remains <strong>10 USDC</strong>.</li>
+        <li>The grant release rail remains <strong>30 / 40 / 30</strong>.</li>
+      </ul>
+
+      <h2>Current live policy</h2>
+      <ul>
+        <li><strong>Human-only voting:</strong> enabled</li>
+        <li><strong>Max vote per idea:</strong> 10,000 USDC per wallet</li>
+        <li><strong>Verification window:</strong> 14 days</li>
+        <li><strong>Verifier source:</strong> World ID proof + backend-signed payload + on-chain activation</li>
+      </ul>
+
+      <div class="callout warning">
+        <strong>Interpretation rule:</strong> this release did not turn BERT into “one human, one vote”. It remains a capital-backed system, but capital now operates inside a human-gated and capped policy rail.
       </div>
     `,
   },
@@ -59,6 +119,8 @@ window.BERT_DOCS = [
         <tbody>
           <tr><td>Idea creation</td><td><strong>50 USDC</strong> minimum proposal deposit</td><td>Filters low-commitment submissions and creates economic accountability at entry.</td></tr>
           <tr><td>Vote commitment</td><td><strong>10 USDC</strong> minimum vote amount</td><td>Makes voting economically meaningful while staying accessible.</td></tr>
+          <tr><td>Voting eligibility</td><td><strong>Human-only</strong> when enabled</td><td>Requires an active verification record before vote capital can be used.</td></tr>
+          <tr><td>Per-wallet influence</td><td><strong>10,000 USDC</strong> max per idea</td><td>Limits how much one wallet can concentrate into one target idea.</td></tr>
           <tr><td>Treasury accounting</td><td>Committed USDC flows into FundingPool</td><td>Creates auditable capital accumulation for downstream grant execution.</td></tr>
           <tr><td>Grant release</td><td><strong>30% / 40% / 30%</strong></td><td>Keeps capital tied to proof of execution instead of hype or one-time vote outcome.</td></tr>
           <tr><td>Settlement asset</td><td><strong>USDC</strong></td><td>Unifies deposits, votes, treasury accounting, and payouts in one stable unit.</td></tr>
@@ -77,6 +139,7 @@ window.BERT_DOCS = [
         <li>Clients must format token amounts with <strong>6 decimals</strong>.</li>
         <li>Wallet UX should clearly separate the Arc gas asset from protocol value transfer in USDC.</li>
         <li>Frontend, docs, and analytics should use the same USDC-native capital allocation language as the live protocol.</li>
+        <li>Voting UX must now explain both <strong>human verification</strong> and the <strong>per-wallet cap</strong>, not only the minimum stake.</li>
       </ul>
 
       <div class="callout warning">
@@ -160,8 +223,16 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
       <ul>
         <li>Owns round creation, vote window timing, minimum commitment, and winner selection.</li>
         <li>Maintains <code>currentRoundId</code>, <code>lastUsedIdeaId</code>, and per-round totals.</li>
-        <li>Enforces one vote per wallet per round.</li>
+        <li>Can enforce <code>humanOnlyVoting</code>, <code>humanVerifier</code>, and <code>maxVoteAmount</code>.</li>
         <li>Transitions selected ideas into <code>Voting</code> and finalizes winner on end.</li>
+      </ul>
+
+      <h2>PoPVerifierUpgradeable</h2>
+      <ul>
+        <li>Stores active wallet verification state and expiry.</li>
+        <li>Accepts backend-signed payloads that bind a verified human credential to one BERT wallet.</li>
+        <li>Protects against replay through nonce and credential-hash checks.</li>
+        <li>Defines the on-chain eligibility source used by human-only voting mode.</li>
       </ul>
 
       <h2>FundingPoolUpgradeable</h2>
@@ -270,9 +341,20 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
       <ul>
         <li>Votes are backed by committed USDC through FundingPool.</li>
         <li><code>minStake</code> is enforced by VotingSystem and currently defaults to <strong>10 USDC</strong>.</li>
-        <li>One wallet can vote only once per round.</li>
-        <li>Frontend should check token balance, allowance, min stake, round window, and <code>hasVoted</code> before write.</li>
+        <li><code>humanOnlyVoting</code> can require a live verification record before vote submission.</li>
+        <li><code>maxVoteAmount</code> currently caps one wallet at <strong>10,000 USDC</strong> per idea.</li>
+        <li>Frontend should check token balance, allowance, verification status, min stake, max vote amount, and round window before write.</li>
       </ul>
+
+      <h2>Human verification sequence</h2>
+      <ol>
+        <li>User opens the verification flow in the frontend.</li>
+        <li>Backend provides the World ID relying-party context.</li>
+        <li>User completes the World ID proof flow.</li>
+        <li>Backend verifies the proof and signs a BERT payload for the target wallet.</li>
+        <li>User submits that payload on-chain to <code>PoPVerifierUpgradeable</code>.</li>
+        <li>VotingSystem then treats that wallet as eligible until the verification window expires.</li>
+      </ol>
 
       <h2>Round end</h2>
       <ol>
@@ -374,17 +456,27 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
         <li>Update <code>startBlock</code> values from Arc deploy receipts.</li>
         <li>Regenerate types and rebuild the subgraph.</li>
         <li>Deploy a new Studio version and update frontend query URL.</li>
+        <li>Subgraph updates are optional for the PoP rollout unless you also want to index verifier events or policy history.</li>
       </ul>
 
-      <h2>4. Docs</h2>
+      <h2>4. Backend verifier service</h2>
+      <ul>
+        <li>Deploy the proof issuer backend with the same <code>POP_VERIFIER_ADDRESS</code>, <code>WORLD_ACTION</code>, and chain id as the frontend.</li>
+        <li>Use durable nullifier storage in production.</li>
+        <li>Confirm CORS origin matches the production frontend domain.</li>
+      </ul>
+
+      <h2>5. Docs</h2>
       <ul>
         <li>Update addresses, explorer links, subgraph links, and public contact links.</li>
         <li>Keep wording aligned with Arc-first, USDC-native funding flows.</li>
+        <li>Document the current human-verification and vote-cap policy as part of the live stack, not as a future idea.</li>
       </ul>
 
-      <h2>5. Final smoke pass</h2>
+      <h2>6. Final smoke pass</h2>
       <ol>
         <li>Create idea with <code>50 USDC</code></li>
+        <li>Complete human verification</li>
         <li>Vote in active round with <code>10 USDC</code> minimum</li>
         <li>End round when eligible</li>
         <li>Claim initial <code>30%</code> from winner wallet</li>
@@ -416,6 +508,7 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
           <tr><td>FundingPoolUpgradeable</td><td><code>0x5eDdccd772a9E0F079cC6646b529C20e3D46e585</code></td></tr>
           <tr><td>VotingSystemUpgradeable</td><td><code>0xD008fC96902A9680FF77305881Ad6C6C075e7a68</code></td></tr>
           <tr><td>GrantManagerUpgradeable</td><td><code>0xA110baB4562d59d8bb7eDA4a05E53F40c678ccB2</code></td></tr>
+          <tr><td>PoPVerifierUpgradeable</td><td><code>0xb8E2CB14F99E1a17C3Eee5863272A7F6dAF3C62b</code></td></tr>
         </tbody>
       </table>
 
@@ -424,23 +517,27 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
         <li><code>IdeaRegistry.fundingPool()</code> should resolve to <code>0x5eDdccd772a9E0F079cC6646b529C20e3D46e585</code></li>
         <li><code>IdeaRegistry.authorMinStake()</code> should resolve to a 50 USDC value in 6-decimal units.</li>
         <li><code>VotingSystem.minStake()</code> should resolve to a 10 USDC value in 6-decimal units.</li>
+        <li><code>VotingSystem.humanOnlyVoting()</code> should resolve to <code>true</code>.</li>
+        <li><code>VotingSystem.maxVoteAmount()</code> should resolve to a 10,000 USDC value in 6-decimal units.</li>
+        <li><code>VotingSystem.humanVerifier()</code> should resolve to <code>0xb8E2CB14F99E1a17C3Eee5863272A7F6dAF3C62b</code>.</li>
         <li><code>FundingPool.totalPoolBalance()</code> should be read from live RPC, not guessed from subgraph alone.</li>
       </ul>
 
       <h2>Network and endpoints</h2>
       <ul>
         <li>Network: <strong>Arc Testnet</strong> (chainId <code>5042002</code>)</li>
-        <li>RPC: <code>https://rpc.testnet.arc.network</code></li>
+        <li>Recommended RPC: <code>https://rpc.blockdaemon.testnet.arc.io</code></li>
         <li>Explorer: <code>https://explorer.testnet.arc.network</code></li>
-        <li>Subgraph endpoint: <code>https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v1.0.0</code></li>
+        <li>Subgraph endpoint: <code>https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v1.1.1</code></li>
       </ul>
 
       <h2>Verification checklist</h2>
       <ol>
         <li>Wallet network is Arc Testnet.</li>
         <li>Frontend <code>.env</code> matches the addresses above.</li>
+        <li>Frontend points to the live PoP backend and the same World action used by the backend.</li>
         <li>USDC displays with correct 6-decimal formatting.</li>
-        <li>Smoke flow succeeds: approve → create idea → vote → read round → read profile.</li>
+        <li>Smoke flow succeeds: verify human → approve → create idea → vote → read round → read profile.</li>
       </ol>
     `,
   },
@@ -468,9 +565,21 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
         <li><code>VotingSystem.setVotingDuration</code></li>
         <li><code>VotingSystem.setMinStake</code></li>
         <li><code>VotingSystem.setIdeaPerRound</code></li>
+        <li><code>VotingSystem.setHumanVerifier</code></li>
+        <li><code>VotingSystem.setHumanOnlyVoting</code></li>
+        <li><code>VotingSystem.setMaxVoteAmount</code></li>
         <li><code>GrantManager.setAuthorShare</code></li>
         <li><code>FundingPool.syncBalance</code></li>
         <li><code>FundingPool.setUsdc</code></li>
+        <li><code>PoPVerifierUpgradeable.setTrustedSigner</code></li>
+      </ul>
+
+      <h2>Verification-specific ops</h2>
+      <ul>
+        <li>Protect the <strong>trusted signer</strong> key with the same seriousness as other privileged protocol operators.</li>
+        <li>Keep backend <code>WORLD_ACTION</code>, frontend action, and verifier address aligned.</li>
+        <li>Rotate signer material if it is ever exposed in logs, chat transcripts, or temporary local env files.</li>
+        <li>Do not enable human-only voting before frontend and backend are both pointing to the correct verifier.</li>
       </ul>
 
       <h2>Upgrade runbook</h2>
@@ -502,16 +611,27 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
         <li>Wagmi default chain</li>
         <li>RPC transport URL</li>
         <li>Frontend contract addresses</li>
+        <li>PoP backend base URL</li>
+        <li>World ID app id and action</li>
         <li>Subgraph endpoint</li>
       </ul>
 
       <h2>Critical client preflight rules</h2>
       <ul>
         <li><strong>Create idea:</strong> check min stake, balance, allowance, FundingPool wiring.</li>
-        <li><strong>Vote:</strong> check round status, min stake, allowance, balance, hasVoted, own-idea restriction.</li>
+        <li><strong>Vote:</strong> check round status, verification status when human-only mode is enabled, min stake, max vote amount, allowance, balance, and own-idea restriction.</li>
         <li><strong>Claim 30%:</strong> check round ended, winner exists, wallet is winner author, grant is claimable.</li>
         <li><strong>Submit milestone proof:</strong> check wallet is author and the correct previous payout state is complete.</li>
         <li><strong>Review proof:</strong> check reviewer role, active request, and not-author constraint.</li>
+      </ul>
+
+      <h2>Verification flow responsibilities</h2>
+      <ul>
+        <li>Request RP context from the backend.</li>
+        <li>Launch World ID with the exact configured action.</li>
+        <li>Submit the verified proof to the backend for signed payload issuance.</li>
+        <li>Finalize the payload on-chain through <code>PoPVerifierUpgradeable</code>.</li>
+        <li>Refresh wallet verification state and show expiry clearly in the UI.</li>
       </ul>
 
       <h2>RPC-first / subgraph-second rule</h2>
@@ -531,6 +651,51 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
         <li>Pin reads to Arc and avoid stale localhost or foreign-chain addresses.</li>
         <li>Fall back to subgraph for list pages when older or broken direct read paths are unsafe.</li>
         <li>Present the release rail accurately as <strong>30 / 40 / 30</strong>.</li>
+        <li>Present human-only voting and the <strong>10,000 USDC</strong> per-idea cap as live policy, not optional copy.</li>
+      </ul>
+    `,
+  },
+  {
+    slug: "backend-verifier-service",
+    group: "Integration",
+    title: "Backend Verifier Service",
+    summary: "How the World ID proof issuer works and which environment variables matter in production.",
+    content: `
+      <h1>Backend Verifier Service</h1>
+      <p class="lead">BERT uses a serverless backend to bridge World ID proof validation into a signed payload that <strong>PoPVerifierUpgradeable</strong> can accept on-chain.</p>
+
+      <h2>Why a backend exists</h2>
+      <ul>
+        <li>The verifier contract trusts exactly one <strong>trusted signer</strong>.</li>
+        <li>That signer must only sign payloads after a valid proof-of-personhood check.</li>
+        <li>The backend also binds a World credential to one BERT wallet and prevents nullifier reuse across wallets.</li>
+      </ul>
+
+      <h2>Primary endpoints</h2>
+      <ul>
+        <li><code>GET /api/health</code></li>
+        <li><code>POST /api/world/rp-signature</code></li>
+        <li><code>POST /api/pop/issue-proof</code></li>
+      </ul>
+
+      <h2>Production environment requirements</h2>
+      <ul>
+        <li><code>POP_VERIFIER_ADDRESS</code> must match the deployed on-chain verifier.</li>
+        <li><code>WORLD_ACTION</code> must match the frontend configuration exactly.</li>
+        <li><code>CORS_ORIGIN</code> must match the production frontend domain.</li>
+        <li><code>NULLIFIER_STORE_MODE</code> should use durable storage such as Redis REST.</li>
+      </ul>
+
+      <h2>Operator warning</h2>
+      <div class="callout danger">
+        <strong>Do not run production on memory-only nullifier storage.</strong> Serverless cold starts and redeploys make in-memory replay protection unreliable. Use durable storage for public environments.
+      </div>
+
+      <h2>Linked repositories</h2>
+      <ul>
+        <li>Backend repo: <a href="https://github.com/Tenyokj/bert-backend-arc" target="_blank" rel="noreferrer">Tenyokj/bert-backend-arc</a></li>
+        <li>Frontend repo: <a href="https://github.com/Tenyokj/bert-front-arc" target="_blank" rel="noreferrer">Tenyokj/bert-front-arc</a></li>
+        <li>Core repo: <a href="https://github.com/Tenyokj/bert-core-arc" target="_blank" rel="noreferrer">Tenyokj/bert-core-arc</a></li>
       </ul>
     `,
   },
@@ -546,7 +711,7 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
       <h2>Current Studio deployment</h2>
       <ul>
         <li>Studio subgraph: <a href="https://thegraph.com/studio/subgraph/bert-arc-testnet" target="_blank" rel="noreferrer">bert-arc-testnet</a></li>
-        <li>Queries endpoint: <code>https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v1.0.0</code></li>
+        <li>Queries endpoint: <code>https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v1.1.1</code></li>
       </ul>
 
       <h2>What the subgraph is best at</h2>
@@ -562,10 +727,15 @@ const votes = await fetchAllVotesByIdeaFromSubgraph(String(ideaId))</code></pre>
       <ul>
         <li><code>authorMinStake()</code></li>
         <li><code>fundingPool()</code> wiring</li>
+        <li><code>humanOnlyVoting()</code>, <code>humanVerifier()</code>, and <code>maxVoteAmount()</code></li>
         <li>Allowance and token balance checks</li>
         <li>Claim eligibility</li>
         <li>Live milestone request state before write</li>
       </ul>
+
+      <div class="callout info">
+        <strong>PoP rollout note:</strong> the current frontend reads verification policy directly from RPC. Subgraph updates are only required if you want indexed verifier events, credential analytics, or historical policy tracking.
+      </div>
 
       <h2>Deployment commands</h2>
       <pre><code>npm run codegen:arc
@@ -592,6 +762,7 @@ npx graph deploy bert-arc-testnet subgraph.yaml</code></pre>
       <ol>
         <li>Prepare gas funds for Arc transactions.</li>
         <li>Make sure the wallet holds USDC.</li>
+        <li>Complete human verification if the current voting policy requires it.</li>
         <li>Approve USDC when prompted.</li>
         <li>Create idea with a <code>50 USDC</code> minimum if testing author flow.</li>
         <li>Vote in active rounds with a <code>10 USDC</code> minimum commitment.</li>
@@ -603,6 +774,8 @@ npx graph deploy bert-arc-testnet subgraph.yaml</code></pre>
       <ul>
         <li><strong>“Why did MetaMask open but tx reverted?”</strong> Usually deposit, allowance, or role preconditions were not met.</li>
         <li><strong>“Why can’t I create an idea?”</strong> Most often because USDC balance or FundingPool allowance is below the required deposit.</li>
+        <li><strong>“Why can’t I vote?”</strong> In the current live policy, the wallet must first complete proof-of-personhood verification and finalize it on-chain.</li>
+        <li><strong>“Why can’t I send more than 10,000 USDC to one idea?”</strong> Because the live Arc configuration caps one wallet per idea to reduce single-wallet dominance.</li>
         <li><strong>“Why didn’t I get the full grant after win?”</strong> Because BERT uses staged milestone payouts, not immediate 100% release.</li>
       </ul>
     `,
@@ -624,6 +797,15 @@ npx graph deploy bert-arc-testnet subgraph.yaml</code></pre>
       <h2>What is the current minimum vote amount?</h2>
       <p>The live configuration is <strong>10 USDC</strong>.</p>
 
+      <h2>Do I need proof-of-personhood to vote?</h2>
+      <p>Yes, in the current live Arc configuration <strong>human-only voting is enabled</strong>, so a wallet must complete verification before it can vote.</p>
+
+      <h2>What is the current maximum vote per idea?</h2>
+      <p>The live configuration caps one wallet at <strong>10,000 USDC per idea</strong>.</p>
+
+      <h2>Does BERT use KYC for voting?</h2>
+      <p>Not by default. The current live stack uses <strong>proof-of-personhood gating</strong>, not a traditional KYC identity flow, for voting eligibility.</p>
+
       <h2>Does winning a round still release the full grant immediately?</h2>
       <p>No. The release rail is <strong>30% / 40% / 30%</strong>, with reviewer checkpoints between stages.</p>
 
@@ -633,6 +815,8 @@ npx graph deploy bert-arc-testnet subgraph.yaml</code></pre>
       <h2>Where are the official project links?</h2>
       <p>
         Core repo: <a href="https://github.com/Tenyokj/bert-core-arc" target="_blank" rel="noreferrer">Tenyokj/bert-core-arc</a><br/>
+        Frontend repo: <a href="https://github.com/Tenyokj/bert-front-arc" target="_blank" rel="noreferrer">Tenyokj/bert-front-arc</a><br/>
+        Backend repo: <a href="https://github.com/Tenyokj/bert-backend-arc" target="_blank" rel="noreferrer">Tenyokj/bert-backend-arc</a><br/>
         Subgraph: <a href="https://thegraph.com/studio/subgraph/bert-arc-testnet" target="_blank" rel="noreferrer">bert-arc-testnet</a><br/>
         YouTube: <a href="https://www.youtube.com/@bertdaoARC" target="_blank" rel="noreferrer">@bertdaoARC</a><br/>
         Telegram: <a href="https://t.me/+8DEt_M62Db00NzYy" target="_blank" rel="noreferrer">channel</a><br/>
