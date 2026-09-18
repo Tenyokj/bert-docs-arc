@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BERTDAO Protocol Whitepaper</title>
+    <style>
+      :root {
+        --ink: #15213a;
+        --muted: #53647f;
+        --line: #dce4f2;
+        --paper: #ffffff;
+        --wash: #f4f7fc;
+        --navy: #081a39;
+        --blue: #2768ff;
+        --violet: #7048e8;
+        --cyan: #06b6d4;
+        --amber: #b76d00;
+        --amber-bg: #fff8e6;
+        --danger: #b42318;
+        --danger-bg: #fff1f0;
+      }
+
+      * { box-sizing: border-box; }
+      html { background: #d9e1ef; }
+      body {
+        width: 210mm;
+        margin: 0 auto;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+        font-size: 10.3pt;
+        line-height: 1.62;
+        text-rendering: optimizeLegibility;
+      }
+      a { color: #1655d6; text-decoration: none; border-bottom: 1px solid #a9c4ff; }
+      a:hover { color: var(--violet); }
+      .page { min-height: 297mm; padding: 17mm 18mm 18mm; position: relative; }
+      .page-break { break-before: page; page-break-before: always; }
+      .cover {
+        position: relative;
+        min-height: 297mm;
+        padding: 20mm 18mm;
+        color: white;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 87% 12%, rgba(74, 224, 255, .27), transparent 26%),
+          radial-gradient(circle at 6% 94%, rgba(121, 70, 255, .36), transparent 38%),
+          linear-gradient(135deg, #06132b 0%, #0a2450 48%, #111f54 100%);
+      }
+      .cover::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        opacity: .25;
+        background-image: linear-gradient(rgba(174, 212, 255, .15) 1px, transparent 1px), linear-gradient(90deg, rgba(174, 212, 255, .15) 1px, transparent 1px);
+        background-size: 26px 26px;
+        mask-image: linear-gradient(to bottom, black, transparent 74%);
+        pointer-events: none;
+      }
+      .cover-content { position: relative; z-index: 1; }
+      .brand { display: flex; align-items: center; gap: 10px; color: #dbeafe; font-size: 11pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+      .brand img { width: 34px; height: 34px; object-fit: contain; }
+      .cover-kicker { margin: 35mm 0 6mm; color: #89e9ff; font-size: 10pt; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+      .cover h1 { max-width: 530px; margin: 0; color: white; font-size: 40pt; line-height: 1.04; letter-spacing: -.045em; }
+      .cover h1 span { color: #91d9ff; }
+      .cover .subtitle { max-width: 510px; margin: 8mm 0 0; color: #cedcf7; font-size: 16pt; line-height: 1.4; }
+      .cover-meta { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin-top: 70mm; padding-top: 7mm; border-top: 1px solid rgba(200, 223, 255, .35); color: #c4d5f5; font-size: 9pt; }
+      .cover-meta strong { display: block; margin-bottom: 2px; color: white; font-size: 8pt; letter-spacing: .1em; text-transform: uppercase; }
+      .eyebrow { margin: 0 0 4mm; color: var(--blue); font-size: 8.5pt; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+      h1, h2, h3, h4 { color: var(--navy); line-height: 1.22; }
+      h1 { margin: 0 0 5mm; font-size: 27pt; letter-spacing: -.035em; }
+      h2 { margin: 10mm 0 4mm; padding-top: 2mm; font-size: 18pt; letter-spacing: -.025em; break-after: avoid-page; page-break-after: avoid; }
+      h3 { margin: 6mm 0 2.5mm; font-size: 12.5pt; break-after: avoid-page; page-break-after: avoid; }
+      h4 { margin: 4mm 0 2mm; font-size: 10.5pt; }
+      p { margin: 0 0 3.6mm; }
+      ul, ol { margin: 0 0 4mm; padding-left: 5.5mm; }
+      li { margin: 1.2mm 0; }
+      code { padding: 1px 4px; border-radius: 3px; background: #edf2fb; color: #173e88; font-family: "SFMono-Regular", Consolas, monospace; font-size: .9em; overflow-wrap: anywhere; }
+      pre { margin: 4mm 0; padding: 4mm 5mm; overflow: hidden; border-radius: 7px; background: #0c1c3d; color: #dbeafe; font-family: "SFMono-Regular", Consolas, monospace; font-size: 8.4pt; line-height: 1.48; white-space: pre-wrap; break-inside: avoid; page-break-inside: avoid; }
+      table { width: 100%; margin: 4mm 0 5mm; border-collapse: collapse; font-size: 9pt; break-inside: avoid; page-break-inside: avoid; }
+      th { padding: 2.4mm 2.7mm; background: #eaf0fc; color: #1e3c76; text-align: left; font-weight: 800; }
+      td { padding: 2.35mm 2.7mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+      tr:nth-child(even) td { background: #fafcff; }
+      .lead { max-width: 155mm; color: #334765; font-size: 13pt; line-height: 1.53; }
+      .abstract { margin: 7mm 0; padding: 5mm 6mm; border-left: 3px solid var(--cyan); border-radius: 0 6px 6px 0; background: #effcff; }
+      .callout { margin: 5mm 0; padding: 4mm 5mm; border-radius: 6px; border: 1px solid var(--line); background: var(--wash); break-inside: avoid; page-break-inside: avoid; }
+      .callout strong { display: block; margin-bottom: 1mm; color: var(--navy); }
+      .warning { border-color: #f3d28d; background: var(--amber-bg); }
+      .warning strong { color: #955300; }
+      .risk { border-color: #f2b7b3; background: var(--danger-bg); }
+      .risk strong { color: var(--danger); }
+      .key-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; margin: 6mm 0; }
+      .key-card { min-height: 31mm; padding: 4mm; border: 1px solid var(--line); border-radius: 7px; background: #fbfcff; }
+      .key-card .number { color: var(--violet); font-size: 8pt; font-weight: 800; letter-spacing: .1em; }
+      .key-card h3 { margin: 2mm 0 1mm; font-size: 11pt; }
+      .key-card p { margin: 0; color: var(--muted); font-size: 8.8pt; line-height: 1.45; }
+      .diagram { margin: 6mm 0; padding: 5mm; border: 1px solid #cbd8f0; border-radius: 9px; background: linear-gradient(145deg, #fbfdff, #f1f6ff); break-inside: avoid; page-break-inside: avoid; }
+      .diagram-title { margin-bottom: 3mm; color: #39517e; font-size: 8pt; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+      .flow { display: flex; align-items: stretch; justify-content: center; gap: 2mm; text-align: center; }
+      .flow-item { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 20mm; padding: 2.5mm; border: 1px solid #bed0f2; border-radius: 5px; background: white; color: #173968; font-size: 8.3pt; font-weight: 700; line-height: 1.35; }
+      .arrow { display: flex; align-items: center; color: #4074cd; font-size: 16pt; }
+      .split-flow { display: grid; grid-template-columns: 1fr 22mm 1fr; gap: 3mm; align-items: center; }
+      .split-flow .center { color: var(--blue); text-align: center; font-size: 19pt; }
+      .layer { margin: 3mm 0; padding: 3.5mm 4mm; border-left: 3px solid var(--blue); border-radius: 0 5px 5px 0; background: #f7faff; }
+      .layer h3 { margin: 0 0 1mm; font-size: 10.5pt; }
+      .layer p { margin: 0; color: var(--muted); font-size: 9.2pt; }
+      .toc { columns: 2; column-gap: 11mm; }
+      .toc a { display: block; margin: 1.5mm 0; border: 0; color: #274776; }
+      .toc a span { display: inline-block; width: 9mm; color: var(--violet); font-weight: 800; }
+      .small { color: var(--muted); font-size: 8.4pt; }
+      .address { font-family: "SFMono-Regular", Consolas, monospace; font-size: 7.2pt; color: #274776; overflow-wrap: anywhere; }
+      .footer { position: absolute; bottom: 8mm; left: 18mm; right: 18mm; display: flex; justify-content: space-between; padding-top: 3mm; border-top: 1px solid var(--line); color: #8290a8; font-size: 7.6pt; }
+      .footnote { color: var(--muted); font-size: 8.2pt; }
+      .quote { margin: 5mm 0; padding: 1mm 0 1mm 5mm; border-left: 3px solid var(--violet); color: #31466b; font-size: 12pt; font-weight: 600; line-height: 1.45; }
+      .checklist { list-style: none; padding: 0; }
+      .checklist li { position: relative; padding-left: 6mm; }
+      .checklist li::before { position: absolute; left: 0; content: "\2713"; color: #15785a; font-weight: 900; }
+      @page { size: A4; margin: 0; }
+      @media print {
+        html { background: white; }
+        body { width: auto; }
+        .page { min-height: 297mm; }
+        a { color: inherit; border-bottom: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="cover">
+      <div class="cover-content">
+        <div class="brand"><img src="../assets/bert-logo.png" alt="BERT logo" /> BERTDAO Protocol</div>
+        <p class="cover-kicker">Technical whitepaper / Version 1.0</p>
+        <h1>Transparent capital coordination for <span>communities and grants.</span></h1>
+        <p class="subtitle">A stablecoin-native protocol for stake-backed proposals, auditable decision-making, controlled treasury flows, and milestone-based release.</p>
+        <div class="cover-meta">
+          <div><strong>Publication</strong>18 September 2026</div>
+          <div><strong>Current environment</strong>Arc Testnet / active development</div>
+          <div><strong>Protocol scope</strong>BERT V2 Global Funding Layer and BERT V3 Community Layer</div>
+          <div><strong>Canonical source</strong>github.com/Tenyokj/bert-core-arc</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <p class="eyebrow">Document status</p>
+      <h1>Read this before evaluating BERT.</h1>
+      <div class="callout warning">
+        <strong>Development-stage disclosure.</strong>
+        BERT is deployed and exercised on Arc Testnet. Testnet transactions are real testnet transactions, but test assets and testnet outcomes do not have monetary value. This paper describes the current implementation and intended architecture; it is not an offer, investment memorandum, promise of returns, security audit, or mainnet launch announcement.
+      </div>
+      <div class="callout risk">
+        <strong>Identity disclosure.</strong>
+        The public Arc Testnet dApp uses an explicitly labelled Demo verification path. It exercises the actual backend-attestation and onchain <code>PoPVerifierUpgradeable</code> flow, but it is not proof of personhood and must not be interpreted as Sybil resistance. The planned production policy is a World ID proof-of-personhood integration, subject to completion, review, and deployment readiness.
+      </div>
+      <h2>Abstract</h2>
+      <p class="abstract">BERTDAO Protocol is programmable, stablecoin-native infrastructure for coordinating proposals and capital. BERT V2 operates a global grant flow: stake-backed idea intake, round-based USDC voting, explicit reserve accounting, and reviewer-gated milestone payout. BERT V3 introduces an isolated Community Layer: each Community has its own immutable governance Hub and USDC Treasury, local membership, validator review, binary and slate voting, and quorum-protected administrative actions. Defined V3 protocol inflows route into the existing V2 global reserve without merging Community execution balances or governance state.</p>
+      <p>The protocol is deliberately modular. Proposal metadata, vote lifecycle, token accounting, grant payout state, role authority, reputation, and progression each have a defined onchain owner. This reduces ambiguity for integrators and auditors: the interface is not the source of truth, and an offchain index does not replace a contract read when finality matters.</p>
+      <h2>Contents</h2>
+      <nav class="toc">
+        <a href="#problem"><span>01</span>Problem and thesis</a>
+        <a href="#principles"><span>02</span>Design principles and scope</a>
+        <a href="#architecture"><span>03</span>System architecture</a>
+        <a href="#v2"><span>04</span>BERT V2: global funding layer</a>
+        <a href="#v3"><span>05</span>BERT V3: Community Layer</a>
+        <a href="#identity"><span>06</span>Human-verification boundary</a>
+        <a href="#security"><span>07</span>Security, trust, and operations</a>
+        <a href="#data"><span>08</span>Data, indexing, and interfaces</a>
+        <a href="#testnet"><span>09</span>Arc Testnet deployment</a>
+        <a href="#mainnet"><span>10</span>Mainnet readiness conditions</a>
+        <a href="#appendix"><span>11</span>Appendix: addresses and glossary</a>
+      </nav>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.0 / 18 September 2026</span></div>
+    </section>
+
+    <section class="page page-break" id="problem">
+      <p class="eyebrow">01 / Problem and thesis</p>
+      <h1>Capital decisions should be inspectable, not trapped in spreadsheets and chat.</h1>
+      <p class="lead">Grant programs and community treasuries often split a single decision across forms, informal moderation, spreadsheets, multisig messages, and offchain payout tracking. That fragmentation makes it difficult to answer basic questions: who proposed an allocation, what capital supported it, what was decided, where are the funds, and what evidence unlocked a payment?</p>
+      <h2>The coordination problem</h2>
+      <p>A useful treasury process needs more than a vote. It needs a way to resist low-cost spam, a lifecycle that cannot be rewritten casually, capital accounting that distinguishes deposits from obligations, and an execution process that does not release all funds before work is evidenced.</p>
+      <div class="key-grid">
+        <article class="key-card"><div class="number">01 / INTAKE</div><h3>Unpriced proposal spam</h3><p>Without an economic commitment or review path, a public intake surface can become a queue of low-signal submissions.</p></article>
+        <article class="key-card"><div class="number">02 / DECISION</div><h3>Opaque capital signaling</h3><p>A social poll does not explain how much capital was committed, which rules applied, or what happens on a failed result.</p></article>
+        <article class="key-card"><div class="number">03 / EXECUTION</div><h3>One-shot payout risk</h3><p>A winning proposal is not evidence that all future work has been delivered. Treasury release needs its own accountable state machine.</p></article>
+      </div>
+      <h2>BERT thesis</h2>
+      <p>BERT treats proposal intake, selection, and payment as connected but distinct protocol stages. The V2 Global Funding Layer provides the shared grant and reserve machinery. The V3 Community Layer lets independent groups operate their own local governance and execution treasury while remaining connected to a defined global reserve route.</p>
+      <p class="quote">A proposal is not merely content. It is a lifecycle object with an author, a capital commitment, an outcome, and—when funded—an accountable release path.</p>
+      <h2>What BERT is and is not</h2>
+      <table>
+        <thead><tr><th>BERT is</th><th>BERT is not</th></tr></thead>
+        <tbody>
+          <tr><td>Onchain coordination infrastructure for USDC-denominated proposal and treasury flows.</td><td>A guarantee that any proposal is economically sound, lawful, or likely to succeed.</td></tr>
+          <tr><td>A modular protocol with separate state owners for ideas, rounds, funds, payouts, roles, and trust signals.</td><td>A replacement for human judgment, due diligence, or community accountability.</td></tr>
+          <tr><td>A testnet-stage system with real contract interactions and transparent documented limitations.</td><td>A production-ready, independently audited mainnet product today.</td></tr>
+          <tr><td>An integration surface for dApps, indexers, operators, and future Community deployments.</td><td>A custodial service or investment product.</td></tr>
+        </tbody>
+      </table>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>01 / Problem and thesis</span></div>
+    </section>
+
+    <section class="page page-break" id="principles">
+      <p class="eyebrow">02 / Principles and scope</p>
+      <h1>Explicit state, explicit capital, explicit authority.</h1>
+      <h2>Design principles</h2>
+      <div class="layer"><h3>Single source of truth by domain</h3><p>Idea metadata belongs to <code>IdeaRegistryUpgradeable</code>; round state belongs to <code>VotingSystemUpgradeable</code>; treasury and reserve accounting belongs to <code>FundingPoolUpgradeable</code>; payout state belongs to <code>GrantManagerUpgradeable</code>; role assignments belong to <code>RolesRegistryUpgradeable</code>.</p></div>
+      <div class="layer"><h3>Economic actions are visible</h3><p>Proposal deposits, vote commitments, execution balances, reserve routes, validator rewards, and refund liabilities are distinct accounting concepts. A displayed token balance must not be treated as generic free liquidity.</p></div>
+      <div class="layer"><h3>Local autonomy without silent pooling</h3><p>A V3 Community has isolated state and custody. Its paired Treasury can only make defined protocol-reserve transfers through the authenticated V2 reserve route; a Community's membership stake and execution balance are not global reserve capital.</p></div>
+      <div class="layer"><h3>Human trust remains a boundary</h3><p>Contracts can enforce configured thresholds and lifecycle rules, but reviewer quality, admin behavior, configuration choices, and future identity-provider operation remain social and operational trust assumptions.</p></div>
+      <h2>Scope of this paper</h2>
+      <p>This paper documents the public BERT V2 and V3 architecture as implemented in the core repository and Arc Testnet deployment manifest. It intentionally does not define token economics, a tradable token, speculative yield, NFT rewards, airdrops, legal compliance policy, or a final mainnet timetable.</p>
+      <h2>System actors</h2>
+      <table>
+        <thead><tr><th>Actor</th><th>V2 participation</th><th>V3 participation</th></tr></thead>
+        <tbody>
+          <tr><td>Builder / author</td><td>Submits a staked idea; may claim a winning grant and submit milestone proof.</td><td>As a Member, submits a bonded proposal after joining a Community.</td></tr>
+          <tr><td>Voter / member</td><td>Commits configured USDC stake in a funding round, subject to live gates.</td><td>Locks entry stake, then casts one stake-backed vote per binary proposal or slate round.</td></tr>
+          <tr><td>Reviewer / curator</td><td>Earned or admin-assigned V2 role; supports quality and milestone decisions.</td><td>Validator is a Community-local role that reviews Member proposals before they can be voted.</td></tr>
+          <tr><td>Administrator</td><td>Configures roles, dependencies, parameters, pauses, and upgrades within the current model.</td><td>Local Admin creates proposals and rounds, manages withdrawals, and uses immutable local quorum for protected actions.</td></tr>
+          <tr><td>Integrator / indexer</td><td>Reads contract state and V2 events; may use the V2 Subgraph for discovery.</td><td>Discovers Communities through Factory events and indexes Hub/Treasury event streams via the V3 Subgraph.</td></tr>
+        </tbody>
+      </table>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>02 / Principles and scope</span></div>
+    </section>
+
+    <section class="page page-break" id="architecture">
+      <p class="eyebrow">03 / System architecture</p>
+      <h1>Two connected layers, clear execution boundaries.</h1>
+      <p class="lead">BERT V2 and V3 are complementary. V2 is the global funding and grant layer. V3 is the factory-created Community Layer. The connection is intentionally narrow: authenticated V3 Community Treasuries can route defined protocol inflows to the V2 reserve.</p>
+      <div class="diagram">
+        <div class="diagram-title">Protocol topology</div>
+        <div class="flow">
+          <div class="flow-item">Wallets<br /><small>authors, voters, members</small></div><div class="arrow">&#8594;</div>
+          <div class="flow-item">BERT dApp / integrations<br /><small>reads and transactions</small></div><div class="arrow">&#8594;</div>
+          <div class="flow-item">Arc EVM contracts<br /><small>source of truth</small></div><div class="arrow">&#8594;</div>
+          <div class="flow-item">The Graph indexers<br /><small>search and event-derived views</small></div>
+        </div>
+      </div>
+      <div class="diagram">
+        <div class="diagram-title">V2 and V3 value boundary</div>
+        <div class="split-flow">
+          <div class="flow-item">V3 CommunityHub<br />local roles, validation, voting, quorum</div>
+          <div class="center">&#8646;</div>
+          <div class="flow-item">V3 CommunityTreasury<br />local custody, refunds, rewards, execution</div>
+        </div>
+        <div class="flow" style="margin-top: 3mm;"><div class="flow-item">Only defined protocol-reserve inflows from an active Treasury route to <code>FundingPoolUpgradeable.receiveCommunityReserve</code>. V2 does not custody arbitrary local Community balances.</div></div>
+      </div>
+      <h2>Contract deployment model</h2>
+      <p>V2 core modules are upgradeable and interdependent. Their safety depends on storage compatibility, dependency wiring, role assignment, and controlled administration. V3 takes a different isolation approach: the shared <code>CommunityFactory</code> is upgradeable, while every deployed <code>CommunityHub</code> and <code>CommunityTreasury</code> is immutable for that Community. The Factory has no post-activation governance authority over a Community.</p>
+      <h2>Source of truth and indexers</h2>
+      <p>Contract storage and successful chain execution are authoritative. The Graph provides convenient event-derived discovery and UI views, but users and integrators should fall back to contract reads for security-sensitive state, especially role status, paused state, claimability, balances, and settlement status. The public Arc RPC may prune historical logs; subgraphs reduce that read-path fragility for historical discovery but do not alter execution truth.</p>
+      <h2>USDC denomination</h2>
+      <p>Economic amounts are denominated in the configured USDC-compatible ERC-20's native units. Arc USDC is displayed with six decimals. Interfaces must not assume 18 decimals for user input, formatting, or allowance calculations.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>03 / System architecture</span></div>
+    </section>
+
+    <section class="page page-break" id="v2">
+      <p class="eyebrow">04 / BERT V2</p>
+      <h1>Global funding layer: proposals, rounds, reserve, and staged grants.</h1>
+      <p class="lead">BERT V2 coordinates a protocol-wide grant lifecycle. Its modules keep intake, decision, accounting, payout, permissions, and social progression separate so no one contract becomes an ambiguous source for every kind of state.</p>
+      <h2>V2 modules</h2>
+      <table>
+        <thead><tr><th>Module</th><th>Primary responsibility</th><th>Important boundary</th></tr></thead>
+        <tbody>
+          <tr><td><code>IdeaRegistryUpgradeable</code></td><td>Proposal metadata, author, lifecycle status, author stake policy, review markers.</td><td>Does not custody USDC; it instructs FundingPool through authorized paths.</td></tr>
+          <tr><td><code>VotingSystemUpgradeable</code></td><td>Round formation, idea batching, voting window, vote recording, winner selection.</td><td>Records policy and outcome; FundingPool performs token transfers/accounting.</td></tr>
+          <tr><td><code>FundingPoolUpgradeable</code></td><td>USDC custody and accounting for deposits, author stakes, votes, reserve, and distributions.</td><td>Accounting buckets are purpose-specific and cannot be treated as one free balance.</td></tr>
+          <tr><td><code>GrantManagerUpgradeable</code></td><td>Grant claims, author/protocol split, milestone proof, reviewer-gated tranches.</td><td>Cannot release the same stage twice; it relies on valid V2 round state.</td></tr>
+          <tr><td><code>RolesRegistryUpgradeable</code></td><td>Protocol and user role authority.</td><td>Misgranted system roles are a critical trust and operational risk.</td></tr>
+          <tr><td><code>ReputationSystemUpgradeable</code> and <code>VoterProgressionUpgradeable</code></td><td>Outcome-linked reputation and earned user-role progression.</td><td>Reputation is not token value or voting weight.</td></tr>
+        </tbody>
+      </table>
+      <h2>V2 proposal lifecycle</h2>
+      <div class="diagram">
+        <div class="diagram-title">Forward-only V2 state machine</div>
+        <div class="flow"><div class="flow-item">Pending</div><div class="arrow">&#8594;</div><div class="flow-item">Voting</div><div class="arrow">&#8594;</div><div class="flow-item">WonVoting</div><div class="arrow">&#8594;</div><div class="flow-item">Funded</div><div class="arrow">&#8594;</div><div class="flow-item">InProcess</div><div class="arrow">&#8594;</div><div class="flow-item">Completed</div></div>
+        <div class="flow" style="margin-top: 3mm;"><div class="flow-item" style="max-width: 43mm;">Voting &#8594; Rejected<br /><small>terminal; applicable author stake is routed to reserve</small></div></div>
+      </div>
+      <h3>1. Staked idea creation</h3>
+      <p>An author calls <code>createIdea</code> on the Idea Registry with non-empty title and description, optional link, and an amount at least equal to <code>authorMinStake</code>. The Registry checks the configured FundingPool, USDC balance and allowance, initializes reputation when necessary, then causes the author stake to be pulled into FundingPool. The new idea begins in <code>Pending</code>.</p>
+      <h3>2. Round formation and voting</h3>
+      <p>An operator starts a round only when enough unused ideas exist. The default implementation batches 30 ideas and opens a one-day voting window, but these are configurable policy values rather than economic guarantees. A voter can make one vote in a round, cannot vote for their own idea, must meet the current minimum stake, and is subject to the configured verified-human policy and per-vote cap when enabled.</p>
+      <h3>3. Deterministic resolution</h3>
+      <p>After the window ends, any eligible caller may settle the round. The highest recorded vote total wins. If no idea receives votes, the round resolves with no winner and the included ideas follow the rejected path. The Voting System updates lifecycle state, triggers outcome-linked reputation effects, and registers winning voters for progression.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04 / BERT V2: lifecycle</span></div>
+    </section>
+
+    <section class="page page-break">
+      <p class="eyebrow">04 / BERT V2 continued</p>
+      <h1>Capital is accounted for by purpose.</h1>
+      <h2>FundingPool accounting model</h2>
+      <p>The V2 FundingPool distinguishes the following categories. These are accounting responsibilities, not a promise that all USDC represented by a broad UI total is withdrawable or distributable in the same way.</p>
+      <table>
+        <thead><tr><th>Bucket or mapping</th><th>Meaning</th><th>Typical origin</th></tr></thead>
+        <tbody>
+          <tr><td><code>donorBalances</code></td><td>Record of direct contributor deposits.</td><td><code>deposit(amount)</code></td></tr>
+          <tr><td><code>authorStakes</code></td><td>Proposal-linked collateral, separate from a general donation.</td><td>Idea creation through the Registry</td></tr>
+          <tr><td><code>poolByRoundAndIdea</code></td><td>Capital committed to a particular idea in a particular round.</td><td>Votes through VotingSystem</td></tr>
+          <tr><td><code>protocolReserve</code></td><td>Capital tracked outside active distributable round balances.</td><td>Slashed/rejected stake, explicit reserve movements, authenticated V3 reserve inflows</td></tr>
+          <tr><td><code>totalPoolBalance</code></td><td>Live accounted pool value, reconciled with the token balance subject to reserve separation.</td><td>System accounting</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warning"><strong>Interpretation rule.</strong> A valid integration must present reserve, active round capital, locked author stake, and already-released payout as separate concepts. Collapsing them into one "treasury available" number would misrepresent the protocol's obligations.</div>
+      <h2>Grant claim and milestone releases</h2>
+      <p>A winning author may call <code>claimGrant(roundId)</code> only after a qualifying round is ended and the grant has not already been claimed. The contract determines the winning idea and reads its round-specific capital. The current default author share is 95%; the remaining 5% follows the protocol share path. The author share is not released at once.</p>
+      <div class="diagram">
+        <div class="diagram-title">V2 grant release rail</div>
+        <div class="flow"><div class="flow-item">30%<br /><small>initial claim</small></div><div class="arrow">&#8594;</div><div class="flow-item">40%<br /><small>in-process milestone</small></div><div class="arrow">&#8594;</div><div class="flow-item">30%<br /><small>completion milestone</small></div></div>
+      </div>
+      <p>For the in-process stage, the implementation requires 3 approvals from up to 5 reviewers. For the completion stage, it requires 2 approvals from up to 3 reviewers. The author cannot review their own work. A rejected milestone request records a rejection time and uses a 48-hour resubmission cooldown. These rules exist to make later payout conditional on evidence and review, not simply on winning an earlier vote.</p>
+      <h2>Reputation and progression</h2>
+      <p>V2 separates reputation from progression. Reputation records outcome-linked performance and is not a treasury balance or vote multiplier. Voter progression counts winning votes and can grant user roles through the role system. Current thresholds in the implementation are 20 winning votes for <code>CURATOR_ROLE</code> and 60 for <code>REVIEWER_ROLE</code>. This reduces fully arbitrary assignment, but it does not eliminate social coordination or admin-risk concerns.</p>
+      <h2>V2 policy surfaces</h2>
+      <p>Stake minima, round size, duration, author share, vote caps, verified-human gating, trusted signer, and module dependencies are operational policy. Any future governance process must treat parameter changes as security- and UX-relevant changes, rehearse them on a staging environment, and record their effect in a changelog.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04 / BERT V2: capital and grants</span></div>
+    </section>
+
+    <section class="page page-break" id="v3">
+      <p class="eyebrow">05 / BERT V3</p>
+      <h1>Community Layer: isolated governance with local USDC custody.</h1>
+      <p class="lead">BERT V3 enables an organization or group to create its own stake-gated governance domain. Every active Community is a paired immutable <code>CommunityHub</code> and <code>CommunityTreasury</code>, registered and activated by the shared <code>CommunityFactory</code>.</p>
+      <h2>Why V3 is separate from V2</h2>
+      <p>V2 organizes global funding rounds and grants. V3 is designed for local Community governance: a Community needs its own membership boundary, its own Admin and Validator set, its own proposal review, its own execution balance, and its own withdrawal quorum. Mixing those local rules into the V2 global state would weaken isolation and make policy harder to reason about.</p>
+      <h2>Deployment and activation</h2>
+      <div class="diagram">
+        <div class="diagram-title">Factory activation path</div>
+        <div class="flow"><div class="flow-item">Verified creator calls<br /><code>createCommunity(config)</code></div><div class="arrow">&#8594;</div><div class="flow-item">Factory deploys and reserves a Treasury<br /><small>config hash recorded</small></div><div class="arrow">&#8594;</div><div class="flow-item">Creator deploys Hub<br /><small>same immutable config</small></div><div class="arrow">&#8594;</div><div class="flow-item">Creator calls<br /><code>activateCommunity</code></div></div>
+      </div>
+      <p>Factory activation verifies that the Hub reports the reserved Treasury, recorded creator, and exact configuration hash. The Treasury is then linked once to its Hub. This prevents activation of a Hub for a different creator, a different Treasury, or different immutable parameters. The Factory records Community IDs and exposes <code>isActiveCommunityTreasury</code> so V2 can authenticate reserve inflows.</p>
+      <table>
+        <thead><tr><th>V3 contract</th><th>Role</th><th>Mutability</th></tr></thead>
+        <tbody>
+          <tr><td><code>CommunityFactory</code></td><td>Shared registry, Treasury reservation, Hub activation, active-Treasury authentication.</td><td>Upgradeable Transparent proxy.</td></tr>
+          <tr><td><code>CommunityTreasuryDeployer</code></td><td>Deploys a pending Community Treasury for Factory.</td><td>Immutable deployment utility.</td></tr>
+          <tr><td><code>CommunityHub</code></td><td>Local governance state, roles, proposal lifecycle, validator review, voting, active-time clock.</td><td>Immutable per Community.</td></tr>
+          <tr><td><code>CommunityTreasury</code></td><td>Local USDC custody, locks, settlements, rewards, refunds, withdrawals, reserve route.</td><td>Immutable per Community.</td></tr>
+          <tr><td><code>CommunityAdminActions</code></td><td>Linked library used through the Hub for quorum-protected control-plane actions.</td><td>Linked immutable library code.</td></tr>
+        </tbody>
+      </table>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: deployment</span></div>
+    </section>
+
+    <section class="page page-break">
+      <p class="eyebrow">05 / BERT V3 continued</p>
+      <h1>Membership and authority are Community-local.</h1>
+      <h2>Community roles</h2>
+      <table>
+        <thead><tr><th>Role</th><th>Capabilities</th><th>Safety boundary</th></tr></thead>
+        <tbody>
+          <tr><td>Creator</td><td>Reserves and activates the Community; must appear in the initial Admin set.</td><td>After activation, Factory gives no unilateral Community control to the Creator.</td></tr>
+          <tr><td>Admin</td><td>Creates Admin proposals and rounds; creates/approves execution withdrawals; creates and approves protected actions.</td><td>One Admin cannot unilaterally change roster, pause/archive, or cancel a withdrawal when the immutable quorum is greater than one.</td></tr>
+          <tr><td>Validator</td><td>Reviews Member proposals before they reach voting; may earn epoch rewards when activity thresholds are met.</td><td>Validator is not automatically assigned merely by reaching the proposal-point threshold.</td></tr>
+          <tr><td>Member</td><td>Creates Member proposals, votes, requests membership exit.</td><td>Must lock entry stake and cannot exit while governance obligations remain unresolved.</td></tr>
+        </tbody>
+      </table>
+      <h2>Role exclusivity and membership</h2>
+      <p>An address may not simultaneously hold more than one active Community role state: Admin, Validator, or Member. A wallet joins by approving the paired Treasury and calling <code>joinCommunity</code>; the Treasury checks the shared human verifier and locks the immutable entry stake. Membership exit is explicit: request first, wait through the Community's cooldown, then finalize only after role conflicts, active proposals, and uncleared vote locks are gone.</p>
+      <p>Community-local roles are intentionally separate from V2 <code>RolesRegistryUpgradeable</code>, reputation, and progression. A V2 reviewer or curator has no automatic V3 authority. This avoids importing a global status into a local governance trust model without a Community decision.</p>
+      <h2>Validator eligibility</h2>
+      <p>A former Member can become eligible for nomination after accumulating the Community's immutable number of winning Member proposal points. That threshold is selected at creation and must be between 1 and 100. Eligibility is only a precondition: an Admin quorum still adds the Validator, and role exclusivity must be satisfied. The intent is to connect validator eligibility to demonstrated local outcomes without treating an automated metric as an automatic role grant.</p>
+      <h2>Pause-aware time</h2>
+      <p>V3 uses a Community clock that excludes paused time. Validation windows, voting windows, validator epochs, and protected-action expiry are measured against that clock. When archived, the clock freezes. This prevents a pause introduced during an incident from silently consuming deadlines that Members, Validators, or Admins could not act on.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: roles and membership</span></div>
+    </section>
+
+    <section class="page page-break">
+      <p class="eyebrow">05 / BERT V3 continued</p>
+      <h1>From proposal review to settlement.</h1>
+      <h2>Member proposals have a validation gate</h2>
+      <p>Members create either binary or slate proposals. A Member proposal immediately locks the configured USDC anti-spam bond and enters <code>PendingValidation</code>. Validators cast one approval or rejection during the configured validation window. The proposal passes when approvals reach the immutable threshold; it fails early when the remaining possible approvals cannot reach that threshold; otherwise it can be finalized after the deadline using the approvals received.</p>
+      <p>On validator rejection, the Member proposal bond is routed to the global BERT reserve. If the proposal passes validation, its bond is returned when the later vote or slate round settles, whether it wins or fairly loses. The distinction is intentional: validation rejection is a moderation decision; a fairly considered democratic loss should not use the same economic penalty.</p>
+      <h2>Binary proposals</h2>
+      <div class="diagram">
+        <div class="diagram-title">Binary proposal flow</div>
+        <div class="flow"><div class="flow-item">Admin proposal<br />or Validator-approved Member proposal</div><div class="arrow">&#8594;</div><div class="flow-item">Admin opens YES / NO window</div><div class="arrow">&#8594;</div><div class="flow-item">Members stake once<br /><small>author cannot vote</small></div><div class="arrow">&#8594;</div><div class="flow-item">Anyone settles after deadline</div></div>
+      </div>
+      <p>Each Member chooses one side and commits an amount at least equal to the Community minimum and no greater than the protocol-wide cap of 10,000 USDC. YES must strictly exceed NO to win; a tie follows the NO/refund path. A proposal author cannot vote on their own proposal. The Hub records the governance state; only the paired Treasury moves the corresponding USDC.</p>
+      <h3>YES outcome</h3>
+      <p>For a winning Member binary proposal, YES stake is settled into Community execution funds and the configured validator-reward share; NO stake routes to the global BERT reserve. The public V3 design documents a 15% default validator share and 85% execution share, but the actual immutable <code>validatorRewardShareBps</code> selected at Community creation is authoritative. Admin-origin binary proposals did not require validator review, so their local winning stake goes entirely to execution.</p>
+      <h3>NO or tie outcome</h3>
+      <p>YES stake and the configured NO-side rejection fee route to the global reserve. The remaining NO stake becomes a pull-based refund liability; each eligible NO voter must claim their own refund. The rejection fee is immutable per Community and cannot exceed 10% (1,000 basis points).</p>
+      <h2>Slate rounds</h2>
+      <p>Admins can open a homogeneous slate round containing approved Admin slate proposals or validator-approved Member slate proposals. A Member selects exactly one proposal and stakes once. The highest total wins; ties resolve deterministically in favor of the earliest proposal in the supplied round order. Slate rounds do not have a NO side. Their committed stake settles locally into execution and, for Member-origin rounds, the configured validator reward route.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: validation and voting</span></div>
+    </section>
+
+    <section class="page page-break">
+      <p class="eyebrow">05 / BERT V3 continued</p>
+      <h1>Community Treasury: custody follows validated state.</h1>
+      <p class="lead">The Hub never custodies USDC. It validates lifecycle transitions and instructs its paired Treasury. The Treasury separates funds by obligation so membership stake, bonds, escrow, refunds, validator rewards, and executable balances cannot be casually mixed.</p>
+      <h2>V3 Treasury buckets</h2>
+      <table>
+        <thead><tr><th>Bucket</th><th>What it protects</th><th>Can it fund execution directly?</th></tr></thead>
+        <tbody>
+          <tr><td><code>totalMembershipLocked</code></td><td>Refundable entry stakes of active Members.</td><td>No.</td></tr>
+          <tr><td><code>totalProposalBondLocked</code></td><td>Member proposal bonds pending return or reserve route.</td><td>No.</td></tr>
+          <tr><td><code>totalVoteEscrow</code> / <code>totalRoundVoteEscrow</code></td><td>USDC committed to unresolved binary votes or slate rounds.</td><td>No.</td></tr>
+          <tr><td><code>totalRefundLiability</code></td><td>NO-side funds owed through pull-based refunds.</td><td>No.</td></tr>
+          <tr><td><code>validatorRewardBalance</code></td><td>Unclaimed, epoch-accounted validator rewards.</td><td>No, except defined rounding/no-active-validator return paths.</td></tr>
+          <tr><td><code>executionBalance</code></td><td>Funds available for locally approved Community execution.</td><td>Yes, subject to withdrawal reservation and Admin quorum.</td></tr>
+          <tr><td><code>reservedExecutionBalance</code></td><td>Execution funds already reserved by pending withdrawals.</td><td>No, until cancellation or request resolution.</td></tr>
+        </tbody>
+      </table>
+      <h2>Validator reward epochs</h2>
+      <p>Validator rewards are measured in epochs. Member-proposal validation cases are counted, and an active-validator threshold determines whether a Validator is eligible. After the epoch and associated validation window close, rewards are finalized as equal claimable shares for active Validators. Rounding dust—or all rewards when no Validator is active—returns to execution balance. Claims are pull-based and protected against double claim.</p>
+      <h2>Execution withdrawals</h2>
+      <p>A current Admin can create a withdrawal request from available execution balance. The request records recipient, amount, reason, metadata URI, and the creator's first approval; it also reserves the amount immediately. Other current Admins approve once each. The Treasury transfers only after the Hub's immutable Admin threshold is met. A pending withdrawal can be cancelled only through the separate quorum-protected Admin action process, preventing one Admin from unilaterally undoing a reserved action.</p>
+      <h2>Archive safety</h2>
+      <p>Archive is a protected action. Community lifecycle changes, roster changes, pause/resume, and withdrawal cancellation use the linked <code>CommunityAdminActions</code> library through the Hub. The requester contributes the first approval; the immutable threshold is evaluated at execution time; requests expire after seven active Community days; paused time does not count. An Admin handover intentionally takes two actions: add the replacement, then remove the former Admin.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: Treasury and quorum</span></div>
+    </section>
+
+    <section class="page page-break" id="identity">
+      <p class="eyebrow">06 / Human verification</p>
+      <h1>Provider-agnostic onchain gate, explicit offchain trust boundary.</h1>
+      <p class="lead">BERT does not embed a vendor SDK in its Solidity core. Instead, <code>PoPVerifierUpgradeable</code> records signed verification attestations and exposes a narrow <code>isVerifiedHuman(account)</code> read. Protected contracts decide whether to require that read for a configured action.</p>
+      <h2>Attestation model</h2>
+      <div class="diagram">
+        <div class="diagram-title">Verification path</div>
+        <div class="flow"><div class="flow-item">Wallet requests verification</div><div class="arrow">&#8594;</div><div class="flow-item">Backend verifies provider-specific proof</div><div class="arrow">&#8594;</div><div class="flow-item">Trusted signer creates wallet-bound, expiring attestation</div><div class="arrow">&#8594;</div><div class="flow-item">Wallet submits payload to PoPVerifier</div></div>
+      </div>
+      <p>The verifier validates the trusted signer signature, the wallet binding, nonce and expiry, then stores the active record. The contract is intentionally provider-agnostic: policy can evolve without coupling every protocol module to external identity-provider code. The tradeoff is explicit: the backend, signer key management, proof-validation implementation, and provider policy become a meaningful trust boundary.</p>
+      <h2>Protected actions</h2>
+      <p>In V2, the live policy can require verified human status for voting and idea creation. In V3, the Factory requires a verified creator to reserve a Community and the Community Treasury requires a verified wallet before locking entry stake and activating Membership. Read-only calls and asset-recovery flows are not indiscriminately gated, so a verification policy does not strand an existing user's funds.</p>
+      <h2>Testnet and production are intentionally different</h2>
+      <table>
+        <thead><tr><th>Environment</th><th>Current path</th><th>Security claim</th></tr></thead>
+        <tbody>
+          <tr><td>Arc Testnet</td><td>Demo verification with provider ID <code>BERT_TESTNET_DEMO</code>; real backend signature and onchain verifier flow.</td><td>No unique-human or Sybil-resistance claim.</td></tr>
+          <tr><td>Planned mainnet</td><td>World ID proof-of-personhood policy, backend proof verification, nullifier-to-wallet binding, and signed onchain attestation.</td><td>Not active until migration, independent review, operational controls, and production deployment are completed.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout risk"><strong>Security interpretation.</strong> A valid onchain Demo PoP record proves only that the current testnet signer issued the configured demo attestation. It does not prove a unique human. Any team evaluating BERT must distinguish functional test coverage of the verifier path from production identity assurance.</div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>06 / Human verification</span></div>
+    </section>
+
+    <section class="page page-break" id="security">
+      <p class="eyebrow">07 / Security and operations</p>
+      <h1>Correct contracts still require correct operations.</h1>
+      <p class="lead">BERT's primary risks are not limited to conventional Solidity bugs. The protocol is multi-contract and upgradeable: security also depends on authority, configuration, dependency wiring, identity-signing operations, indexer behavior, and the social quality of reviewers and validators.</p>
+      <h2>Security controls in the current design</h2>
+      <ul class="checklist">
+        <li>Explicit role gates for treasury, lifecycle, reputation, and cross-contract actions.</li>
+        <li>Forward-only V2 idea lifecycle and stage-aware payout records to resist duplicate or skipped grant release.</li>
+        <li>Separated accounting buckets for V2 reserve and V3 local obligations.</li>
+        <li><code>SafeERC20</code> transfers and reentrancy protection around sensitive token flows.</li>
+        <li>Pause controls on critical V2 modules, and pause-aware V3 Community time.</li>
+        <li>Immutable V3 per-Community configuration, paired Hub/Treasury activation checks, and Factory authentication for reserve inflows.</li>
+        <li>Admin quorum for V3 roster changes, pause/resume, archive, and withdrawal cancellation.</li>
+        <li>Tests covering core V2 flows, V3 Factory/Hub/Treasury flows, edge cases, upgrade behavior, and non-standard token scenarios.</li>
+      </ul>
+      <h2>Material trust assumptions</h2>
+      <table>
+        <thead><tr><th>Boundary</th><th>Why it matters</th><th>Required production control</th></tr></thead>
+        <tbody>
+          <tr><td>Upgrade and admin authority</td><td>Incorrect upgrades or role assignments can compromise availability or integrity even when storage is preserved.</td><td>Multisig ownership, timelock/policy where appropriate, rehearsed upgrades, public change records.</td></tr>
+          <tr><td>Verification backend and signer</td><td>A compromised signer or faulty provider verification could issue improper access attestations.</td><td>Key isolation, rotation/revocation procedure, production World ID validation, monitoring, incident plan.</td></tr>
+          <tr><td>Reviewers and Validators</td><td>They influence proposal filtering and milestone outcomes.</td><td>Documented selection policy, transparency, conflict management, monitoring, appeal/governance policy.</td></tr>
+          <tr><td>Configuration and dependency wiring</td><td>A correct contract at a wrong address can break live flows or route value incorrectly.</td><td>Deployment manifest, post-deploy smoke tests, address verification, role inventory.</td></tr>
+          <tr><td>External RPC and subgraph availability</td><td>UI discovery may be incomplete or delayed even when chain state is valid.</td><td>Fallback RPC/indexer strategy, freshness indicators, direct contract read fallback.</td></tr>
+        </tbody>
+      </table>
+      <h2>Upgrade discipline</h2>
+      <p>Storage compatibility is necessary but insufficient. New storage must be appended; inherited layout and storage gaps must be preserved; proxy target and admin must be verified. After any upgrade, operators must validate live implementation address, dependency addresses, role assignments, human-verification configuration, idea creation, voting, grant claimability, and the relevant V3 reserve boundary. A rollback is a controlled re-upgrade, not an automatic undo mechanism.</p>
+      <h2>Disclosure and incident response</h2>
+      <p>Public source repositories use private GitHub vulnerability reporting for security disclosures. A production runbook must preserve the ability to pause the minimum necessary V2 modules, capture state and transaction evidence, rotate affected credentials, patch and rehearse remediation, and publish an incident summary after safe resolution.</p>
+      <div class="callout risk"><strong>Audit status.</strong> The current testnet codebase has automated and manual test coverage, static-analysis work, public source review, and a disclosure path. It has not yet completed the independent smart-contract audit required before any mainnet capital deployment. No reader should infer otherwise.</div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>07 / Security and operations</span></div>
+    </section>
+
+    <section class="page page-break" id="data">
+      <p class="eyebrow">08 / Data and developer interfaces</p>
+      <h1>Contracts execute. Indexers make history usable.</h1>
+      <h2>Integration rule</h2>
+      <p>An integration should use direct contract reads for final, security-sensitive data and use indexed events for discovery, activity history, search, and performant lists. The intended client model is not to scan all logs from genesis through a public RPC on every page load; such requests can fail on pruned RPC history.</p>
+      <h2>V2 reads and events</h2>
+      <table>
+        <thead><tr><th>Need</th><th>Authoritative contract surface</th><th>Useful indexed material</th></tr></thead>
+        <tbody>
+          <tr><td>Idea detail and status</td><td><code>IdeaRegistryUpgradeable</code> idea/status reads</td><td>Idea creation, status, vote, review events</td></tr>
+          <tr><td>Round detail and result</td><td><code>VotingSystemUpgradeable.getRoundInfo</code></td><td>Round started, vote cast, round ended events</td></tr>
+          <tr><td>Claimability and payout</td><td><code>GrantManagerUpgradeable.canClaimGrant</code> and payout reads</td><td>Grant and milestone events</td></tr>
+          <tr><td>Reserve and accounting</td><td><code>FundingPoolUpgradeable</code> state reads</td><td>Deposit, reserve, distribution events</td></tr>
+        </tbody>
+      </table>
+      <h2>V3 discovery model</h2>
+      <p>The V3 Subgraph indexes the Factory and uses Community Hub event templates so newly activated Communities can become discoverable without hardcoding each Hub address into the frontend. This supports Community directories, role rosters reconstructed from role events, proposal history, rounds, Treasury activity, and lifecycle displays. Contract reads remain necessary where a current record decides whether a write action may proceed.</p>
+      <h2>Developer safeguards</h2>
+      <ul>
+        <li>Format Arc USDC with six decimals; do not assume an 18-decimal token.</li>
+        <li>Distinguish a proxy address from an implementation address; users interact with the proxy/current contract address.</li>
+        <li>Preflight allowance, current verification, pause state, role, timing, and status before asking a wallet to sign.</li>
+        <li>After a transaction, wait for receipt and refresh authoritative contract state. A subgraph can lag behind chain finality.</li>
+        <li>Do not make client-side constants the final policy authority; read configuration from the relevant contract.</li>
+      </ul>
+      <h2>Public resources</h2>
+      <table>
+        <thead><tr><th>Resource</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>BERT dApp</td><td><a href="https://bertdao.vercel.app">https://bertdao.vercel.app</a></td></tr>
+          <tr><td>Developer documentation</td><td><a href="https://bertdao-docs.vercel.app">https://bertdao-docs.vercel.app</a></td></tr>
+          <tr><td>Core contracts</td><td><a href="https://github.com/Tenyokj/bert-core-arc">github.com/Tenyokj/bert-core-arc</a></td></tr>
+          <tr><td>V2 Subgraph</td><td><a href="https://thegraph.com/studio/subgraph/bert-arc-testnet/">thegraph.com/studio/subgraph/bert-arc-testnet</a></td></tr>
+          <tr><td>V3 Subgraph</td><td><a href="https://thegraph.com/studio/subgraph/bert-v-3-arc-testnet/">thegraph.com/studio/subgraph/bert-v-3-arc-testnet</a></td></tr>
+        </tbody>
+      </table>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>08 / Data and developer interfaces</span></div>
+    </section>
+
+    <section class="page page-break" id="testnet">
+      <p class="eyebrow">09 / Arc Testnet</p>
+      <h1>Public deployment registry and current boundary.</h1>
+      <p class="lead">The following addresses are taken from the public <code>deployments/arc-testnet-v3.json</code> manifest dated 9 September 2026. They identify the active Arc Testnet deployment only. They are not mainnet addresses and must never be reused as assumptions for a future production deployment.</p>
+      <h2>Network</h2>
+      <table>
+        <tbody>
+          <tr><th>Network</th><td>Arc Testnet</td></tr>
+          <tr><th>Chain ID</th><td><code>5042002</code></td></tr>
+          <tr><th>USDC-compatible token</th><td class="address">0x3600000000000000000000000000000000000000</td></tr>
+          <tr><th>V3 Factory deployment block</th><td><code>61277385</code></td></tr>
+        </tbody>
+      </table>
+      <h2>Shared and V2 proxy addresses</h2>
+      <table>
+        <thead><tr><th>Contract</th><th>Proxy address</th></tr></thead>
+        <tbody>
+          <tr><td>RolesRegistryUpgradeable</td><td class="address">0xf15c6213666EB4c09f594567DEf1345E2899BCC7</td></tr>
+          <tr><td>PoPVerifierUpgradeable</td><td class="address">0xb8E2CB14F99E1a17C3Eee5863272A7F6dAF3C62b</td></tr>
+          <tr><td>IdeaRegistryUpgradeable</td><td class="address">0xE6563acfdc194Ba3861EfD928Bd8B1B33a5D29d5</td></tr>
+          <tr><td>FundingPoolUpgradeable</td><td class="address">0x5eDdccd772a9E0F079cC6646b529C20e3D46e585</td></tr>
+          <tr><td>VotingSystemUpgradeable</td><td class="address">0xD008fC96902A9680FF77305881Ad6C6C075e7a68</td></tr>
+          <tr><td>GrantManagerUpgradeable</td><td class="address">0xA110baB4562d59d8bb7eDA4a05E53F40c678ccB2</td></tr>
+          <tr><td>VoterProgressionUpgradeable</td><td class="address">0xF6EB65957bb5e363FCD6B84AAdf76E41Ba754E14</td></tr>
+          <tr><td>ReputationSystemUpgradeable</td><td class="address">0x3594C46983460733F6470f7b61De2f3bB2918a81</td></tr>
+        </tbody>
+      </table>
+      <h2>V3 infrastructure addresses</h2>
+      <table>
+        <thead><tr><th>Contract</th><th>Address</th></tr></thead>
+        <tbody>
+          <tr><td>CommunityFactory proxy</td><td class="address">0x811fFb3B53d43e608Ee4dF854aa1BdC471F37589</td></tr>
+          <tr><td>CommunityTreasuryDeployer</td><td class="address">0x84594a42E59789C687e9397a994D71CFfa522409</td></tr>
+          <tr><td>CommunityAdminActions library</td><td class="address">0x5EA79A8a98f588aa342f53baCBC8729A6Ea1177E</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warning"><strong>Operational note.</strong> The deployment manifest is the canonical repository record for addresses and upgrade transactions. A UI, whitepaper, or social post may become stale; operators and integrators must verify against the latest manifest and chain state before acting.</div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>09 / Arc Testnet deployment</span></div>
+    </section>
+
+    <section class="page page-break" id="mainnet">
+      <p class="eyebrow">10 / Mainnet conditions</p>
+      <h1>Mainnet is a gate, not a date.</h1>
+      <p class="lead">The correct launch criterion is not whether BERT can be deployed. The code can be deployed today; a responsible production release requires evidence that its security, operations, identity policy, economics, and user flows are ready for assets with real value.</p>
+      <h2>Required gates before mainnet capital</h2>
+      <table>
+        <thead><tr><th>Gate</th><th>Minimum evidence</th></tr></thead>
+        <tbody>
+          <tr><td>Independent smart-contract audit</td><td>Defined scope covering V2, V3, linked library, upgrade paths, reserve routing, identity verifier, and deployment configuration; findings remediated or explicitly accepted.</td></tr>
+          <tr><td>Testing and formalized invariants</td><td>Expanded fuzz/invariant suite for accounting, role exclusivity, settlement-once, refund liability, reward claims, lifecycle, and upgrade storage/dependency safety.</td></tr>
+          <tr><td>Production identity policy</td><td>World ID v4 migration/integration, nullifier and wallet-binding policy, backend secret isolation, monitoring, revocation/rotation runbook, privacy review.</td></tr>
+          <tr><td>Governance authority</td><td>Multisig ownership for upgrade/admin/pause powers, access inventory, signer policy, emergency process, and no single-wallet production control.</td></tr>
+          <tr><td>Operations and infrastructure</td><td>Production RPC fallback, production indexers, monitoring, alerting, backups, status page, incident communication policy.</td></tr>
+          <tr><td>Economic policy</td><td>Publicly justified limits, stakes, bonds, fees, reward shares, reserve policy, payout policy, and value-at-risk caps.</td></tr>
+          <tr><td>Usability evidence</td><td>Observed testnet sessions, design partners using end-to-end flows, resolved critical UX failures, mobile/accessibility review.</td></tr>
+          <tr><td>Disclosure and support</td><td>Security policy, bug bounty or responsible disclosure process, terms/risk disclosure, upgrade disclosure, and clear user support routes.</td></tr>
+        </tbody>
+      </table>
+      <h2>Testnet work that matters</h2>
+      <p>Before a mainnet release, BERT should recruit real testnet users and small design partners rather than optimize for passive social metrics. The useful evidence is completed end-to-end flows, reproducible bugs, failed assumptions, data about user confusion, validator/admin workload, and documented operating procedures. This is also the right environment to rework the UI with an experienced frontend engineer.</p>
+      <h2>Community and contributor model</h2>
+      <p>Core contracts, backend, frontend, and documentation are public under GPL-3.0. Public visibility does not grant direct push rights. Contributors work through forks and pull requests; maintainers retain merge and deployment control. Security reports should remain private until a patch and coordinated disclosure are ready.</p>
+      <div class="callout risk"><strong>No implied launch promise.</strong> This whitepaper intentionally does not name a mainnet date, token, yield, reward, or valuation. Any such statement should be made only after the relevant technical, legal, economic, and operational decisions are finalized.</div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>10 / Mainnet readiness</span></div>
+    </section>
+
+    <section class="page page-break" id="appendix">
+      <p class="eyebrow">11 / Appendix</p>
+      <h1>Protocol invariants and glossary.</h1>
+      <h2>Selected invariants</h2>
+      <table>
+        <thead><tr><th>Area</th><th>Invariant</th></tr></thead>
+        <tbody>
+          <tr><td>V2 state ownership</td><td>Ideas, rounds, treasury/reserve accounting, payouts, roles, reputation, and progression each have a designated contract owner.</td></tr>
+          <tr><td>V2 lifecycle</td><td>An idea enters through <code>Pending</code>; only valid round resolution or grant transitions move it forward; rejected and completed states are terminal.</td></tr>
+          <tr><td>V2 payouts</td><td>A grant tranche must not be released twice, and later stages cannot bypass earlier stage ordering.</td></tr>
+          <tr><td>V3 role state</td><td>An address cannot hold more than one active Community state among Admin, Validator, and Member.</td></tr>
+          <tr><td>V3 settlement</td><td>A binary proposal or slate round settles once; validator reward claims and NO refunds settle once per eligible account.</td></tr>
+          <tr><td>V3 custody</td><td>Membership lock, bond lock, escrow, refund liability, validator rewards, and execution funds are separately accounted and not interchangeable.</td></tr>
+          <tr><td>V3 authority</td><td>No external wallet can invoke linked Admin action implementation directly; Hub rechecks caller and lifecycle rules at execution.</td></tr>
+          <tr><td>V3 reserve routing</td><td>V2 FundingPool accepts Community reserve inflows only from a Treasury registered as active by Factory.</td></tr>
+        </tbody>
+      </table>
+      <h2>Glossary</h2>
+      <table>
+        <thead><tr><th>Term</th><th>Meaning in BERT</th></tr></thead>
+        <tbody>
+          <tr><td>Active Community</td><td>A Factory-recorded Community whose reserved Treasury has been linked to a validated Hub.</td></tr>
+          <tr><td>Admin quorum</td><td>The immutable number of Community Admin approvals required to execute protected control-plane actions or a Treasury withdrawal.</td></tr>
+          <tr><td>Author stake / proposal bond</td><td>USDC collateral locked when a V2 idea or V3 Member proposal is created; the exact lifecycle depends on its layer and outcome.</td></tr>
+          <tr><td>Community clock</td><td>V3 timestamp calculation that excludes paused time and freezes after archive.</td></tr>
+          <tr><td>Execution balance</td><td>V3 Treasury balance eligible for locally approved execution withdrawals after respecting reservations.</td></tr>
+          <tr><td>Global reserve</td><td>V2 FundingPool accounting bucket for protocol-held value, including defined V3 reserve inflows; it is distinct from a V3 Community execution balance.</td></tr>
+          <tr><td>Human verifier</td><td>Onchain contract that reports whether a wallet has an active trusted verification record.</td></tr>
+          <tr><td>Slate round</td><td>V3 round where each Member selects one proposal from an ordered homogeneous slate; highest stake wins and order resolves a tie.</td></tr>
+          <tr><td>Validator reward epoch</td><td>V3 period measuring validation participation and determining equal pull-based rewards for active Validators.</td></tr>
+        </tbody>
+      </table>
+      <h2>Further reading</h2>
+      <ul>
+        <li><a href="https://github.com/Tenyokj/bert-core-arc">BERT Core repository</a>: contracts, deployment scripts, tests, manifests, and security documentation.</li>
+        <li><a href="https://github.com/Tenyokj/bert-front-arc">BERT Frontend repository</a>: Next.js dApp and user-facing integration.</li>
+        <li><a href="https://github.com/Tenyokj/bert-backend-arc">BERT Backend repository</a>: verification and operational service surface.</li>
+        <li><a href="https://bertdao-docs.vercel.app">BERT Developers</a>: evolving developer reference and Arc Testnet guidance.</li>
+        <li><a href="https://github.com/Tenyokj/bert-core-arc/security/advisories/new">Private vulnerability reporting</a>: coordinated disclosure path.</li>
+      </ul>
+      <h2>Disclaimer</h2>
+      <p class="footnote">This document is provided for technical and informational purposes only. It does not constitute financial, legal, tax, investment, or security advice. The BERT protocol is open-source software under GPL-3.0 and is provided without warranty. Contract interactions can fail, code may contain undiscovered vulnerabilities, testnet behavior may differ from a future production environment, and smart-contract use involves risk. Verify current deployment artifacts and chain state independently before integrating or transacting.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Appendix / End</span></div>
+    </section>
+  </body>
+</html>

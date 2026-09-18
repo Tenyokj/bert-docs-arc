@@ -37,6 +37,14 @@ launch criteria will be documented only after they are finalized.
 
 - `https://bertdao-docs.vercel.app`
 
+## Whitepaper
+
+The technical BERTDAO Protocol Whitepaper is available in the
+[`whitepaper/`](./whitepaper/) directory as an editable HTML source and a
+distribution PDF. It covers the implemented V2 Global Funding Layer, V3
+Community Layer, current Arc Testnet boundary, security assumptions, public
+deployment registry, and mainnet readiness conditions.
+
 ## Repository map
 
 | Resource | Purpose |
