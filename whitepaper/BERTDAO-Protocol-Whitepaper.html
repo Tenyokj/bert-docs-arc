@@ -153,7 +153,7 @@
         The public Arc Testnet dApp uses an explicitly labelled Demo verification path. It exercises the actual backend-attestation and onchain <code>PoPVerifierUpgradeable</code> flow, but it is not proof of personhood and must not be interpreted as Sybil resistance. The planned production policy is a World ID proof-of-personhood integration, subject to completion, review, and deployment readiness.
       </div>
       <h2>Abstract</h2>
-      <p class="abstract">BERTDAO Protocol is programmable, stablecoin-native infrastructure for coordinating proposals and capital. BERT V2 operates a global grant flow: stake-backed idea intake, round-based USDC voting, explicit reserve accounting, and reviewer-gated milestone payout. BERT V3 introduces an isolated Community Layer: each Community has its own immutable governance Hub and USDC Treasury, local membership, validator review, binary and slate voting, and quorum-protected administrative actions. Defined V3 protocol inflows route into the existing V2 global reserve without merging Community execution balances or governance state.</p>
+      <p class="abstract">BERTDAO Protocol is programmable, stablecoin-native infrastructure for coordinating proposals and capital. BERT V2.2 operates a global grant flow: target-backed proposal intake, round-based refundable USDC pledges, viable-winner selection after a snapshotted fee, explicit reserve accounting, and reviewer-gated milestone payout. BERT V3 introduces an isolated Community Layer: each Community has its own immutable governance Hub and USDC Treasury, local membership, validator review, binary and slate voting, and quorum-protected administrative actions. Defined V3 protocol inflows route into the existing V2 global reserve without merging Community execution balances or governance state.</p>
       <p>The protocol is deliberately modular. Proposal metadata, vote lifecycle, token accounting, grant payout state, role authority, reputation, and progression each have a defined onchain owner. This reduces ambiguity for integrators and auditors: the interface is not the source of truth, and an offchain index does not replace a contract read when finality matters.</p>
       <h2>Contents</h2>
       <nav class="toc">
@@ -265,7 +265,7 @@
           <tr><td><code>IdeaRegistryUpgradeable</code></td><td>Proposal metadata, author, lifecycle status, author stake policy, review markers.</td><td>Does not custody USDC; it instructs FundingPool through authorized paths.</td></tr>
           <tr><td><code>VotingSystemUpgradeable</code></td><td>Round formation, idea batching, voting window, vote recording, winner selection.</td><td>Records policy and outcome; FundingPool performs token transfers/accounting.</td></tr>
           <tr><td><code>FundingPoolUpgradeable</code></td><td>USDC custody and accounting for deposits, author stakes, votes, reserve, and distributions.</td><td>Accounting buckets are purpose-specific and cannot be treated as one free balance.</td></tr>
-          <tr><td><code>GrantManagerUpgradeable</code></td><td>Grant claims, author/protocol split, milestone proof, reviewer-gated tranches.</td><td>Cannot release the same stage twice; it relies on valid V2 round state.</td></tr>
+          <tr><td><code>GrantManagerUpgradeable</code></td><td>Net-grant claims, expiry/cancellation, milestone proof and reviewer-gated tranches.</td><td>Cannot release the same stage twice; it relies on valid BERT V2.2 round and refund state.</td></tr>
           <tr><td><code>RolesRegistryUpgradeable</code></td><td>Protocol and user role authority.</td><td>Misgranted system roles are a critical trust and operational risk.</td></tr>
           <tr><td><code>ReputationSystemUpgradeable</code> and <code>VoterProgressionUpgradeable</code></td><td>Outcome-linked reputation and earned user-role progression.</td><td>Reputation is not token value or voting weight.</td></tr>
         </tbody>
@@ -277,11 +277,11 @@
         <div class="flow" style="margin-top: 3mm;"><div class="flow-item" style="max-width: 43mm;">Voting &#8594; Rejected<br /><small>terminal; applicable author stake is routed to reserve</small></div></div>
       </div>
       <h3>1. Staked idea creation</h3>
-      <p>An author calls <code>createIdea</code> on the Idea Registry with non-empty title and description, optional link, and an amount at least equal to <code>authorMinStake</code>. The Registry checks the configured FundingPool, USDC balance and allowance, initializes reputation when necessary, then causes the author stake to be pulled into FundingPool. The new idea begins in <code>Pending</code>.</p>
+      <p>An author calls <code>createFundingProposal</code> on the Idea Registry with non-empty title and description, optional link, an author bond at least equal to <code>authorMinStake</code>, and a non-zero <code>minimumNetFunding</code> target. The Registry checks the configured FundingPool, USDC balance and allowance, initializes reputation when necessary, then pulls the author bond into FundingPool. The new idea begins in <code>Pending</code>.</p>
       <h3>2. Round formation and voting</h3>
-      <p>An operator starts a round only when enough unused ideas exist. The default implementation batches 30 ideas and opens a one-day voting window, but these are configurable policy values rather than economic guarantees. A voter can make one vote in a round, cannot vote for their own idea, must meet the current minimum stake, and is subject to the configured verified-human policy and per-vote cap when enabled.</p>
+      <p>An operator starts a round only when enough unused, target-configured ideas exist. The default implementation batches 30 ideas and opens a one-day voting window, but these are configurable policy values rather than economic guarantees. A voter can make one pledge in a round, cannot pledge for their own idea, must meet the current minimum stake, and is subject to the configured verified-human policy and per-vote cap when enabled. Each pledge remains associated with that voter, round and selected idea.</p>
       <h3>3. Deterministic resolution</h3>
-      <p>After the window ends, any eligible caller may settle the round. The highest recorded vote total wins. If no idea receives votes, the round resolves with no winner and the included ideas follow the rejected path. The Voting System updates lifecycle state, triggers outcome-linked reputation effects, and registers winning voters for progression.</p>
+      <p>After the window ends, any eligible caller may settle the round. The highest pledged idea wins only if its gross total, less the fee snapshotted when the round opened, reaches that idea's declared minimum net funding target. If no idea is viable, the round resolves with no winner and every recorded pledge is refundable by its original voter. The Voting System updates lifecycle state, triggers outcome-linked reputation effects, and registers winning voters for progression.</p>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04 / BERT V2: lifecycle</span></div>
     </section>
 
@@ -302,7 +302,7 @@
       </table>
       <div class="callout warning"><strong>Interpretation rule.</strong> A valid integration must present reserve, active round capital, locked author stake, and already-released payout as separate concepts. Collapsing them into one "treasury available" number would misrepresent the protocol's obligations.</div>
       <h2>Grant claim and milestone releases</h2>
-      <p>A winning author may call <code>claimGrant(roundId)</code> only after a qualifying round is ended and the grant has not already been claimed. The contract determines the winning idea and reads its round-specific capital. The current default author share is 95%; the remaining 5% follows the protocol share path. The author share is not released at once.</p>
+      <p>A winning author may call <code>claimGrant(roundId)</code> only after a viable round is ended, before the 14-day claim deadline and before the grant has been claimed. The contract determines the winning idea and reads its round-specific <em>net</em> capital. The current 5% round fee is held pending at settlement and moves to protocol reserve only when the author starts the grant. The net grant is not released at once.</p>
       <div class="diagram">
         <div class="diagram-title">V2 grant release rail</div>
         <div class="flow"><div class="flow-item">30%<br /><small>initial claim</small></div><div class="arrow">&#8594;</div><div class="flow-item">40%<br /><small>in-process milestone</small></div><div class="arrow">&#8594;</div><div class="flow-item">30%<br /><small>completion milestone</small></div></div>
@@ -311,7 +311,7 @@
       <h2>Reputation and progression</h2>
       <p>V2 separates reputation from progression. Reputation records outcome-linked performance and is not a treasury balance or vote multiplier. Voter progression counts winning votes and can grant user roles through the role system. Current thresholds in the implementation are 20 winning votes for <code>CURATOR_ROLE</code> and 60 for <code>REVIEWER_ROLE</code>. This reduces fully arbitrary assignment, but it does not eliminate social coordination or admin-risk concerns.</p>
       <h2>V2 policy surfaces</h2>
-      <p>Stake minima, round size, duration, author share, vote caps, verified-human gating, trusted signer, and module dependencies are operational policy. Any future governance process must treat parameter changes as security- and UX-relevant changes, rehearse them on a staging environment, and record their effect in a changelog.</p>
+      <p>Stake minima, round size, duration, pledge fee, minimum funding targets, vote caps, verified-human gating, trusted signer, and module dependencies are operational policy. Any future governance process must treat parameter changes as security- and UX-relevant changes, rehearse them on a staging environment, and record their effect in a changelog.</p>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04 / BERT V2: capital and grants</span></div>
     </section>
 

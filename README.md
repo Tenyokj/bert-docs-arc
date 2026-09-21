@@ -12,9 +12,14 @@
 # BERT Docs
 
 Standalone developer documentation portal for the **BERT** protocol. It
-documents V2 and V3 contract integration, events, indexers, deployment
+documents BERT V2.2 conditional-pledge and V3 contract integration, events, indexers, deployment
 operations and the current Arc Testnet boundary without presenting testnet
 behavior as a mainnet guarantee.
+
+The current BERT V2.2 reference documents target-backed proposals, fee snapshots,
+pull-based pledge refunds, viable-winner selection, grant expiry and the Arc
+Testnet migration boundary. It is intentionally separate from V3 Community
+Treasury accounting and governance rules.
 
 This folder is intentionally isolated from the main frontend so it can be:
 - deployed as a separate static site
@@ -87,8 +92,8 @@ Open:
 The site is organized for protocol developers, not as a marketing guide:
 
 - **Build with BERT**: architecture, client setup and integration conventions.
-- **BERT V2 / Contract reference**: global funding flow, voting, grants,
-  reputation and voter progression.
+- **BERT V2 / Contract reference**: conditional pledge flow, viable funding
+  targets, refunds, grants, reputation and voter progression.
 - **BERT V3 / Contract reference**: Factory-created Communities, Hubs,
   Treasuries, validation, rounds and quorum-protected actions.
 - **Infrastructure & operations**: Arc Testnet deployment registry, direct-read
