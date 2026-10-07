@@ -10,8 +10,10 @@ Whitepaper.
 
 ## Scope and status
 
-The paper documents the BERT V2 Global Funding Layer and BERT V3 Community
-Layer as deployed and tested on Arc Testnet. It distinguishes real testnet
+The paper documents BERT V2.3 Global Funding Layer and BERT V3 Community
+Layer as deployed and tested on Arc Testnet. V2.3 uses refundable,
+idea-specific pledges and winning-backer-governed 20/40/40 milestones; V3
+remains a distinct Community governance layer. It distinguishes real testnet
 execution from planned mainnet behavior, including the fact that Demo
 verification is not a proof-of-personhood system.
 

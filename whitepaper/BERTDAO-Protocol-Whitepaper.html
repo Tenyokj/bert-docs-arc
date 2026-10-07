@@ -129,11 +129,11 @@
     <section class="cover">
       <div class="cover-content">
         <div class="brand"><img src="../assets/bert-logo.png" alt="BERT logo" /> BERTDAO Protocol</div>
-        <p class="cover-kicker">Technical whitepaper / Version 1.0</p>
+        <p class="cover-kicker">Technical whitepaper / Version 1.1</p>
         <h1>Transparent capital coordination for <span>communities and grants.</span></h1>
         <p class="subtitle">A stablecoin-native protocol for stake-backed proposals, auditable decision-making, controlled treasury flows, and milestone-based release.</p>
         <div class="cover-meta">
-          <div><strong>Publication</strong>18 September 2026</div>
+          <div><strong>Publication</strong>7 October 2026</div>
           <div><strong>Current environment</strong>Arc Testnet / active development</div>
           <div><strong>Protocol scope</strong>BERT V2 Global Funding Layer and BERT V3 Community Layer</div>
           <div><strong>Canonical source</strong>github.com/Tenyokj/bert-core-arc</div>
@@ -153,7 +153,7 @@
         The public Arc Testnet dApp uses an explicitly labelled Demo verification path. It exercises the actual backend-attestation and onchain <code>PoPVerifierUpgradeable</code> flow, but it is not proof of personhood and must not be interpreted as Sybil resistance. The planned production policy is a World ID proof-of-personhood integration, subject to completion, review, and deployment readiness.
       </div>
       <h2>Abstract</h2>
-      <p class="abstract">BERTDAO Protocol is programmable, stablecoin-native infrastructure for coordinating proposals and capital. BERT V2.2 operates a global grant flow: target-backed proposal intake, round-based refundable USDC pledges, viable-winner selection after a snapshotted fee, explicit reserve accounting, and reviewer-gated milestone payout. BERT V3 introduces an isolated Community Layer: each Community has its own immutable governance Hub and USDC Treasury, local membership, validator review, binary and slate voting, and quorum-protected administrative actions. Defined V3 protocol inflows route into the existing V2 global reserve without merging Community execution balances or governance state.</p>
+      <p class="abstract">BERTDAO Protocol is programmable, stablecoin-native infrastructure for coordinating proposals and capital. BERT V2.3 operates a global grant flow: target-backed proposal intake, immutable milestone plans, round-based refundable USDC pledges, viable-winner selection after a snapshotted fee, progressive reserve accounting, and winning-backer-governed milestone releases. BERT V3 is an isolated Community Layer: each Community has its own immutable governance Hub and USDC Treasury, local membership, validator review, binary and slate voting, and quorum-protected administrative actions. Defined V3 protocol inflows route into the existing V2 global reserve without merging Community execution balances or governance state.</p>
       <p>The protocol is deliberately modular. Proposal metadata, vote lifecycle, token accounting, grant payout state, role authority, reputation, and progression each have a defined onchain owner. This reduces ambiguity for integrators and auditors: the interface is not the source of truth, and an offchain index does not replace a contract read when finality matters.</p>
       <h2>Contents</h2>
       <nav class="toc">
@@ -169,7 +169,7 @@
         <a href="#mainnet"><span>10</span>Mainnet readiness conditions</a>
         <a href="#appendix"><span>11</span>Appendix: addresses and glossary</a>
       </nav>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.0 / 18 September 2026</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.1 / 7 October 2026</span></div>
     </section>
 
     <section class="page page-break" id="problem">
@@ -206,7 +206,7 @@
       <div class="layer"><h3>Single source of truth by domain</h3><p>Idea metadata belongs to <code>IdeaRegistryUpgradeable</code>; round state belongs to <code>VotingSystemUpgradeable</code>; treasury and reserve accounting belongs to <code>FundingPoolUpgradeable</code>; payout state belongs to <code>GrantManagerUpgradeable</code>; role assignments belong to <code>RolesRegistryUpgradeable</code>.</p></div>
       <div class="layer"><h3>Economic actions are visible</h3><p>Proposal deposits, vote commitments, execution balances, reserve routes, validator rewards, and refund liabilities are distinct accounting concepts. A displayed token balance must not be treated as generic free liquidity.</p></div>
       <div class="layer"><h3>Local autonomy without silent pooling</h3><p>A V3 Community has isolated state and custody. Its paired Treasury can only make defined protocol-reserve transfers through the authenticated V2 reserve route; a Community's membership stake and execution balance are not global reserve capital.</p></div>
-      <div class="layer"><h3>Human trust remains a boundary</h3><p>Contracts can enforce configured thresholds and lifecycle rules, but reviewer quality, admin behavior, configuration choices, and future identity-provider operation remain social and operational trust assumptions.</p></div>
+      <div class="layer"><h3>Human trust remains a boundary</h3><p>Contracts can enforce configured thresholds and lifecycle rules, but backer diligence, Community validator quality, admin behavior, configuration choices, and future identity-provider operation remain social and operational trust assumptions.</p></div>
       <h2>Scope of this paper</h2>
       <p>This paper documents the public BERT V2 and V3 architecture as implemented in the core repository and Arc Testnet deployment manifest. It intentionally does not define token economics, a tradable token, speculative yield, NFT rewards, airdrops, legal compliance policy, or a final mainnet timetable.</p>
       <h2>System actors</h2>
@@ -215,7 +215,7 @@
         <tbody>
           <tr><td>Builder / author</td><td>Submits a staked idea; may claim a winning grant and submit milestone proof.</td><td>As a Member, submits a bonded proposal after joining a Community.</td></tr>
           <tr><td>Voter / member</td><td>Commits configured USDC stake in a funding round, subject to live gates.</td><td>Locks entry stake, then casts one stake-backed vote per binary proposal or slate round.</td></tr>
-          <tr><td>Reviewer / curator</td><td>Earned or admin-assigned V2 role; supports quality and milestone decisions.</td><td>Validator is a Community-local role that reviews Member proposals before they can be voted.</td></tr>
+          <tr><td>Backer / reviewer</td><td>A winning pledger governs V2 milestone escrow in proportion to its pledge; curator signals remain non-binding quality context.</td><td>Validator is a Community-local role that reviews Member proposals before they can be voted.</td></tr>
           <tr><td>Administrator</td><td>Configures roles, dependencies, parameters, pauses, and upgrades within the current model.</td><td>Local Admin creates proposals and rounds, manages withdrawals, and uses immutable local quorum for protected actions.</td></tr>
           <tr><td>Integrator / indexer</td><td>Reads contract state and V2 events; may use the V2 Subgraph for discovery.</td><td>Discovers Communities through Factory events and indexes Hub/Treasury event streams via the V3 Subgraph.</td></tr>
         </tbody>
@@ -262,10 +262,10 @@
       <table>
         <thead><tr><th>Module</th><th>Primary responsibility</th><th>Important boundary</th></tr></thead>
         <tbody>
-          <tr><td><code>IdeaRegistryUpgradeable</code></td><td>Proposal metadata, author, lifecycle status, author stake policy, review markers.</td><td>Does not custody USDC; it instructs FundingPool through authorized paths.</td></tr>
-          <tr><td><code>VotingSystemUpgradeable</code></td><td>Round formation, idea batching, voting window, vote recording, winner selection.</td><td>Records policy and outcome; FundingPool performs token transfers/accounting.</td></tr>
+          <tr><td><code>IdeaRegistryUpgradeable</code></td><td>Proposal metadata, author, lifecycle status, author stake, funding target and immutable milestone plan commitment.</td><td>Does not custody USDC; it instructs FundingPool through authorized paths.</td></tr>
+          <tr><td><code>VotingSystemUpgradeable</code></td><td>Sequential round formation, 14-day pledge windows, vote recording, viable winner selection and lazy progression claims.</td><td>Records policy and outcome; FundingPool performs token transfers/accounting.</td></tr>
           <tr><td><code>FundingPoolUpgradeable</code></td><td>USDC custody and accounting for deposits, author stakes, votes, reserve, and distributions.</td><td>Accounting buckets are purpose-specific and cannot be treated as one free balance.</td></tr>
-          <tr><td><code>GrantManagerUpgradeable</code></td><td>Net-grant claims, expiry/cancellation, milestone proof and reviewer-gated tranches.</td><td>Cannot release the same stage twice; it relies on valid BERT V2.2 round and refund state.</td></tr>
+          <tr><td><code>GrantManagerUpgradeable</code></td><td>Grant claims, backer milestone proof/votes, progressive fee vesting, expiry/cancellation and refund activation.</td><td>Cannot release the same stage twice; it relies on a valid V2.3 round and immutable winning cohort.</td></tr>
           <tr><td><code>RolesRegistryUpgradeable</code></td><td>Protocol and user role authority.</td><td>Misgranted system roles are a critical trust and operational risk.</td></tr>
           <tr><td><code>ReputationSystemUpgradeable</code> and <code>VoterProgressionUpgradeable</code></td><td>Outcome-linked reputation and earned user-role progression.</td><td>Reputation is not token value or voting weight.</td></tr>
         </tbody>
@@ -276,12 +276,12 @@
         <div class="flow"><div class="flow-item">Pending</div><div class="arrow">&#8594;</div><div class="flow-item">Voting</div><div class="arrow">&#8594;</div><div class="flow-item">WonVoting</div><div class="arrow">&#8594;</div><div class="flow-item">Funded</div><div class="arrow">&#8594;</div><div class="flow-item">InProcess</div><div class="arrow">&#8594;</div><div class="flow-item">Completed</div></div>
         <div class="flow" style="margin-top: 3mm;"><div class="flow-item" style="max-width: 43mm;">Voting &#8594; Rejected<br /><small>terminal; applicable author stake is routed to reserve</small></div></div>
       </div>
-      <h3>1. Staked idea creation</h3>
-      <p>An author calls <code>createFundingProposal</code> on the Idea Registry with non-empty title and description, optional link, an author bond at least equal to <code>authorMinStake</code>, and a non-zero <code>minimumNetFunding</code> target. The Registry checks the configured FundingPool, USDC balance and allowance, initializes reputation when necessary, then pulls the author bond into FundingPool. The new idea begins in <code>Pending</code>.</p>
-      <h3>2. Round formation and voting</h3>
-      <p>An operator starts a round only when enough unused, target-configured ideas exist. The default implementation batches 30 ideas and opens a one-day voting window, but these are configurable policy values rather than economic guarantees. A voter can make one pledge in a round, cannot pledge for their own idea, must meet the current minimum stake, and is subject to the configured verified-human policy and per-vote cap when enabled. Each pledge remains associated with that voter, round and selected idea.</p>
+      <h3>1. Staked idea creation and plan commitment</h3>
+      <p>An author calls <code>createFundingProposal</code> on the Idea Registry with non-empty title and description, optional link, an author bond at least equal to <code>authorMinStake</code>, and a non-zero <code>minimumNetFunding</code> target. While the idea remains <code>Pending</code>, the author must commit an immutable milestone plan URI and content hash. The package defines two milestones, acceptance criteria, expected evidence and the fixed 20/40/40 schedule. A V2.3 proposal without this commitment cannot enter a V2.3 funding round.</p>
+      <h3>2. Round formation and pledging</h3>
+      <p>An operator starts a round only when the next 30 sequential pending V2.3 ideas are eligible. The live Arc Testnet policy opens a 14-day pledge window. A backer can make one pledge in a round, cannot pledge for their own idea, must meet the current minimum stake, and is subject to the configured verified-human policy and per-pledge cap when enabled. Each pledge remains associated with that backer, round and selected idea.</p>
       <h3>3. Deterministic resolution</h3>
-      <p>After the window ends, any eligible caller may settle the round. The highest pledged idea wins only if its gross total, less the fee snapshotted when the round opened, reaches that idea's declared minimum net funding target. If no idea is viable, the round resolves with no winner and every recorded pledge is refundable by its original voter. The Voting System updates lifecycle state, triggers outcome-linked reputation effects, and registers winning voters for progression.</p>
+      <p>After the full window ends, any eligible caller may settle the round. The protocol evaluates ideas in rank order and selects the first one whose gross total less the snapshotted fee reaches its declared minimum net funding target and whose cohort contains at least three distinct backers. If no idea is viable, the round resolves with no winner and every recorded pledge is refundable by its original backer. Settlement does not loop through the cohort; a winning backer later claims its non-financial progression credit individually.</p>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04 / BERT V2: lifecycle</span></div>
     </section>
 
@@ -302,14 +302,14 @@
       </table>
       <div class="callout warning"><strong>Interpretation rule.</strong> A valid integration must present reserve, active round capital, locked author stake, and already-released payout as separate concepts. Collapsing them into one "treasury available" number would misrepresent the protocol's obligations.</div>
       <h2>Grant claim and milestone releases</h2>
-      <p>A winning author may call <code>claimGrant(roundId)</code> only after a viable round is ended, before the 14-day claim deadline and before the grant has been claimed. The contract determines the winning idea and reads its round-specific <em>net</em> capital. The current 5% round fee is held pending at settlement and moves to protocol reserve only when the author starts the grant. The net grant is not released at once.</p>
+      <p>A winning author may call <code>claimGrant(roundId)</code> only after a viable round is ended, before the 14-day claim deadline and before the grant has been claimed. The contract determines the winning idea and reads its round-specific gross escrow. The current 5% round fee is held pending at settlement and vests only alongside capital actually released to the author. The grant is not released at once.</p>
       <div class="diagram">
         <div class="diagram-title">V2 grant release rail</div>
-        <div class="flow"><div class="flow-item">30%<br /><small>initial claim</small></div><div class="arrow">&#8594;</div><div class="flow-item">40%<br /><small>in-process milestone</small></div><div class="arrow">&#8594;</div><div class="flow-item">30%<br /><small>completion milestone</small></div></div>
+        <div class="flow"><div class="flow-item">20%<br /><small>initial claim</small></div><div class="arrow">&#8594;</div><div class="flow-item">40%<br /><small>in-process milestone</small></div><div class="arrow">&#8594;</div><div class="flow-item">40%<br /><small>completion milestone</small></div></div>
       </div>
-      <p>For the in-process stage, the implementation requires 3 approvals from up to 5 reviewers. For the completion stage, it requires 2 approvals from up to 3 reviewers. The author cannot review their own work. A rejected milestone request records a rejection time and uses a 48-hour resubmission cooldown. These rules exist to make later payout conditional on evidence and review, not simply on winning an earlier vote.</p>
+      <p>For each milestone, only the settled winning backer cohort may vote, with weight equal to each backer's recorded pledge. The author cannot vote. A release requires participation from at least 40% of total winning pledge weight, at least two-thirds approval among participating weight, and at least three verified-human approving backers. The review remains open for 14 days even if thresholds are reached early. No quorum receives one seven-day grace window; silence never approves a payment. A quorum failure after grace, a missed submission deadline, or a second rejected proof activates pro-rata refunds for the whole unreleased gross escrow. One corrected proof is allowed after a 48-hour cooldown.</p>
       <h2>Reputation and progression</h2>
-      <p>V2 separates reputation from progression. Reputation records outcome-linked performance and is not a treasury balance or vote multiplier. Voter progression counts winning votes and can grant user roles through the role system. Current thresholds in the implementation are 20 winning votes for <code>CURATOR_ROLE</code> and 60 for <code>REVIEWER_ROLE</code>. This reduces fully arbitrary assignment, but it does not eliminate social coordination or admin-risk concerns.</p>
+      <p>V2 separates reputation from progression. Reputation records outcome-linked performance and is not a treasury balance or vote multiplier. Winning backers claim progression lazily after settlement, so an unlimited cohort does not make settlement unbounded. Curator and reviewer quality signals remain distinct from V2.3 milestone authority, which belongs to the winning pledge cohort.</p>
       <h2>V2 policy surfaces</h2>
       <p>Stake minima, round size, duration, pledge fee, minimum funding targets, vote caps, verified-human gating, trusted signer, and module dependencies are operational policy. Any future governance process must treat parameter changes as security- and UX-relevant changes, rehearse them on a staging environment, and record their effect in a changelog.</p>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04 / BERT V2: capital and grants</span></div>
@@ -437,7 +437,7 @@
     <section class="page page-break" id="security">
       <p class="eyebrow">07 / Security and operations</p>
       <h1>Correct contracts still require correct operations.</h1>
-      <p class="lead">BERT's primary risks are not limited to conventional Solidity bugs. The protocol is multi-contract and upgradeable: security also depends on authority, configuration, dependency wiring, identity-signing operations, indexer behavior, and the social quality of reviewers and validators.</p>
+      <p class="lead">BERT's primary risks are not limited to conventional Solidity bugs. The protocol is multi-contract and upgradeable: security also depends on authority, configuration, dependency wiring, identity-signing operations, indexer behavior, and the social quality of backers, Community validators and administrators.</p>
       <h2>Security controls in the current design</h2>
       <ul class="checklist">
         <li>Explicit role gates for treasury, lifecycle, reputation, and cross-contract actions.</li>
@@ -455,7 +455,7 @@
         <tbody>
           <tr><td>Upgrade and admin authority</td><td>Incorrect upgrades or role assignments can compromise availability or integrity even when storage is preserved.</td><td>Multisig ownership, timelock/policy where appropriate, rehearsed upgrades, public change records.</td></tr>
           <tr><td>Verification backend and signer</td><td>A compromised signer or faulty provider verification could issue improper access attestations.</td><td>Key isolation, rotation/revocation procedure, production World ID validation, monitoring, incident plan.</td></tr>
-          <tr><td>Reviewers and Validators</td><td>They influence proposal filtering and milestone outcomes.</td><td>Documented selection policy, transparency, conflict management, monitoring, appeal/governance policy.</td></tr>
+          <tr><td>Backers and Validators</td><td>Winning V2 backers decide milestone releases; V3 Validators influence Community proposal admission.</td><td>Clear evidence packages, threshold disclosure, direct-read UI, notification policy, documented Community selection and conflict management.</td></tr>
           <tr><td>Configuration and dependency wiring</td><td>A correct contract at a wrong address can break live flows or route value incorrectly.</td><td>Deployment manifest, post-deploy smoke tests, address verification, role inventory.</td></tr>
           <tr><td>External RPC and subgraph availability</td><td>UI discovery may be incomplete or delayed even when chain state is valid.</td><td>Fallback RPC/indexer strategy, freshness indicators, direct contract read fallback.</td></tr>
         </tbody>
@@ -510,7 +510,7 @@
     <section class="page page-break" id="testnet">
       <p class="eyebrow">09 / Arc Testnet</p>
       <h1>Public deployment registry and current boundary.</h1>
-      <p class="lead">The following addresses are taken from the public <code>deployments/arc-testnet-v3.json</code> manifest dated 9 September 2026. They identify the active Arc Testnet deployment only. They are not mainnet addresses and must never be reused as assumptions for a future production deployment.</p>
+      <p class="lead">The following addresses identify the active Arc Testnet deployment as of the V2.3 release on 7 October 2026. They are not mainnet addresses and must never be reused as assumptions for a future production deployment.</p>
       <h2>Network</h2>
       <table>
         <tbody>
@@ -518,6 +518,17 @@
           <tr><th>Chain ID</th><td><code>5042002</code></td></tr>
           <tr><th>USDC-compatible token</th><td class="address">0x3600000000000000000000000000000000000000</td></tr>
           <tr><th>V3 Factory deployment block</th><td><code>61277385</code></td></tr>
+        </tbody>
+      </table>
+      <h2>V2.3 release anchors</h2>
+      <table>
+        <thead><tr><th>Action</th><th>Transaction</th></tr></thead>
+        <tbody>
+          <tr><td>IdeaRegistry proxy upgrade</td><td class="address">0x25e04b6ab0565ce090536473922d30b3b9eddbb5bacb508b954093f670f835cf</td></tr>
+          <tr><td>VotingSystem proxy upgrade</td><td class="address">0x27ee898d0856b0e5ee473040cd209282c75612f70da236ef04732518f4a7c461</td></tr>
+          <tr><td>FundingPool proxy upgrade</td><td class="address">0x594bc919edfb04a2acc0c50cf3a12f755b18f0fc4d7e59c61e90e91507a6a20e</td></tr>
+          <tr><td>GrantManager proxy upgrade</td><td class="address">0x69835e5aea756ff89b0257ce1a27a21d6465ec353ca643c5b0d72e261066b5f8</td></tr>
+          <tr><td>Legacy queue retirement</td><td class="address">0x7bcf54e4ec97e178e1dfdbfc5e533d52cda049a914762de2d1a295b201c5aabe</td></tr>
         </tbody>
       </table>
       <h2>Shared and V2 proxy addresses</h2>
@@ -582,7 +593,9 @@
         <tbody>
           <tr><td>V2 state ownership</td><td>Ideas, rounds, treasury/reserve accounting, payouts, roles, reputation, and progression each have a designated contract owner.</td></tr>
           <tr><td>V2 lifecycle</td><td>An idea enters through <code>Pending</code>; only valid round resolution or grant transitions move it forward; rejected and completed states are terminal.</td></tr>
-          <tr><td>V2 payouts</td><td>A grant tranche must not be released twice, and later stages cannot bypass earlier stage ordering.</td></tr>
+          <tr><td>V2 pledges</td><td>A pledge remains attached to its selected idea; losing pledge capital is never redirected to a different winner.</td></tr>
+          <tr><td>V2 payouts</td><td>A tranche must not release twice; V2.3 milestone release requires 40% pledge-weight quorum, two-thirds participating approval and three approving backers.</td></tr>
+          <tr><td>V2 cancellations</td><td>Silence cannot approve a payment. Unreleased gross escrow becomes pro-rata refundable after the fixed failure paths.</td></tr>
           <tr><td>V3 role state</td><td>An address cannot hold more than one active Community state among Admin, Validator, and Member.</td></tr>
           <tr><td>V3 settlement</td><td>A binary proposal or slate round settles once; validator reward claims and NO refunds settle once per eligible account.</td></tr>
           <tr><td>V3 custody</td><td>Membership lock, bond lock, escrow, refund liability, validator rewards, and execution funds are separately accounted and not interchangeable.</td></tr>
@@ -600,6 +613,8 @@
           <tr><td>Community clock</td><td>V3 timestamp calculation that excludes paused time and freezes after archive.</td></tr>
           <tr><td>Execution balance</td><td>V3 Treasury balance eligible for locally approved execution withdrawals after respecting reservations.</td></tr>
           <tr><td>Global reserve</td><td>V2 FundingPool accounting bucket for protocol-held value, including defined V3 reserve inflows; it is distinct from a V3 Community execution balance.</td></tr>
+          <tr><td>Winning pledge cohort</td><td>The immutable set of wallets that pledged to the settled V2 winner; only this cohort may govern its milestone escrow.</td></tr>
+          <tr><td>Milestone plan</td><td>Immutable URI and content-hash commitment made by a V2.3 author before round inclusion; it defines expected evidence and acceptance criteria.</td></tr>
           <tr><td>Human verifier</td><td>Onchain contract that reports whether a wallet has an active trusted verification record.</td></tr>
           <tr><td>Slate round</td><td>V3 round where each Member selects one proposal from an ordered homogeneous slate; highest stake wins and order resolves a tie.</td></tr>
           <tr><td>Validator reward epoch</td><td>V3 period measuring validation participation and determining equal pull-based rewards for active Validators.</td></tr>
