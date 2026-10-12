@@ -11,12 +11,36 @@ export const testingDocs = [
       <p class="lead">BERT is in active Arc Testnet development. External contributors help find broken permissions, accounting errors, liveness failures and confusing wallet UX before any mainnet proposal. A useful result is reproducible: it names the commit, chain, contracts, actor, transaction, expected invariant and observed result.</p>
       <div class="callout warning"><strong>Testnet only.</strong> Use Arc Testnet assets or an isolated local Hardhat chain. Do not use real funds, real keys, seed phrases or production identity credentials. Demo PoP tests a real onchain access gate, not personhood or Sybil resistance.</div>
       <h2>Choose a contribution lane</h2>
-      <div class="doc-cards three-up"><a href="#tester-local-lab" data-doc-link class="doc-card"><span class="mini-icon">01</span><h3>Protocol QA</h3><p>Replay V2.3 and V3.1 lifecycle, accounting and role invariants locally or on Arc Testnet.</p><b>Open local lab →</b></a><a href="#tester-product-qa" data-doc-link class="doc-card"><span class="mini-icon">02</span><h3>dApp and indexers</h3><p>Test wallet changes, allowances, receipts, stale RPC state and indexer lag.</p><b>Open product QA →</b></a><a href="#tester-security-reporting" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Security research</h3><p>Probe authorization, accounting, liveness, token behavior and upgrade boundaries.</p><b>Open security scope →</b></a></div>
+      <div class="doc-cards three-up"><a href="#tester-arc-testnet-kit" data-doc-link class="doc-card"><span class="mini-icon">01</span><h3>Arc Testnet kit</h3><p>Use the current dApp, addresses, Graph endpoints and testnet evidence template.</p><b>Open public kit →</b></a><a href="#tester-local-lab" data-doc-link class="doc-card"><span class="mini-icon">02</span><h3>Protocol QA</h3><p>Replay V2.3 and V3.1 lifecycle, accounting and role invariants locally.</p><b>Open local lab →</b></a><a href="#tester-security-reporting" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Security research</h3><p>Probe authorization, accounting, liveness, token behavior and upgrade boundaries.</p><b>Open security scope →</b></a></div>
       <h2>Minimum evidence standard</h2>
       <ol class="numbered-flow"><li><strong>State environment.</strong><span>Commit SHA, local or Arc chain ID, and relevant addresses.</span></li><li><strong>Name actor.</strong><span>Wallet and intended role: Admin, Member, Validator, supporter or unrelated account.</span></li><li><strong>Replay exact steps.</strong><span>Commands, UI actions, calldata or minimal PoC.</span></li><li><strong>Show delta.</strong><span>Transaction hash, revert, direct read, balance change, log or screenshot.</span></li><li><strong>Name broken rule.</strong><span>Authorization, accounting, liveness, privacy, or UX invariant.</span></li></ol>
       <h2>Current scope</h2>
       <table><thead><tr><th>Surface</th><th>Current target</th><th>What success proves</th></tr></thead><tbody><tr><td>V2.3</td><td>Conditional pledge funding and backer milestones</td><td>Losing pledges are not redirected; winner delivery is reviewable.</td></tr><tr><td>V3.1</td><td>Modular Community Layer</td><td>Four governance lanes, isolated Treasury buckets, and 20 / 40 / 40 delivery.</td></tr><tr><td>Frontend</td><td>Next.js dApp</td><td>Correct chain/address use and no false transaction success.</td></tr><tr><td>Indexers</td><td>V2/V3 Graph deployments</td><td>Historical discovery reconciles with live reads.</td></tr></tbody></table>
       <p>The complete commands and reporting template live in the <a href="https://github.com/Tenyokj/bert-core-arc/blob/main/docs/TESTING.md" target="_blank" rel="noreferrer">Contributor Testing Guide</a>.</p>
+    `,
+  },
+  {
+    slug: "tester-arc-testnet-kit",
+    section: "Testing & contributing",
+    group: "Start here",
+    title: "Arc Testnet tester kit",
+    summary: "Current public endpoints, deployment addresses, a safe role plan and the exact evidence expected from an Arc Testnet test run.",
+    tags: ["arc", "testnet", "v2.3", "v3.1", "subgraph", "qa"],
+    content: `
+      <p class="eyebrow">Contributor testing / Arc Testnet</p><h1>One test at a time.<br /><span>Record the chain evidence.</span></h1>
+      <p class="lead">Use this path when you want to test the deployed dApp without running local infrastructure. It is real Arc Testnet execution with valueless test assets. Start with a single role and one focused lifecycle transition, then compare the receipt with a direct read and the relevant subgraph record.</p>
+      <h2>Public endpoints</h2>
+      <table><thead><tr><th>Service</th><th>Value</th><th>Use</th></tr></thead><tbody><tr><td>dApp</td><td><a href="https://bertdao.vercel.app" target="_blank" rel="noreferrer">bertdao.vercel.app ↗</a></td><td>Reference V2/V3 test UI and Demo PoP flow.</td></tr><tr><td>Network</td><td>Arc Testnet / <code>5042002</code></td><td>Every wallet write must use this chain.</td></tr><tr><td>Public RPC</td><td><code>https://arc-testnet.drpc.org</code></td><td>Direct reads and manual reproduction.</td></tr><tr><td>V2 Graph endpoint</td><td><code>.../bert-arc-testnet/v0.3.0</code></td><td>V2 ideas, rounds and milestones.</td></tr><tr><td>V3.1 Graph endpoint</td><td><code>.../bert-v-3-1-arc-testnet/v3.1.0</code></td><td>Communities, modules, governance and milestones.</td></tr></tbody></table>
+      <pre><code>V2_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.3.0
+V3_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.1.0
+V3_1_FACTORY=0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0
+V3_1_FACTORY_START_BLOCK=66809847</code></pre>
+      <h2>Recommended wallet plan</h2>
+      <table><thead><tr><th>Wallet</th><th>V3.1 purpose</th><th>Do not combine with</th></tr></thead><tbody><tr><td>A</td><td>Community creator and initial Admin</td><td>Active Member or Validator.</td></tr><tr><td>B</td><td>Second Admin for quorum actions</td><td>Active Member or Validator.</td></tr><tr><td>C</td><td>Validator for Member-proposal review</td><td>Admin or active Member.</td></tr><tr><td>D/E/F</td><td>Members, proposal authors and voters</td><td>Author vote on the author's own proposal.</td></tr></tbody></table>
+      <h2>V3.1 smoke sequence</h2>
+      <ol class="numbered-flow"><li>Connect wallet A to Arc Testnet, complete Demo PoP and create a Community using the V3.1 Factory.</li><li>Confirm Factory activation, then record Hub, Treasury, Membership, Proposal, Voting and Milestone module addresses from the Hub.</li><li>Have wallets D/E/F join the Community; approve the Community Treasury, not FundingPool, for membership/voting actions.</li><li>Run one Admin Binary flow and one Member Binary flow: review/validation where applicable, vote, wait for deadline, settle and compare direct state with the V3.1 subgraph.</li><li>Only after the preceding flow is stable, test a winning execution plan and its 20/40/40 milestone path with the sealed winner cohort.</li></ol>
+      <div class="callout warning"><strong>Do not treat indexer data as write authorization.</strong> The V3.1 subgraph is for discovery/history. Before each wallet prompt, resolve the active Community through Factory, resolve its module addresses from Hub and simulate the exact write against current chain state.</div>
+      <h2>What to submit</h2><p>For a pass or failure, provide the dApp URL/page, wallet role, transaction hash or revert, affected contract/module, expected result, actual result, a direct post-transaction read, and a screenshot only when it clarifies a UX issue. Use the <a href="#tester-product-qa" data-doc-link>product QA guide</a> for browser/RPC/indexer cases and the private security channel for an exploitable finding.</p>
     `,
   },
   {
@@ -33,12 +57,41 @@ export const testingDocs = [
       <h2>Wallet roles</h2>
       <table><thead><tr><th>Wallet</th><th>Role</th><th>What it validates</th></tr></thead><tbody><tr><td>#0</td><td>Creator, Admin, Administration execution wallet</td><td>Factory creation, protected Admin actions and proof submission.</td></tr><tr><td>#1</td><td>Second Admin</td><td>Two-of-N control, pause/resume and cancellation.</td></tr><tr><td>#2</td><td>Validator</td><td>Member proposal validation and Validator rewards.</td></tr><tr><td>#3 / #4</td><td>Member proposal authors</td><td>Binary and Slate author/bond paths.</td></tr><tr><td>#5 / #6 / #7</td><td>Winning supporters</td><td>Snapshot review electorate, quorum and refunds.</td></tr></tbody></table>
       <h2>Required sequence</h2>
-      <div class="code-sample"><div class="code-sample-header"><span>Core local setup</span><button type="button" class="code-copy-button" data-copy-code="tester-local-sequence" data-copy-label="Copy">Copy</button></div><pre><code id="tester-local-sequence">npx hardhat node
+      <p>Terminal A keeps the node running. Run each later command in Terminal B from <code>bert-core</code>. Copy the newly printed proxy addresses into the next command; do not reuse addresses after restarting the node.</p>
+      <div class="code-sample"><div class="code-sample-header"><span>Terminal A / local node</span><button type="button" class="code-copy-button" data-copy-code="tester-local-node" data-copy-label="Copy">Copy</button></div><pre><code id="tester-local-node">npx hardhat node</code></pre></div>
+      <div class="code-sample"><div class="code-sample-header"><span>Terminal B / deploy, wire, fund and attest</span><button type="button" class="code-copy-button" data-copy-code="tester-local-sequence" data-copy-label="Copy">Copy</button></div><pre><code id="tester-local-sequence">cd ~/bert/bert-core
+
+LOCAL_RPC_URL=http://127.0.0.1:8545 \\
+USDC_ADDRESS= \\
+PROXY_ADMIN_OWNER=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 \\
+TRUSTED_SIGNER_ADDRESS=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 \\
+HUMAN_ONLY_VOTING=true \\
+HUMAN_ONLY_IDEA_CREATION=true \\
 npx hardhat run scripts/deploy/deploy-proxies.ts --network localhost
+
+# Substitute PoPVerifierUpgradeable printed above.
+LOCAL_RPC_URL=http://127.0.0.1:8545 \\
+POP_VERIFIER_ADDRESS=&lt;PoPVerifierUpgradeable-proxy&gt; \\
+V3_PROXY_ADMIN_OWNER=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 \\
 npx hardhat run scripts/deploy/deploy-v3-1.ts --network localhost
+
+# Substitute FundingPoolUpgradeable and V3_1_FACTORY_ADDRESS printed above.
+LOCAL_RPC_URL=http://127.0.0.1:8545 \\
+FUNDING_POOL_ADDRESS=&lt;FundingPoolUpgradeable-proxy&gt; \\
+V3_1_FACTORY_ADDRESS=&lt;V3_1_FACTORY_ADDRESS&gt; \\
 npx hardhat run scripts/deploy/configure-v3-1-funding-pool.ts --network localhost
+
+LOCAL_RPC_URL=http://127.0.0.1:8545 \\
+MOCK_USDC_ADDRESS=&lt;USDC-asset&gt; \\
+LOCAL_TEST_WALLET_COUNT=8 \\
+MOCK_USDC_AMOUNT=100000 \\
 npx hardhat run scripts/local/mint-v3-test-usdc.ts --network localhost
+
+LOCAL_RPC_URL=http://127.0.0.1:8545 \\
+POP_VERIFIER_ADDRESS=&lt;PoPVerifierUpgradeable-proxy&gt; \\
+LOCAL_TEST_WALLET_COUNT=8 \\
 npx hardhat run scripts/local/verify-v3-test-wallets.ts --network localhost</code></pre></div>
+      <p>Next, put the printed values in the frontend's uncommitted <code>.env.local</code>, choose the Hardhat network, leave both subgraph URLs empty, run <code>npm run dev</code>, and import only the eight accounts printed by the current Hardhat node. The full environment template, timing commands and four-lane E2E matrix are maintained in <a href="https://github.com/Tenyokj/bert-core-arc/blob/main/docs/LOCAL-V3.1-E2E.md" target="_blank" rel="noreferrer">LOCAL-V3.1-E2E.md</a>.</p>
       <p>The Factory authorization step is a security boundary. FundingPool accepts defined Community reserve inflows only from Treasuries activated by an explicitly approved Factory. V3.0 and V3.1 approvals coexist; if the V3.1 link is missing, reserve-routing E2E coverage is incomplete.</p>
       <h2>Use time travel, not weaker policy</h2><p>V3.1 keeps a one-day minimum milestone review. Advance the local clock for testing; do not modify Solidity timing simply to make a demo faster.</p>
       <div class="callout info"><strong>Exit criterion.</strong> Cover all four V3.1 lanes, one completed 20 / 40 / 40 execution plan, one failed-plan supporter refund, and negative eligibility checks.</div>

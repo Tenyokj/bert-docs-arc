@@ -217,7 +217,7 @@
           <tr><td>Voter / member</td><td>Commits configured USDC stake in a funding round, subject to live gates.</td><td>Locks entry stake, then casts one stake-backed vote per binary proposal or slate round.</td></tr>
           <tr><td>Backer / reviewer</td><td>A winning pledger governs V2 milestone escrow in proportion to its pledge; curator signals remain non-binding quality context.</td><td>Validator is a Community-local role that reviews Member proposals before they can be voted.</td></tr>
           <tr><td>Administrator</td><td>Configures roles, dependencies, parameters, pauses, and upgrades within the current model.</td><td>Local Admin creates proposals and rounds, manages withdrawals, and uses immutable local quorum for protected actions.</td></tr>
-          <tr><td>Integrator / indexer</td><td>Reads contract state and V2 events; may use the V2 Subgraph for discovery.</td><td>Discovers Communities through Factory events and indexes Hub/Treasury event streams via the V3 Subgraph.</td></tr>
+          <tr><td>Integrator / indexer</td><td>Reads contract state and V2 events; may use the V2 Subgraph for discovery.</td><td>Discovers Communities through Factory events and indexes Hub, runtime-module and Treasury streams via the V3.1 Subgraph.</td></tr>
         </tbody>
       </table>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>02 / Principles and scope</span></div>
@@ -489,7 +489,7 @@
         </tbody>
       </table>
       <h2>V3 discovery model</h2>
-      <p>The V3 Subgraph indexes the Factory and uses Community Hub event templates so newly activated Communities can become discoverable without hardcoding each Hub address into the frontend. This supports Community directories, role rosters reconstructed from role events, proposal history, rounds, Treasury activity, and lifecycle displays. Contract reads remain necessary where a current record decides whether a write action may proceed.</p>
+      <p>The V3.1 Subgraph indexes the Factory and uses dynamic Hub, Membership, Proposal, Voting, Milestone, Winner Snapshot and Treasury templates so newly activated Communities can become discoverable without hardcoding their runtime addresses into the frontend. This supports Community directories, role rosters, proposal history, rounds, winner cohorts, milestone activity, Treasury activity and lifecycle displays. Contract reads remain necessary where a current record decides whether a write action may proceed.</p>
       <h2>Developer safeguards</h2>
       <ul>
         <li>Format Arc USDC with six decimals; do not assume an 18-decimal token.</li>
@@ -506,7 +506,7 @@
           <tr><td>Developer documentation</td><td><a href="https://bertdao-docs.vercel.app">https://bertdao-docs.vercel.app</a></td></tr>
           <tr><td>Core contracts</td><td><a href="https://github.com/Tenyokj/bert-core-arc">github.com/Tenyokj/bert-core-arc</a></td></tr>
           <tr><td>V2 Subgraph</td><td><a href="https://thegraph.com/studio/subgraph/bert-arc-testnet/">thegraph.com/studio/subgraph/bert-arc-testnet</a></td></tr>
-          <tr><td>V3 Subgraph</td><td><a href="https://thegraph.com/studio/subgraph/bert-v-3-arc-testnet/">thegraph.com/studio/subgraph/bert-v-3-arc-testnet</a></td></tr>
+          <tr><td>V3.1 Subgraph</td><td><a href="https://thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet/">thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet</a></td></tr>
         </tbody>
       </table>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>08 / Data and developer interfaces</span></div>
@@ -515,14 +515,14 @@
     <section class="page page-break" id="testnet">
       <p class="eyebrow">09 / Arc Testnet</p>
       <h1>Public deployment registry and current boundary.</h1>
-      <p class="lead">The following addresses identify the active Arc Testnet deployment as of the V2.3 release on 7 October 2026. They are not mainnet addresses and must never be reused as assumptions for a future production deployment. The listed V3 addresses are V3.0 historical infrastructure; V3.1 is a separate modular release and its address manifest is published only after its reviewed testnet deployment.</p>
+      <p class="lead">The following addresses identify the active Arc Testnet deployment as of the V3.1 release on 12 October 2026. They are not mainnet addresses and must never be reused as assumptions for a future production deployment. V3.0 is historical testnet infrastructure; new Community creation and V3 integrations use the modular V3.1 Factory.</p>
       <h2>Network</h2>
       <table>
         <tbody>
           <tr><th>Network</th><td>Arc Testnet</td></tr>
           <tr><th>Chain ID</th><td><code>5042002</code></td></tr>
           <tr><th>USDC-compatible token</th><td class="address">0x3600000000000000000000000000000000000000</td></tr>
-          <tr><th>V3.0 Factory deployment block</th><td><code>61277385</code></td></tr>
+          <tr><th>V3.1 Factory deployment block</th><td><code>66809847</code></td></tr>
         </tbody>
       </table>
       <h2>V2.3 release anchors</h2>
@@ -550,16 +550,31 @@
           <tr><td>ReputationSystemUpgradeable</td><td class="address">0x3594C46983460733F6470f7b61De2f3bB2918a81</td></tr>
         </tbody>
       </table>
-      <h2>Historical V3.0 infrastructure addresses</h2>
+      <h2>Current V3.1 Community Layer addresses</h2>
       <table>
         <thead><tr><th>Contract</th><th>Address</th></tr></thead>
         <tbody>
-          <tr><td>CommunityFactory proxy</td><td class="address">0x811fFb3B53d43e608Ee4dF854aa1BdC471F37589</td></tr>
-          <tr><td>CommunityTreasuryDeployer</td><td class="address">0x84594a42E59789C687e9397a994D71CFfa522409</td></tr>
-          <tr><td>CommunityAdminActions library</td><td class="address">0x5EA79A8a98f588aa342f53baCBC8729A6Ea1177E</td></tr>
+          <tr><td>CommunityFactory proxy</td><td class="address">0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0</td></tr>
+          <tr><td>CommunityTreasuryDeployer</td><td class="address">0x009F80F6Eab73806655B10E2A5f42Ed3F2A9125b</td></tr>
+          <tr><td>CommunityMembershipModuleDeployer</td><td class="address">0x1bC3fe5821B88d4Dcf5253Ee860D21eCEe235010</td></tr>
+          <tr><td>CommunityProposalModuleDeployer</td><td class="address">0xe7421a97D168825E048E29eb70196918d71c5a7D</td></tr>
+          <tr><td>CommunityVotingModuleDeployer</td><td class="address">0xb3f60c1dB662b1d62F9Aa7652F95B62D819FfA6d</td></tr>
+          <tr><td>CommunityMilestoneModuleDeployer</td><td class="address">0xdb7846846011792cf9c70391078a0399E8a91569</td></tr>
+          <tr><td>CommunityAdminActions library</td><td class="address">0x889A087A90cf711D86B208681ea8AfE668479303</td></tr>
         </tbody>
       </table>
-      <div class="callout warning"><strong>Operational note.</strong> The deployment manifest is the canonical repository record for addresses and upgrade transactions. A UI, whitepaper, or social post may become stale; operators and integrators must verify against the latest manifest and chain state before acting. V3.1 must be allowlisted in FundingPool alongside, not instead of, V3.0 before its first Community can route protocol reserve.</div>
+      <h2>V3.1 release anchors</h2>
+      <table>
+        <thead><tr><th>Action</th><th>Transaction / block</th></tr></thead>
+        <tbody>
+          <tr><td>FundingPool additive Factory-allowlist upgrade</td><td class="address">0x6a3f82c71d2cbc2130908e86b8210b913668508c4afd68551b931a006c048593 (66809444)</td></tr>
+          <tr><td>CommunityFactory deployment</td><td class="address">0x4f60aeca659d275ef8cef0c761441207a83a78012b1006c8a79b3beaca84ec32 (66809847)</td></tr>
+          <tr><td>V3.0 Factory compatibility allowlist</td><td class="address">0x7ccb8902cf7036951820126e051e18ca8508c8cc8349ffc34469d1a25a1cdf74</td></tr>
+          <tr><td>V3.1 Factory authorization</td><td class="address">0x845f814537778cdd61d2e11fe3eb80d4fda9557058212afc3ef884c70f16e66a</td></tr>
+        </tbody>
+      </table>
+      <p>V3.0 Factory <code>0x811fFb3B53d43e608Ee4dF854aa1BdC471F37589</code> remains approved only for historic Community Treasury compatibility. The release preserves its defined reserve route but does not route new V3.1 Communities through it.</p>
+      <div class="callout warning"><strong>Operational note.</strong> The Core release record is the canonical source for addresses and upgrade transactions. A UI, whitepaper, or social post may become stale; operators and integrators must verify the current record and chain state before acting.</div>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>09 / Arc Testnet deployment</span></div>
     </section>
 
