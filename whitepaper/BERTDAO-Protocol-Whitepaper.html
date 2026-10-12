@@ -129,11 +129,11 @@
     <section class="cover">
       <div class="cover-content">
         <div class="brand"><img src="../assets/bert-logo.png" alt="BERT logo" /> BERTDAO Protocol</div>
-        <p class="cover-kicker">Technical whitepaper / Version 1.1</p>
+        <p class="cover-kicker">Technical whitepaper / Version 1.2</p>
         <h1>Transparent capital coordination for <span>communities and grants.</span></h1>
         <p class="subtitle">A stablecoin-native protocol for stake-backed proposals, auditable decision-making, controlled treasury flows, and milestone-based release.</p>
         <div class="cover-meta">
-          <div><strong>Publication</strong>7 October 2026</div>
+          <div><strong>Publication</strong>12 October 2026</div>
           <div><strong>Current environment</strong>Arc Testnet / active development</div>
           <div><strong>Protocol scope</strong>BERT V2 Global Funding Layer and BERT V3 Community Layer</div>
           <div><strong>Canonical source</strong>github.com/Tenyokj/bert-core-arc</div>
@@ -169,7 +169,7 @@
         <a href="#mainnet"><span>10</span>Mainnet readiness conditions</a>
         <a href="#appendix"><span>11</span>Appendix: addresses and glossary</a>
       </nav>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.1 / 7 October 2026</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.2 / 12 October 2026</span></div>
     </section>
 
     <section class="page page-break" id="problem">
@@ -316,28 +316,30 @@
     </section>
 
     <section class="page page-break" id="v3">
-      <p class="eyebrow">05 / BERT V3</p>
-      <h1>Community Layer: isolated governance with local USDC custody.</h1>
-      <p class="lead">BERT V3 enables an organization or group to create its own stake-gated governance domain. Every active Community is a paired immutable <code>CommunityHub</code> and <code>CommunityTreasury</code>, registered and activated by the shared <code>CommunityFactory</code>.</p>
+      <p class="eyebrow">05 / BERT V3.1</p>
+      <h1>Community Layer: isolated governance with reviewable execution.</h1>
+      <p class="lead">BERT V3.1 enables an organization or group to create its own stake-gated governance domain. Every active Community combines an immutable <code>CommunityHub</code>, a paired <code>CommunityTreasury</code>, and focused runtime modules registered and activated by the shared <code>CommunityFactory</code>. V3.0 is retained only as historical Arc Testnet state; new Communities use V3.1.</p>
       <h2>Why V3 is separate from V2</h2>
-      <p>V2 organizes global funding rounds and grants. V3 is designed for local Community governance: a Community needs its own membership boundary, its own Admin and Validator set, its own proposal review, its own execution balance, and its own withdrawal quorum. Mixing those local rules into the V2 global state would weaken isolation and make policy harder to reason about.</p>
+      <p>V2 organizes global funding rounds and grants. V3.1 is designed for local Community governance: a Community needs its own membership boundary, its own Admin and Validator set, its own proposal review, its own voting electorate, its own Treasury, and its own protected execution process. Mixing those local rules into the V2 global state would weaken isolation and make policy harder to reason about.</p>
       <h2>Deployment and activation</h2>
       <div class="diagram">
         <div class="diagram-title">Factory activation path</div>
         <div class="flow"><div class="flow-item">Verified creator calls<br /><code>createCommunity(config)</code></div><div class="arrow">&#8594;</div><div class="flow-item">Factory deploys and reserves a Treasury<br /><small>config hash recorded</small></div><div class="arrow">&#8594;</div><div class="flow-item">Creator deploys Hub<br /><small>same immutable config</small></div><div class="arrow">&#8594;</div><div class="flow-item">Creator calls<br /><code>activateCommunity</code></div></div>
       </div>
-      <p>Factory activation verifies that the Hub reports the reserved Treasury, recorded creator, and exact configuration hash. The Treasury is then linked once to its Hub. This prevents activation of a Hub for a different creator, a different Treasury, or different immutable parameters. The Factory records Community IDs and exposes <code>isActiveCommunityTreasury</code> so V2 can authenticate reserve inflows.</p>
+      <p>Factory activation verifies that the Hub reports the reserved Treasury, recorded creator, and exact configuration hash. The Treasury is then linked once to its Hub. This prevents activation of a Hub for a different creator, a different Treasury, or different immutable parameters. The Factory records Community IDs and exposes <code>isActiveCommunityTreasury</code>. FundingPool authenticates active Treasury reserve inflows through an explicit multi-Factory allowlist so V3.0 and V3.1 can coexist during testnet migration.</p>
       <table>
         <thead><tr><th>V3 contract</th><th>Role</th><th>Mutability</th></tr></thead>
         <tbody>
           <tr><td><code>CommunityFactory</code></td><td>Shared registry, Treasury reservation, Hub activation, active-Treasury authentication.</td><td>Upgradeable Transparent proxy.</td></tr>
           <tr><td><code>CommunityTreasuryDeployer</code></td><td>Deploys a pending Community Treasury for Factory.</td><td>Immutable deployment utility.</td></tr>
-          <tr><td><code>CommunityHub</code></td><td>Local governance state, roles, proposal lifecycle, validator review, voting, active-time clock.</td><td>Immutable per Community.</td></tr>
-          <tr><td><code>CommunityTreasury</code></td><td>Local USDC custody, locks, settlements, rewards, refunds, withdrawals, reserve route.</td><td>Immutable per Community.</td></tr>
+          <tr><td><code>CommunityHub</code></td><td>Thin local coordinator, immutable configuration, active-time clock, and quorum-protected Admin actions.</td><td>Immutable per Community.</td></tr>
+          <tr><td><code>Membership / Proposal / Voting modules</code></td><td>Role exclusivity, proposal lanes, Validator review, binary/slate voting, winner snapshots and exit locks.</td><td>Immutable runtime modules per Community.</td></tr>
+          <tr><td><code>CommunityMilestoneManager</code></td><td>Evidence, supporter review, correction, failure and refund lifecycle for execution plans.</td><td>Immutable runtime module per Community.</td></tr>
+          <tr><td><code>CommunityTreasury</code></td><td>Local USDC custody, locks, settlements, rewards, execution-plan reserves, refunds, withdrawals, reserve route.</td><td>Immutable per Community.</td></tr>
           <tr><td><code>CommunityAdminActions</code></td><td>Linked library used through the Hub for quorum-protected control-plane actions.</td><td>Linked immutable library code.</td></tr>
         </tbody>
       </table>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: deployment</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3.1: deployment</span></div>
     </section>
 
     <section class="page page-break">
@@ -360,7 +362,7 @@
       <p>A former Member can become eligible for nomination after accumulating the Community's immutable number of winning Member proposal points. That threshold is selected at creation and must be between 1 and 100. Eligibility is only a precondition: an Admin quorum still adds the Validator, and role exclusivity must be satisfied. The intent is to connect validator eligibility to demonstrated local outcomes without treating an automated metric as an automatic role grant.</p>
       <h2>Pause-aware time</h2>
       <p>V3 uses a Community clock that excludes paused time. Validation windows, voting windows, validator epochs, and protected-action expiry are measured against that clock. When archived, the clock freezes. This prevents a pause introduced during an incident from silently consuming deadlines that Members, Validators, or Admins could not act on.</p>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: roles and membership</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3.1: roles and membership</span></div>
     </section>
 
     <section class="page page-break">
@@ -374,20 +376,20 @@
         <div class="diagram-title">Binary proposal flow</div>
         <div class="flow"><div class="flow-item">Admin proposal<br />or Validator-approved Member proposal</div><div class="arrow">&#8594;</div><div class="flow-item">Admin opens YES / NO window</div><div class="arrow">&#8594;</div><div class="flow-item">Members stake once<br /><small>author cannot vote</small></div><div class="arrow">&#8594;</div><div class="flow-item">Anyone settles after deadline</div></div>
       </div>
-      <p>Each Member chooses one side and commits an amount at least equal to the Community minimum and no greater than the protocol-wide cap of 10,000 USDC. YES must strictly exceed NO to win; a tie follows the NO/refund path. A proposal author cannot vote on their own proposal. The Hub records the governance state; only the paired Treasury moves the corresponding USDC.</p>
+      <p>Each Member chooses one side and commits an amount at least equal to the Community minimum and no greater than the protocol-wide cap of 10,000 USDC. YES must strictly exceed NO to win; a tie follows the NO/refund path. A proposal author cannot vote on their own proposal. The Hub records governance state; only the paired Treasury moves the corresponding USDC.</p>
       <h3>YES outcome</h3>
-      <p>For a winning Member binary proposal, YES stake is settled into Community execution funds and the configured validator-reward share; NO stake routes to the global BERT reserve. The public V3 design documents a 15% default validator share and 85% execution share, but the actual immutable <code>validatorRewardShareBps</code> selected at Community creation is authoritative. Admin-origin binary proposals did not require validator review, so their local winning stake goes entirely to execution.</p>
+      <p>A winning Admin or Validator-approved Member proposal creates an immutable execution plan. The Treasury reserves the plan budget and releases 20% to the immutable Administration execution wallet at settlement. The remaining 80% is not a generic Admin withdrawal balance: it is released only as two 40% tranches after winning supporters review submitted evidence. A configured Member-origin validator reward share remains a separate Treasury obligation; actual immutable Community configuration is authoritative.</p>
       <h3>NO or tie outcome</h3>
       <p>YES stake and the configured NO-side rejection fee route to the global reserve. The remaining NO stake becomes a pull-based refund liability; each eligible NO voter must claim their own refund. The rejection fee is immutable per Community and cannot exceed 10% (1,000 basis points).</p>
       <h2>Slate rounds</h2>
-      <p>Admins can open a homogeneous slate round containing approved Admin slate proposals or validator-approved Member slate proposals. A Member selects exactly one proposal and stakes once. The highest total wins; ties resolve deterministically in favor of the earliest proposal in the supplied round order. Slate rounds do not have a NO side. Their committed stake settles locally into execution and, for Member-origin rounds, the configured validator reward route.</p>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: validation and voting</span></div>
+      <p>Admins can open a homogeneous slate round containing approved Admin slate proposals or validator-approved Member slate proposals. A Member selects exactly one proposal and stakes once. The highest total wins; ties resolve deterministically in favor of the earliest proposal in the supplied round order. Slate rounds do not have a NO side. The selected proposal creates the same execution plan and supporter snapshot as a Binary YES winner; for Member-origin rounds, configured validator reward policy remains separate.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3.1: validation and voting</span></div>
     </section>
 
     <section class="page page-break">
       <p class="eyebrow">05 / BERT V3 continued</p>
       <h1>Community Treasury: custody follows validated state.</h1>
-      <p class="lead">The Hub never custodies USDC. It validates lifecycle transitions and instructs its paired Treasury. The Treasury separates funds by obligation so membership stake, bonds, escrow, refunds, validator rewards, and executable balances cannot be casually mixed.</p>
+      <p class="lead">The Hub never custodies USDC. It validates lifecycle transitions and instructs its paired Treasury. The Treasury separates funds by obligation so membership stake, bonds, escrow, refunds, validator rewards, plan reserves, and general Treasury balances cannot be casually mixed.</p>
       <h2>V3 Treasury buckets</h2>
       <table>
         <thead><tr><th>Bucket</th><th>What it protects</th><th>Can it fund execution directly?</th></tr></thead>
@@ -397,17 +399,20 @@
           <tr><td><code>totalVoteEscrow</code> / <code>totalRoundVoteEscrow</code></td><td>USDC committed to unresolved binary votes or slate rounds.</td><td>No.</td></tr>
           <tr><td><code>totalRefundLiability</code></td><td>NO-side funds owed through pull-based refunds.</td><td>No.</td></tr>
           <tr><td><code>validatorRewardBalance</code></td><td>Unclaimed, epoch-accounted validator rewards.</td><td>No, except defined rounding/no-active-validator return paths.</td></tr>
-          <tr><td><code>executionBalance</code></td><td>Funds available for locally approved Community execution.</td><td>Yes, subject to withdrawal reservation and Admin quorum.</td></tr>
+          <tr><td><code>milestoneReserveByPlan</code></td><td>Unreleased budget of a winning proposal or slate candidate.</td><td>No; only the approved 20/40/40 plan path can release it.</td></tr>
+          <tr><td><code>milestoneRefundByPlan</code></td><td>Unreleased plan USDC owed pro rata to the winning-supporter snapshot after failure.</td><td>No; eligible supporters pull their own claim once.</td></tr>
+          <tr><td><code>executionBalance</code></td><td>Funds eligible for separately quorum-approved Community withdrawals.</td><td>Yes, subject to withdrawal reservation and Admin quorum; it is not a plan reserve.</td></tr>
           <tr><td><code>reservedExecutionBalance</code></td><td>Execution funds already reserved by pending withdrawals.</td><td>No, until cancellation or request resolution.</td></tr>
         </tbody>
       </table>
       <h2>Validator reward epochs</h2>
       <p>Validator rewards are measured in epochs. Member-proposal validation cases are counted, and an active-validator threshold determines whether a Validator is eligible. After the epoch and associated validation window close, rewards are finalized as equal claimable shares for active Validators. Rounding dust—or all rewards when no Validator is active—returns to execution balance. Claims are pull-based and protected against double claim.</p>
-      <h2>Execution withdrawals</h2>
-      <p>A current Admin can create a withdrawal request from available execution balance. The request records recipient, amount, reason, metadata URI, and the creator's first approval; it also reserves the amount immediately. Other current Admins approve once each. The Treasury transfers only after the Hub's immutable Admin threshold is met. A pending withdrawal can be cancelled only through the separate quorum-protected Admin action process, preventing one Admin from unilaterally undoing a reserved action.</p>
+      <h2>Execution plans and withdrawals</h2>
+      <p>For every settled winner, only wallets in the sealed winning-supporter snapshot can review a milestone proof. Review uses support weight, not one-wallet-one-vote: at least 40% of supporter weight must participate, two-thirds of participating weight must approve, and the plan also needs at least <code>max(3, ceil(3% of supporter wallets))</code> approving wallets. The review window stays open for the immutable Community duration even after thresholds are reached. One rejected proof may be corrected after cooldown. A second rejection, proof expiry, or no quorum after grace fails the plan; only the unreleased amount becomes a pull refund for winning supporters. Silence never releases a tranche.</p>
+      <p>Separately, a current Admin can create a withdrawal request only from available <code>executionBalance</code>, not from plan reserve. The request records recipient, amount, reason, metadata URI, and the creator's first approval; it reserves the amount immediately. Other current Admins approve once each. The Treasury transfers only after the Hub's immutable Admin threshold is met. A pending withdrawal can be cancelled only through the separate quorum-protected Admin action process, preventing one Admin from unilaterally undoing a reserved action.</p>
       <h2>Archive safety</h2>
       <p>Archive is a protected action. Community lifecycle changes, roster changes, pause/resume, and withdrawal cancellation use the linked <code>CommunityAdminActions</code> library through the Hub. The requester contributes the first approval; the immutable threshold is evaluated at execution time; requests expire after seven active Community days; paused time does not count. An Admin handover intentionally takes two actions: add the replacement, then remove the former Admin.</p>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3: Treasury and quorum</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3.1: Treasury and quorum</span></div>
     </section>
 
     <section class="page page-break" id="identity">
@@ -510,14 +515,14 @@
     <section class="page page-break" id="testnet">
       <p class="eyebrow">09 / Arc Testnet</p>
       <h1>Public deployment registry and current boundary.</h1>
-      <p class="lead">The following addresses identify the active Arc Testnet deployment as of the V2.3 release on 7 October 2026. They are not mainnet addresses and must never be reused as assumptions for a future production deployment.</p>
+      <p class="lead">The following addresses identify the active Arc Testnet deployment as of the V2.3 release on 7 October 2026. They are not mainnet addresses and must never be reused as assumptions for a future production deployment. The listed V3 addresses are V3.0 historical infrastructure; V3.1 is a separate modular release and its address manifest is published only after its reviewed testnet deployment.</p>
       <h2>Network</h2>
       <table>
         <tbody>
           <tr><th>Network</th><td>Arc Testnet</td></tr>
           <tr><th>Chain ID</th><td><code>5042002</code></td></tr>
           <tr><th>USDC-compatible token</th><td class="address">0x3600000000000000000000000000000000000000</td></tr>
-          <tr><th>V3 Factory deployment block</th><td><code>61277385</code></td></tr>
+          <tr><th>V3.0 Factory deployment block</th><td><code>61277385</code></td></tr>
         </tbody>
       </table>
       <h2>V2.3 release anchors</h2>
@@ -545,7 +550,7 @@
           <tr><td>ReputationSystemUpgradeable</td><td class="address">0x3594C46983460733F6470f7b61De2f3bB2918a81</td></tr>
         </tbody>
       </table>
-      <h2>V3 infrastructure addresses</h2>
+      <h2>Historical V3.0 infrastructure addresses</h2>
       <table>
         <thead><tr><th>Contract</th><th>Address</th></tr></thead>
         <tbody>
@@ -554,7 +559,7 @@
           <tr><td>CommunityAdminActions library</td><td class="address">0x5EA79A8a98f588aa342f53baCBC8729A6Ea1177E</td></tr>
         </tbody>
       </table>
-      <div class="callout warning"><strong>Operational note.</strong> The deployment manifest is the canonical repository record for addresses and upgrade transactions. A UI, whitepaper, or social post may become stale; operators and integrators must verify against the latest manifest and chain state before acting.</div>
+      <div class="callout warning"><strong>Operational note.</strong> The deployment manifest is the canonical repository record for addresses and upgrade transactions. A UI, whitepaper, or social post may become stale; operators and integrators must verify against the latest manifest and chain state before acting. V3.1 must be allowlisted in FundingPool alongside, not instead of, V3.0 before its first Community can route protocol reserve.</div>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>09 / Arc Testnet deployment</span></div>
     </section>
 
@@ -597,10 +602,10 @@
           <tr><td>V2 payouts</td><td>A tranche must not release twice; V2.3 milestone release requires 40% pledge-weight quorum, two-thirds participating approval and three approving backers.</td></tr>
           <tr><td>V2 cancellations</td><td>Silence cannot approve a payment. Unreleased gross escrow becomes pro-rata refundable after the fixed failure paths.</td></tr>
           <tr><td>V3 role state</td><td>An address cannot hold more than one active Community state among Admin, Validator, and Member.</td></tr>
-          <tr><td>V3 settlement</td><td>A binary proposal or slate round settles once; validator reward claims and NO refunds settle once per eligible account.</td></tr>
-          <tr><td>V3 custody</td><td>Membership lock, bond lock, escrow, refund liability, validator rewards, and execution funds are separately accounted and not interchangeable.</td></tr>
+          <tr><td>V3 settlement</td><td>A binary proposal or slate round settles once; a winner receives an immutable supporter snapshot and one 20/40/40 execution-plan lifecycle.</td></tr>
+          <tr><td>V3 custody</td><td>Membership lock, bond lock, escrow, refund liability, validator rewards, generic execution balance, and per-plan reserve are separately accounted and not interchangeable.</td></tr>
           <tr><td>V3 authority</td><td>No external wallet can invoke linked Admin action implementation directly; Hub rechecks caller and lifecycle rules at execution.</td></tr>
-          <tr><td>V3 reserve routing</td><td>V2 FundingPool accepts Community reserve inflows only from a Treasury registered as active by Factory.</td></tr>
+          <tr><td>V3 reserve routing</td><td>V2 FundingPool accepts Community reserve inflows only from a Treasury active in an explicitly approved Factory; V3.0 and V3.1 Factory approvals coexist.</td></tr>
         </tbody>
       </table>
       <h2>Glossary</h2>
@@ -611,10 +616,11 @@
           <tr><td>Admin quorum</td><td>The immutable number of Community Admin approvals required to execute protected control-plane actions or a Treasury withdrawal.</td></tr>
           <tr><td>Author stake / proposal bond</td><td>USDC collateral locked when a V2 idea or V3 Member proposal is created; the exact lifecycle depends on its layer and outcome.</td></tr>
           <tr><td>Community clock</td><td>V3 timestamp calculation that excludes paused time and freezes after archive.</td></tr>
-          <tr><td>Execution balance</td><td>V3 Treasury balance eligible for locally approved execution withdrawals after respecting reservations.</td></tr>
+          <tr><td>Execution plan</td><td>V3.1 winner budget with a 20% initial release and two supporter-reviewed 40% releases. The Administration execution wallet has no generic Treasury withdrawal right.</td></tr>
+          <tr><td>Execution balance</td><td>V3 Treasury balance eligible for separately quorum-approved execution withdrawals after respecting reservations; it excludes per-plan milestone reserve.</td></tr>
           <tr><td>Global reserve</td><td>V2 FundingPool accounting bucket for protocol-held value, including defined V3 reserve inflows; it is distinct from a V3 Community execution balance.</td></tr>
           <tr><td>Winning pledge cohort</td><td>The immutable set of wallets that pledged to the settled V2 winner; only this cohort may govern its milestone escrow.</td></tr>
-          <tr><td>Milestone plan</td><td>Immutable URI and content-hash commitment made by a V2.3 author before round inclusion; it defines expected evidence and acceptance criteria.</td></tr>
+          <tr><td>Milestone plan</td><td>V2.3 immutable author commitment or V3.1 winner execution plan. Both require evidence and explicit participant review; their electorates are layer-specific.</td></tr>
           <tr><td>Human verifier</td><td>Onchain contract that reports whether a wallet has an active trusted verification record.</td></tr>
           <tr><td>Slate round</td><td>V3 round where each Member selects one proposal from an ordered homogeneous slate; highest stake wins and order resolves a tie.</td></tr>
           <tr><td>Validator reward epoch</td><td>V3 period measuring validation participation and determining equal pull-based rewards for active Validators.</td></tr>

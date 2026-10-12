@@ -28,7 +28,7 @@ export const testnetDocs = [
     tags: ["testnet", "deployment", "manifest", "factory", "proxy", "preflight"],
     content: `
       <p class="eyebrow">Arc Testnet / Deployment safety</p><h1>Addresses are release data.<br /><span>Never UI constants.</span></h1>
-      <p class="lead">A testnet deployment is real contract state, but it is not permanent protocol identity. When V2 proxies are upgraded or a V3 Factory is redeployed, frontend, backend, subgraph and manual scripts must move as one release. Keep addresses in a versioned deployment manifest and make applications refuse an incomplete or mismatched manifest.</p>
+      <p class="lead">A testnet deployment is real contract state, but it is not permanent protocol identity. When V2 proxies are upgraded or a V3.1 Factory is released, frontend, backend, subgraph and manual scripts must move as one release. Keep addresses in a versioned deployment manifest and make applications refuse an incomplete or mismatched manifest. The existing V3.0 Factory is historical state; V3.1 is a separate modular release, not an address replacement.</p>
       <h2>Manifest contract</h2>
       <p>The manifest should be committed without secrets and updated in the same pull request as deployment configuration. It is the single integration source for chain ID, proxy addresses, Factory/TreasuryDeployer pair, verifier, USDC, event start blocks and indexer URLs. Private keys, World signing keys, backend provider keys and Graph Studio deploy keys do not belong in it.</p>
       <pre><code>{
@@ -52,21 +52,23 @@ export const testnetDocs = [
   "indexers": { "v2": "https://...", "v3": "https://..." }
 }</code></pre>
       <h2>What must agree</h2>
-      <table><thead><tr><th>Component</th><th>Must use</th><th>Failure when stale</th></tr></thead><tbody><tr><td>Frontend</td><td>Current V2 proxies, V3 Factory, PoPVerifier, backend URL and subgraph endpoints</td><td>Transactions simulate against an old contract or event search starts at the wrong block.</td></tr><tr><td>Backend</td><td>Current chain ID, verifier address, Demo-PoP testnet gate and signer matching onchain trusted signer</td><td>Frontend receives a valid-looking payload that onchain verification rejects.</td></tr><tr><td>V3 subgraph</td><td>Factory address, Factory event start block and dynamic Hub/Treasury templates</td><td>Communities never appear, or indexer queries pruned/unrelated history.</td></tr><tr><td>Deployment scripts</td><td>FundingPool, Factory and TreasuryDeployer values from one release</td><td>Factory deploys but Community Treasury authorization or reserve wiring fails.</td></tr></tbody></table>
+      <table><thead><tr><th>Component</th><th>Must use</th><th>Failure when stale</th></tr></thead><tbody><tr><td>Frontend</td><td>Current V2 proxies, explicitly versioned V3 Factory, PoPVerifier, backend URL and subgraph endpoints</td><td>Transactions simulate against an old contract or event search starts at the wrong block.</td></tr><tr><td>Backend</td><td>Current chain ID, verifier address, Demo-PoP testnet gate and signer matching onchain trusted signer</td><td>Frontend receives a valid-looking payload that onchain verification rejects.</td></tr><tr><td>V3 subgraph</td><td>Exact Factory address, Factory event start block and dynamic Hub/Treasury/module templates</td><td>Communities never appear, or indexer queries pruned/unrelated history.</td></tr><tr><td>Deployment scripts</td><td>FundingPool, Factory allowlist and TreasuryDeployer values from one release</td><td>Factory deploys but Community Treasury authorization or reserve wiring fails.</td></tr></tbody></table>
       <h2>V2 and V3 preflight</h2>
-      <div class="state-track"><div><small>CHAIN</small><strong>5042002</strong><span>Public client and wallet must both identify Arc Testnet.</span></div><div><small>CODE</small><strong>Contract deployed</strong><span>Check non-empty bytecode at each manifest address.</span></div><div><small>WIRING</small><strong>Read dependencies</strong><span>Verify V2 module links, Factory deployment pair and FundingPool V3 Factory.</span></div><div><small>INDEX</small><strong>Bounded history</strong><span>Query from recorded deploy block, never from zero by default.</span></div></div>
+      <div class="state-track"><div><small>CHAIN</small><strong>5042002</strong><span>Public client and wallet must both identify Arc Testnet.</span></div><div><small>CODE</small><strong>Contract deployed</strong><span>Check non-empty bytecode at each manifest address.</span></div><div><small>WIRING</small><strong>Read dependencies</strong><span>Verify V2 module links, Factory deployment pair and FundingPool's approved V3 Factory set.</span></div><div><small>INDEX</small><strong>Bounded history</strong><span>Query from recorded deploy block, never from zero by default.</span></div></div>
       <pre><code>const code = await publicClient.getBytecode({ address: manifest.contracts.v3Factory });
 if (!code || code === "0x") throw new Error("V3 Factory has no deployed code");
 
-const configuredFactory = await publicClient.readContract({
+const v31FactoryIsApproved = await publicClient.readContract({
   address: manifest.contracts.fundingPoolProxy,
   abi: fundingPoolAbi,
-  functionName: "communityFactory",
+  functionName: "isCommunityFactoryApproved",
+  args: [manifest.contracts.v3Factory],
 });
-if (configuredFactory.toLowerCase() !== manifest.contracts.v3Factory.toLowerCase()) {
-  throw new Error("FundingPool is wired to a different V3 Factory");
+if (!v31FactoryIsApproved) {
+  throw new Error("FundingPool has not allowlisted the V3.1 Factory");
 }</code></pre>
-      <h2>Release checklist</h2><ol class="numbered-flow"><li>Deploy or upgrade contracts and collect emitted addresses/transaction hashes.</li><li>Run deploy verification scripts against the target network before touching frontend configuration.</li><li>Update manifest, frontend environment, backend environment and V3 subgraph source together.</li><li>Redeploy backend/frontend and publish or update subgraph.</li><li>Run one V2 protected action and one V3 Community creation flow with fresh state.</li></ol>
+      <div class="callout warning"><strong>V3.1 prerequisite.</strong> FundingPool must add V3.1 through an additive Factory allowlist. Never replace a live V3.0 Factory address with V3.1: V3.0 Treasuries would lose reserve-routing permission. The allowlist upgrade must be deployed and tested before a V3.1 Factory is released.</div>
+      <h2>Release checklist</h2><ol class="numbered-flow"><li>Deploy or upgrade contracts and collect emitted addresses/transaction hashes.</li><li>Verify the V3.0 Factory remains approved and add the new V3.1 Factory through the reviewed allowlist action.</li><li>Run deploy verification scripts against the target network before touching frontend configuration.</li><li>Update manifest, frontend environment, backend environment and V3 subgraph source together.</li><li>Redeploy backend/frontend and publish or update subgraph.</li><li>Run one V2 protected action and one V3.1 Community creation flow with fresh state.</li></ol>
       <div class="callout warning"><strong>Do not fix a stale deployment by setting a broad event query to block zero.</strong> Arc RPC history can be pruned. Correct the release start block and source address instead.</div>
     `,
   },
@@ -362,7 +364,7 @@ UPSTASH_REDIS_REST_TOKEN=...
 # Never commit these values or copy them into frontend configuration.</code></pre>
       <h2>Vercel release order</h2>
       <div class="state-track">
-        <div><small>01 CORE</small><strong>Deploy/verify</strong><span>Deploy contracts, configure FundingPool V3 Factory and write release manifest.</span></div>
+        <div><small>01 CORE</small><strong>Deploy/verify</strong><span>Deploy contracts, approve the V3 Factory in FundingPool and write release manifest.</span></div>
         <div><small>02 BACKEND</small><strong>Set secrets/redeploy</strong><span>Update verifier and signer configuration, then verify <code>/api/health</code>.</span></div>
         <div><small>03 SUBGRAPH</small><strong>Build/publish</strong><span>Pin Factory/start block and wait for indexing health.</span></div>
         <div><small>04 FRONTEND</small><strong>Set public config</strong><span>Deploy only after backend and subgraph addresses are confirmed.</span></div>
@@ -375,7 +377,7 @@ UPSTASH_REDIS_REST_TOKEN=...
           <tr><td>Backend boot</td><td>Open <code>/api/health</code>.</td><td>Returns <code>{"ok":true,"service":"bert-backend"}</code>.</td></tr>
           <tr><td>Demo endpoint guard</td><td>POST valid Arc request and wrong-chain request.</td><td>Arc succeeds; wrong chain is rejected.</td></tr>
           <tr><td>Frontend configuration</td><td>Open V2 ideas and V3 directory with Arc wallet.</td><td>No “set address” placeholders; reads target current release.</td></tr>
-          <tr><td>V3 wiring</td><td>Read FundingPool configured Factory.</td><td>Matches manifest V3 Factory exactly.</td></tr>
+          <tr><td>V3 wiring</td><td>Read FundingPool Factory approvals.</td><td>V3.0 and the manifest V3.1 Factory are both approved.</td></tr>
           <tr><td>V3 index</td><td>Query Factory/Community entity.</td><td>Source starts at current Factory deployment block.</td></tr>
           <tr><td>Safety</td><td>Run secret scan before push.</td><td>No secrets in Core, frontend or backend history.</td></tr>
         </tbody>
@@ -659,7 +661,7 @@ export const contracts = {
 if (Number(process.env.NEXT_PUBLIC_CHAIN_ID) !== 5042002) {
   throw new Error("This release profile is only valid for Arc Testnet");
 }</code></pre>
-      <p>Address normalization is useful for comparisons, but never use a normalized string to hide a release mismatch. For example, a FundingPool can contain valid bytecode and still point at a previous V3 Factory. Read its configured Factory and compare it to the manifest before presenting V3 creation as available.</p>
+      <p>Address normalization is useful for comparisons, but never use a normalized string to hide a release mismatch. For example, a FundingPool can contain valid bytecode while the intended V3.1 Factory is not approved. Read the Factory approval set and compare it to the manifest before presenting V3 creation as available.</p>
 
       <h2>Wallet write sequence</h2>
       <div class="state-track">
@@ -844,7 +846,7 @@ for (const event of logs) {
       <h2>Release and incident checklist</h2>
       <ol class="numbered-flow">
         <li>Read the deployment manifest and verify every configured address has non-empty bytecode on Arc Testnet.</li>
-        <li>Read FundingPool's configured V3 Factory and compare it to the manifest Factory address.</li>
+        <li>Read FundingPool's Factory approvals: V3.0 and the manifest V3.1 Factory must both be approved.</li>
         <li>Check backend health after each deployment; then complete one fresh Demo PoP transaction to test signer-to-verifier compatibility.</li>
         <li>Query the V3 Factory from block <code>61277385</code> and verify a new Community is indexed by the V3 subgraph.</li>
         <li>Run the V2/V3 matrix scenarios affected by the change, recording receipts and direct reads.</li>
