@@ -1,0 +1,29 @@
+export const consoleDocs = [
+  {
+    slug: "bert-console",
+    section: "Build with BERT",
+    group: "Public tools",
+    title: "BERT Console Beta",
+    summary: "Read-only Arc Testnet observability, indexed data explorer and GraphQL workspace for BERT V2.3 and V3.1.",
+    tags: ["console", "monitoring", "graphql", "indexer", "arc", "v2.3", "v3.1"],
+    content: `
+      <p class="eyebrow">BERT / Public tools / V0.1.0 Beta</p><h1>See the protocol.<br /><span>Inspect the evidence.</span></h1>
+      <p class="lead">BERT Console is a public, read-only view of BERT V2.3 funding and V3.1 Community activity on Arc Testnet. It combines two Graph Studio subgraphs with selected direct RPC reads. No wallet connection is needed, and the console cannot submit transactions.</p>
+      <div class="doc-cards three-up"><a href="https://bertdao-console.vercel.app/" target="_blank" rel="noreferrer" class="doc-card"><span class="mini-icon">01</span><h3>Open Console</h3><p>Explore dashboards, records, deployments and source health.</p><b>Open beta ↗</b></a><a href="https://github.com/Tenyokj/bert-console-arc" target="_blank" rel="noreferrer" class="doc-card"><span class="mini-icon">02</span><h3>Read the source</h3><p>Review queries, addresses, caches and contribution guidance.</p><b>Source repository ↗</b></a><a href="#indexing-and-subgraphs" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Understand indexing</h3><p>Learn where historical records come from and how to validate them.</p><b>Indexer reference →</b></a></div>
+      <div class="callout warning"><strong>Testnet beta, not an execution interface.</strong> Values are from valueless Arc Testnet assets. The Console does not replace the dApp, block explorer, contract receipts, direct contract state or a security audit. Indexed records can lag the chain.</div>
+      <h2>What you can inspect</h2>
+      <table><thead><tr><th>View</th><th>Use it for</th><th>Important boundary</th></tr></thead><tbody><tr><td>Overview</td><td>Recent funding targets, activity, source health and protocol snapshot.</td><td>Funding target bars are requested minimums, not money raised. Activity bars use recently loaded records, not all-time events.</td></tr><tr><td>V2.3 Funding</td><td>Ideas, funding rounds and backer milestone history.</td><td>Check current balances and eligibility onchain before acting.</td></tr><tr><td>V3.1 Communities</td><td>Communities, members, proposals, Slate rounds and execution reviews.</td><td>A recent Members count spans the loaded Community sample; it is not a unique-member total or a per-Community census.</td></tr><tr><td>Data Explorer</td><td>Browse 28 indexed collections with record details, GraphQL and CSV.</td><td>25 records per server-side page; search and CSV cover the current page only.</td></tr><tr><td>Deployments</td><td>Inspect known proxy addresses, implementations and pause state.</td><td>Implementation and pause checks depend on RPC availability.</td></tr><tr><td>Query Studio</td><td>Run read-only GraphQL with variables and export results.</td><td>Queries consume the shared Graph Studio development quota.</td></tr></tbody></table>
+      <h2>Read a result correctly</h2>
+      <ol class="numbered-flow"><li><strong>Choose the correct version.</strong><span>V2.3 is global funding; V3.1 is Community-local governance. They use separate subgraphs.</span></li><li><strong>Check source health.</strong><span>Compare the indexed block with the Arc head block. An indexer behind the chain can omit new actions.</span></li><li><strong>Check the label and scope.</strong><span>Recent samples, requested budgets, deposited USDC and released amounts are different measures. Binary yes/no weights do not describe Slate candidate allocations.</span></li><li><strong>Verify decisive state onchain.</strong><span>For balances, roles, milestone eligibility, settlement and final transaction outcomes, use live contract reads and receipts.</span></li></ol>
+      <h2>Query a collection</h2>
+      <p>In Query Studio, choose the V2.3 or V3.1 source, open a starter query, edit it, and run it with <code>Ctrl/Command + Enter</code>. Use variables for filters and paging. Data Explorer is easier for quick inspection; Query Studio is the path for custom historical analysis. Copy the query or cURL, export the result, and include the indexed block when reporting a discrepancy.</p>
+      <pre><code>V2_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.3.0
+V3_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.1.0
+ARC_CHAIN_ID=5042002</code></pre>
+      <h2>Availability and limits</h2>
+      <p>The beta refreshes its visible dashboard about every three minutes and uses short server-side caches. Query Studio calls are not part of that shared cache. The current Graph Studio development endpoints have a limited daily query budget; high traffic or many manual queries may cause throttling or empty/error states. Source health does not guarantee every individual query will succeed. This is not an SLA-backed alerting or production analytics service.</p>
+      <h2>Contribute or report a problem</h2>
+      <p>For a data or UI issue, send the Console route, collection/query, expected result, observed result, source health, indexed block, and a matching transaction hash or contract read. See the <a href="https://github.com/Tenyokj/bert-console-arc/blob/arc-console-migration/CONTRIBUTING.md" target="_blank" rel="noreferrer">Console contribution guide</a>. Report exploitable security findings privately through the <a href="https://github.com/Tenyokj/bert-console-arc/security/advisories/new" target="_blank" rel="noreferrer">security advisory channel</a>; do not publish a live exploit in a public issue.</p>
+    `,
+  },
+];
