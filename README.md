@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="./assets/banner.png" alt="BERT Docs banner" width="720" />
+  <img src="./assets/bert-docs-banner.png" alt="BERT Docs banner" width="720" />
 </p>
 
 # BERT Docs
