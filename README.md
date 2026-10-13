@@ -56,6 +56,8 @@ deployment registry, and mainnet readiness conditions.
 | Resource | Purpose |
 | --- | --- |
 | [BERT dApp](https://bertdao.vercel.app) | Reference interface for V2, V3 Communities and Arc Testnet Demo PoP. |
+| [BERT Console](https://bertdao-console.vercel.app) | V0.1.0 Beta read-only monitoring and GraphQL exploration; see the [console guide](https://bertdao-docs.vercel.app/#bert-console). |
+| [Console source](https://github.com/Tenyokj/bert-console-arc) | Standalone Next.js console repository and contributor guide. |
 | [Core contracts](https://github.com/Tenyokj/bert-core-arc) | Solidity contracts, deployment scripts and canonical deployment manifest. |
 | [Frontend](https://github.com/Tenyokj/bert-front-arc) | Next.js dApp implementation. |
 | [Backend](https://github.com/Tenyokj/bert-backend-arc) | Verification and testnet backend service. |
