@@ -22,6 +22,7 @@ export const startDocs = [
       <h2>Developer documentation map</h2>
       <div class="doc-cards three-up compact"><a href="#client-and-network" data-doc-link class="doc-card"><span class="mini-icon">01</span><h3>Client configuration</h3><p>Network guards, RPC strategy and units.</p></a><a href="#indexing-and-subgraphs" data-doc-link class="doc-card"><span class="mini-icon">02</span><h3>Indexing</h3><p>V2 and V3 GraphQL read models.</p></a><a href="#testnet-guide" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Testnet operations</h3><p>Demo PoP, safe testing and reporting.</p></a><a href="#protocol-map" data-doc-link class="doc-card"><span class="mini-icon">04</span><h3>Protocol architecture</h3><p>How V2 and V3 connect without merging scopes.</p></a></div>
       <h2>Public observability</h2><p>Use <a href="#bert-console" data-doc-link>BERT Console V0.1.0 Beta</a> to inspect indexed funding, Community governance, deployments and source health without connecting a wallet. The guide explains sample counts, indexer lag and how to verify a displayed result against the chain.</p>
+      <h2>Not an integrator?</h2><p>If you organize proposal decisions or want to test the product, begin with the <a href="#community-pilot" data-doc-link>Community pilot</a>. It starts with a read-only example and a conversation about your existing process, not a wallet transaction.</p>
     `,
   },
   {

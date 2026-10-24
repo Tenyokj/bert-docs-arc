@@ -11,7 +11,8 @@ Whitepaper.
 ## Scope and status
 
 The paper documents BERT V2.3 Global Funding Layer and the modular BERT V3.1
-Community Layer as deployed and tested on Arc Testnet. V2.3 uses refundable,
+Community Layer deployed on Arc Testnet with internal automated tests. Broader
+manual E2E testing and independent security review remain outstanding. V2.3 uses refundable,
 idea-specific pledges and winning-backer-governed 20/40/40 milestones; V3.1
 uses isolated Community Treasuries, focused runtime modules and
 supporter-governed 20/40/40 execution plans. It distinguishes real testnet
@@ -21,6 +22,21 @@ verification is not a proof-of-personhood system.
 It must be updated when a material protocol change, deployment change, audit,
 or mainnet policy decision occurs. Contract source and the current deployment
 manifest remain the authority for live values.
+
+Document revision 1.3.0 (24 October 2026) distinguishes original deployed V3.1
+from the **source-only V3.2** release (Manager 2.0.0): execution-recipient review
+exclusion, fresh Admin quorum for all 20/40/40 payments, seven-active-day
+authorization/payment expiry and refunds of the whole unpaid execution budget.
+The PDF and HTML now both include this section. The existing deployment appendix
+still identifies the original live infrastructure; no new addresses are invented.
+
+V2 and V3 remain separate parts of **one** whitepaper, not two independently
+versioned papers. Legacy V2 round policy, exact V3 review thresholds, Demo PoP
+limitations and outstanding manual E2E/independent audit remain explicit.
+
+See the [quorum specification](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2-TRANCHE-QUORUM.md)
+and [self-review record](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.1-SELF-REVIEW-FIX.md)
+before claiming that a particular Community uses the new behavior.
 
 ## Generating the PDF locally
 
@@ -34,3 +50,5 @@ On macOS with Google Chrome installed:
 ```
 
 The source uses A4 print styling. Review the generated PDF before publishing.
+
+V2 remains V2.3; documentation/NatSpec corrections do not create V2.4 or V2.3.1. V3.2, each contract's custom version and this document's 1.3.0 revision are separate scopes.

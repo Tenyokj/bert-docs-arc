@@ -1,5 +1,24 @@
 export const testingDocs = [
   {
+    slug: "community-pilot",
+    section: "Testing & contributing",
+    group: "Start here",
+    title: "Community pilot",
+    summary: "A small, guided Arc Testnet pilot for groups that decide which proposals to support and review delivery.",
+    tags: ["pilot", "community", "organizers", "arc", "testnet", "contributors"],
+    content: `
+      <p class="eyebrow">BERT / Community pilot</p><h1>Start with one decision.<br /><span>Not a protocol migration.</span></h1>
+      <p class="lead">If your community has selected proposals and checked whether work was delivered, we want to learn how you do it today. BERT V3.1 is an open-source Arc Testnet prototype for community decisions and staged execution. We are looking for a few organizers willing to give honest feedback, not deposits or publicity.</p>
+      <div class="callout warning"><strong>Testnet only.</strong> Do not move real funds or import a valuable wallet. Testnet assets have no monetary value. Demo PoP is not production personhood verification, and this pilot is not a security audit or mainnet launch.</div>
+      <h2>Choose your starting point</h2>
+      <div class="doc-cards three-up"><a href="https://bertdao-console.vercel.app" target="_blank" rel="noreferrer" class="doc-card"><span class="mini-icon">01</span><h3>Look, no wallet</h3><p>Explore indexed Communities and proposals in the read-only BERT Console. Data can lag the chain.</p><b>Open Console →</b></a><a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/COMMUNITY-PILOT.md" target="_blank" rel="noreferrer" class="doc-card"><span class="mini-icon">02</span><h3>Discuss your process</h3><p>Read the pilot brief and six questions about your last real funding decision before trying a demo.</p><b>Read pilot brief →</b></a><a href="#tester-arc-testnet-kit" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Try a testnet flow</h3><p>Only if it fits: use separate test wallets, run one Community decision and preserve receipts.</p><b>Open tester kit →</b></a></div>
+      <h2>What the guided pilot covers</h2>
+      <ol class="numbered-flow"><li><strong>Understand the current workflow.</strong><span>Tell us about the last proposal you handled, its voters, budget custody and delivery checks.</span></li><li><strong>Inspect a real testnet example.</strong><span>Find a Community and proposal in Console without connecting a wallet.</span></li><li><strong>Run one decision, if useful.</strong><span>Create a Community and run an Admin Binary proposal on Arc Testnet with valueless assets. This needs multiple wallets and may span a voting window.</span></li><li><strong>Report friction honestly.</strong><span>We need the confusing step, failed expectation or mismatched data, not a positive testimonial.</span></li></ol>
+      <p>Onchain milestones take longer than a short call. We do not claim that a complete 20/40/40 execution plan can be tested in 15 minutes. For a full disposable E2E run, use the <a href="#tester-local-lab" data-doc-link>local lab</a> and time travel.</p>
+      <h2>Want to participate or contribute?</h2><p>Organizers can request a guided pilot at <a href="mailto:bertdaoarc@gmail.com">bertdaoarc@gmail.com</a>. For technical findings, use the <a href="#contributor-testing-hub" data-doc-link>contributor testing hub</a> and open a focused issue in the affected repository. The first scoped task drafts are in <a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/STARTER-ISSUES.md" target="_blank" rel="noreferrer">Core's contributor backlog</a>. Do not post wallet secrets, private contact details or exploitable findings publicly.</p>
+    `,
+  },
+  {
     slug: "contributor-testing-hub",
     section: "Testing & contributing",
     group: "Start here",
@@ -10,6 +29,7 @@ export const testingDocs = [
       <p class="eyebrow">BERT / Contributor program</p><h1>Test the invariant.<br /><span>Keep the evidence.</span></h1>
       <p class="lead">BERT is in active Arc Testnet development. External contributors help find broken permissions, accounting errors, liveness failures and confusing wallet UX before any mainnet proposal. A useful result is reproducible: it names the commit, chain, contracts, actor, transaction, expected invariant and observed result.</p>
       <div class="callout warning"><strong>Testnet only.</strong> Use Arc Testnet assets or an isolated local Hardhat chain. Do not use real funds, real keys, seed phrases or production identity credentials. Demo PoP tests a real onchain access gate, not personhood or Sybil resistance.</div>
+      <p>Organizing a group rather than testing code? Start with the <a href="#community-pilot" data-doc-link>Community pilot</a> and its read-only Console path.</p>
       <h2>Choose a contribution lane</h2>
       <div class="doc-cards three-up"><a href="#tester-arc-testnet-kit" data-doc-link class="doc-card"><span class="mini-icon">01</span><h3>Arc Testnet kit</h3><p>Use the current dApp, addresses, Graph endpoints and testnet evidence template.</p><b>Open public kit →</b></a><a href="#tester-local-lab" data-doc-link class="doc-card"><span class="mini-icon">02</span><h3>Protocol QA</h3><p>Replay V2.3 and V3.1 lifecycle, accounting and role invariants locally.</p><b>Open local lab →</b></a><a href="#tester-security-reporting" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Security research</h3><p>Probe authorization, accounting, liveness, token behavior and upgrade boundaries.</p><b>Open security scope →</b></a></div>
       <h2>Minimum evidence standard</h2>
@@ -73,13 +93,14 @@ npx hardhat run scripts/deploy/deploy-proxies.ts --network localhost
 LOCAL_RPC_URL=http://127.0.0.1:8545 \\
 POP_VERIFIER_ADDRESS=&lt;PoPVerifierUpgradeable-proxy&gt; \\
 V3_PROXY_ADMIN_OWNER=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 \\
-npx hardhat run scripts/deploy/deploy-v3-1.ts --network localhost
+npx hardhat run scripts/deploy/deploy-v3-2.ts --network localhost
 
-# Substitute FundingPoolUpgradeable and V3_1_FACTORY_ADDRESS printed above.
+# These current sources deploy unreleased V3.2, not original V3.1.
+# Substitute FundingPoolUpgradeable and V3_2_FACTORY_ADDRESS printed above.
 LOCAL_RPC_URL=http://127.0.0.1:8545 \\
 FUNDING_POOL_ADDRESS=&lt;FundingPoolUpgradeable-proxy&gt; \\
-V3_1_FACTORY_ADDRESS=&lt;V3_1_FACTORY_ADDRESS&gt; \\
-npx hardhat run scripts/deploy/configure-v3-1-funding-pool.ts --network localhost
+V3_2_FACTORY_ADDRESS=&lt;V3_2_FACTORY_ADDRESS&gt; \\
+npx hardhat run scripts/deploy/configure-v3-2-funding-pool.ts --network localhost
 
 LOCAL_RPC_URL=http://127.0.0.1:8545 \\
 MOCK_USDC_ADDRESS=&lt;USDC-asset&gt; \\
@@ -112,7 +133,7 @@ npx hardhat run scripts/local/verify-v3-test-wallets.ts --network localhost</cod
       <h2>V3.1: four governance lanes</h2>
       <table><thead><tr><th>Lane</th><th>Entry route</th><th>Critical checks</th></tr></thead><tbody><tr><td>Admin Binary</td><td>Admin creates; Members vote YES/NO.</td><td>No Validator review or reward share; YES winner creates plan.</td></tr><tr><td>Member Binary</td><td>Member locks bond; Validators decide; Members vote.</td><td>Only Validators decide once; author cannot self-vote.</td></tr><tr><td>Admin Slate</td><td>Admin creates candidates and round.</td><td>One selection per Member; deterministic winner; one settlement.</td></tr><tr><td>Member Slate</td><td>Member candidates require validation before round.</td><td>Unapproved candidate cannot enter; winner starts same plan lifecycle.</td></tr></tbody></table>
       <h2>Execution-plan checks</h2>
-      <div class="contract-rail"><div><b>20%</b><small>SETTLEMENT</small><strong>Reserved and released once</strong><span>Treasury reserves winner budget, then releases only first tranche to Administration execution wallet.</span></div><div><b>40%</b><small>MILESTONE ONE</small><strong>Supporter review</strong><span>Only sealed supporters review. Weight quorum is 40%; approval is two-thirds.</span></div><div><b>40%</b><small>MILESTONE TWO</small><strong>Terminal delivery</strong><span>Second proof follows same electorate. Failure makes only unspent funds refundable.</span></div></div>
+      <div class="contract-rail"><div><b>20%</b><small>SETTLEMENT</small><strong>Reserved and released once</strong><span>Treasury reserves winner budget, then releases only first tranche to Administration execution wallet.</span></div><div><b>40%</b><small>MILESTONE ONE</small><strong>Supporter review</strong><span>Only eligible sealed supporters review. Weight quorum is 40%; approval is 6,667 bps (66.67%).</span></div><div><b>40%</b><small>MILESTONE TWO</small><strong>Terminal delivery</strong><span>Second proof follows same electorate. Failure makes only unspent funds refundable.</span></div></div>
       <table><thead><tr><th>Negative case</th><th>Expected result</th></tr></thead><tbody><tr><td>Unrelated Member, NO voter, author, or executor reviews proof.</td><td>Revert: winner snapshot eligibility cannot be bypassed.</td></tr><tr><td>Review lacks quorum.</td><td>Only documented grace route opens; silence never auto-pays executor.</td></tr><tr><td>First proof fails.</td><td>One correction after cooldown.</td></tr><tr><td>Corrected proof fails or proof expires.</td><td>Plan fails; unreleased reserve is pro-rata claimable only by winner supporters.</td></tr><tr><td>Community pauses during deadline.</td><td>Community clock freezes voting, proof, review and action windows.</td></tr></tbody></table>
     `,
   },
