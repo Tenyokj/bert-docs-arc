@@ -10,10 +10,10 @@ Whitepaper.
 
 ## Scope and status
 
-The paper documents BERT V2.3 Global Funding Layer and the modular BERT V3.1
+The paper documents BERT V2.3 Global Funding Layer and the modular BERT V3.2
 Community Layer deployed on Arc Testnet with internal automated tests. Broader
 manual E2E testing and independent security review remain outstanding. V2.3 uses refundable,
-idea-specific pledges and winning-backer-governed 20/40/40 milestones; V3.1
+idea-specific pledges and winning-backer-governed 20/40/40 milestones; V3.2
 uses isolated Community Treasuries, focused runtime modules and
 supporter-governed 20/40/40 execution plans. It distinguishes real testnet
 execution from planned mainnet behavior, including the fact that Demo
@@ -23,12 +23,12 @@ It must be updated when a material protocol change, deployment change, audit,
 or mainnet policy decision occurs. Contract source and the current deployment
 manifest remain the authority for live values.
 
-Document revision 1.3.0 (24 October 2026) distinguishes original deployed V3.1
-from the **source-only V3.2** release (Manager 2.0.0): execution-recipient review
+Document revision 1.3.1 (24 October 2026) distinguishes original deployed V3.1
+from **V3.2 deployed on Arc Testnet on 24 October 2026** (Manager 2.0.0): execution-recipient review
 exclusion, fresh Admin quorum for all 20/40/40 payments, seven-active-day
 authorization/payment expiry and refunds of the whole unpaid execution budget.
-The PDF and HTML now both include this section. The existing deployment appendix
-still identifies the original live infrastructure; no new addresses are invented.
+The PDF and HTML now both include this section. The deployment appendix records current V3.2 addresses and receipt-backed anchors,
+while retaining historical V3.1 release evidence. V2 remains unchanged.
 
 V2 and V3 remain separate parts of **one** whitepaper, not two independently
 versioned papers. Legacy V2 round policy, exact V3 review thresholds, Demo PoP
@@ -51,4 +51,4 @@ On macOS with Google Chrome installed:
 
 The source uses A4 print styling. Review the generated PDF before publishing.
 
-V2 remains V2.3; documentation/NatSpec corrections do not create V2.4 or V2.3.1. V3.2, each contract's custom version and this document's 1.3.0 revision are separate scopes.
+V2 remains V2.3; documentation/NatSpec corrections do not create V2.4 or V2.3.1. V3.2, each contract's custom version and this document's 1.3.1 revision are separate scopes.

@@ -1,6 +1,6 @@
 # Contributing to BERT Documentation
 
-This repository is the public technical reference for BERT V2.3, the V3.1
+This repository is the public technical reference for BERT V2.3, the V3.2
 Community Layer and Arc Testnet operations. It is a contributor surface, not a
 marketing site: every factual claim must be traceable to deployed contracts,
 the Core deployment record, a reviewed source change or a reproducible test.
@@ -9,7 +9,7 @@ the Core deployment record, a reviewed source change or a reproducible test.
 
 | Contribution area | Current need | First useful contribution |
 | --- | --- | --- |
-| Protocol testers | Clear reports for V2.3, V3.1, frontend and indexer behavior | Improve a test case with exact setup, expected state and transaction evidence. |
+| Protocol testers | Clear reports for V2.3, V3.2, frontend and indexer behavior | Improve a test case with exact setup, expected state and transaction evidence. |
 | Frontend developers | Accurate integration examples, module-routing notes and wallet UX docs | Verify a code sample against the current dApp and Core ABI. |
 | Solidity developers and auditors | Security/invariant explanations that match reviewed code | Document a proven invariant or clarify a real failure path. |
 | Technical writers | Better onboarding, terminology, diagrams and accessibility | Rewrite one page without changing protocol meaning. |
@@ -28,9 +28,9 @@ returns.
 2. Separate current Arc Testnet facts from future mainnet plans. Testnet assets
    have no monetary value; Demo PoP is not Sybil resistance.
 3. Label V3.0 as historical where necessary. New Community integrations use
-   V3.1 Factory/module architecture.
+   V3.2 Factory/module architecture.
 4. For ABI-sensitive content, state which contract or module owns a read/write.
-   Do not imply that every V3.1 getter lives on `CommunityHub`.
+   Do not imply that every V3.2 getter lives on `CommunityHub`.
 5. Do not add secrets, private keys, deploy keys, backend credentials, personal
    data or unredacted security proof material.
 6. Keep public address changes synchronized with

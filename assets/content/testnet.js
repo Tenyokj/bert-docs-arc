@@ -28,7 +28,7 @@ export const testnetDocs = [
     tags: ["testnet", "deployment", "manifest", "factory", "proxy", "preflight"],
     content: `
       <p class="eyebrow">Arc Testnet / Deployment safety</p><h1>Addresses are release data.<br /><span>Never UI constants.</span></h1>
-      <p class="lead">A testnet deployment is real contract state, but it is not permanent protocol identity. When V2 proxies are upgraded or a V3.1 Factory is released, frontend, backend, subgraph and manual scripts must move as one release. Keep addresses in a versioned deployment manifest and make applications refuse an incomplete or mismatched manifest. The existing V3.0 Factory is historical state; V3.1 is a separate modular release, not an address replacement.</p>
+      <p class="lead">A testnet deployment is real contract state, but it is not permanent protocol identity. When V2 proxies are upgraded or a new V3 Factory is released, frontend, backend, subgraph and manual scripts must move as one release. Keep addresses in a versioned deployment manifest and make applications refuse an incomplete or mismatched manifest. The existing V3.0 Factory is historical state; V3.1 is a separate modular release, not an address replacement.</p>
       <h2>Manifest contract</h2>
       <p>The manifest should be committed without secrets and updated in the same pull request as deployment configuration. It is the single integration source for chain ID, proxy addresses, Factory/TreasuryDeployer pair, verifier, USDC, event start blocks and indexer URLs. Private keys, World signing keys, backend provider keys and Graph Studio deploy keys do not belong in it.</p>
       <pre><code>{
@@ -58,17 +58,17 @@ export const testnetDocs = [
       <pre><code>const code = await publicClient.getBytecode({ address: manifest.contracts.v3Factory });
 if (!code || code === "0x") throw new Error("V3 Factory has no deployed code");
 
-const v31FactoryIsApproved = await publicClient.readContract({
+const currentFactoryIsApproved = await publicClient.readContract({
   address: manifest.contracts.fundingPoolProxy,
   abi: fundingPoolAbi,
   functionName: "isCommunityFactoryApproved",
   args: [manifest.contracts.v3Factory],
 });
-if (!v31FactoryIsApproved) {
-  throw new Error("FundingPool has not allowlisted the V3.1 Factory");
+if (!currentFactoryIsApproved) {
+  throw new Error("FundingPool has not allowlisted the configured Community Factory");
 }</code></pre>
-      <div class="callout warning"><strong>V3.1 prerequisite.</strong> FundingPool must add V3.1 through an additive Factory allowlist. Never replace a live V3.0 Factory address with V3.1: V3.0 Treasuries would lose reserve-routing permission. The allowlist upgrade must be deployed and tested before a V3.1 Factory is released.</div>
-      <h2>Release checklist</h2><ol class="numbered-flow"><li>Deploy or upgrade contracts and collect emitted addresses/transaction hashes.</li><li>Verify the V3.0 Factory remains approved and add the new V3.1 Factory through the reviewed allowlist action.</li><li>Run deploy verification scripts against the target network before touching frontend configuration.</li><li>Update manifest, frontend environment, backend environment and V3 subgraph source together.</li><li>Redeploy backend/frontend and publish or update subgraph.</li><li>Run one V2 protected action and one V3.1 Community creation flow with fresh state.</li></ol>
+      <div class="callout warning"><strong>Historical V3.1 prerequisite; already deployed.</strong> FundingPool must add V3.1 through an additive Factory allowlist. Never replace a live V3.0 Factory address with V3.1: V3.0 Treasuries would lose reserve-routing permission. The allowlist upgrade must be deployed and tested before a V3.1 Factory is released.</div>
+      <h2>Release checklist</h2><ol class="numbered-flow"><li>Deploy or upgrade contracts and collect emitted addresses/transaction hashes.</li><li>Preserve V3.0/V3.1 approvals and add the current V3.2 Factory through the reviewed additive allowlist action.</li><li>Run deploy verification scripts against the target network before touching frontend configuration.</li><li>Update manifest, frontend environment, backend environment and V3 subgraph source together.</li><li>Redeploy backend/frontend and publish or update subgraph.</li><li>Run one V2 protected action and one V3.2 Community creation flow with fresh state.</li></ol>
       <div class="callout warning"><strong>Do not fix a stale deployment by setting a broad event query to block zero.</strong> Arc RPC history can be pruned. Correct the release start block and source address instead.</div>
     `,
   },
@@ -155,18 +155,18 @@ if (!health.ok) throw new Error("BERT verification backend is unavailable");
     tags: ["arc", "testnet", "addresses", "deployments", "v2", "v3", "contracts"],
     content: `
       <p class="eyebrow">Arc Testnet / Deployment registry</p><h1>Full addresses.<br /><span>One current release.</span></h1>
-      <p class="lead">The table below identifies the current Arc Testnet integration: V2.3 global funding activated on 2026-10-07 and the V3.1 modular Community Layer deployed on 2026-10-12, including the later compatible FundingPool upgrade. It contains public call addresses, release transactions and start blocks. Implementation and ProxyAdmin metadata remains in the versioned Core release record for audit and operations.</p>
-      <div class="callout warning"><strong>Before integrating:</strong> compare these values with the current Core release record and frontend deployment profile. V3.0 is retained as historical testnet state, but new Communities and new V3 integrations must use the V3.1 Factory below.</div>
+      <p class="lead">The table below identifies the current Arc Testnet integration: V2.3 global funding activated on 2026-10-07, original V3.1 on 2026-10-12 and current V3.2 deployed on 2026-10-24. V3.2 adds self-review exclusion and explicit Admin quorum for all execution tranches; V2 bytecode was not changed for this rollout. It contains public call addresses, release transactions and start blocks. Implementation and ProxyAdmin metadata remains in the versioned Core release record for audit and operations.</p>
+      <div class="callout warning"><strong>Before integrating:</strong> compare these values with the current Core release record and frontend deployment profile. V3.0 is retained as historical testnet state, but new Communities use the V3.2 Factory below. Existing V3.1 Communities remain under Factory <code>0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0</code> with their original immutable policy.</div>
       <h2>Network and shared infrastructure</h2>
       <table><thead><tr><th>Contract</th><th>Call address</th><th>Use</th></tr></thead><tbody><tr><td>Arc Testnet</td><td><code>5042002</code></td><td>Required chain ID for all testnet writes.</td></tr><tr><td>USDC-compatible token</td><td><code>0x3600000000000000000000000000000000000000</code></td><td>Settlement unit configured for the release.</td></tr><tr><td>RolesRegistryUpgradeable</td><td><code>0xf15c6213666EB4c09f594567DEf1345E2899BCC7</code></td><td>V2 protocol roles and shared role checks.</td></tr><tr><td>PoPVerifierUpgradeable</td><td><code>0xb8E2CB14F99E1a17C3Eee5863272A7F6dAF3C62b</code></td><td>Shared V2/V3 protected-action verifier.</td></tr><tr><td>RoleBootstrapDistributor</td><td><code>0xb0CA3E4F33994EAFe34a6257a0b904b8179A1b30</code></td><td>Testnet role bootstrap/distribution utility.</td></tr></tbody></table>
       <h2>V2 contract addresses</h2>
       <table><thead><tr><th>Contract</th><th>Call address</th><th>Use</th></tr></thead><tbody><tr><td>IdeaRegistryUpgradeable</td><td><code>0xE6563acfdc194Ba3861EfD928Bd8B1B33a5D29d5</code></td><td>BERT V2.3 funding proposals, author bonds, targets, status and immutable milestone plans.</td></tr><tr><td>FundingPoolUpgradeable</td><td><code>0x5eDdccd772a9E0F079cC6646b529C20e3D46e585</code></td><td>V2 pledge escrow, progressive fees, refunds, reserve and V3 Factory configuration.</td></tr><tr><td>VotingSystemUpgradeable</td><td><code>0xD008fC96902A9680FF77305881Ad6C6C075e7a68</code></td><td>Global BERT V2.3 rounds, viability selection and lazy winning-participation claims.</td></tr><tr><td>GrantManagerUpgradeable</td><td><code>0xA110baB4562d59d8bb7eDA4a05E53F40c678ccB2</code></td><td>20/40/40 claims, backer milestone votes, finalization, cancellation and refunds.</td></tr><tr><td>VoterProgressionUpgradeable</td><td><code>0xF6EB65957bb5e363FCD6B84AAdf76E41Ba754E14</code></td><td>Voter progression, levels and lazy winning-participation credit.</td></tr><tr><td>ReputationSystemUpgradeable</td><td><code>0x3594C46983460733F6470f7b61De2f3bB2918a81</code></td><td>Contributor reputation initialization and outcome updates.</td></tr></tbody></table>
-      <h2>Current V3.1 Community Layer addresses</h2>
-      <table><thead><tr><th>Contract</th><th>Call address</th><th>Use</th></tr></thead><tbody><tr><td>CommunityFactory proxy</td><td><code>0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0</code></td><td>Canonical V3.1 Community discovery, reservation and activation entrypoint.</td></tr><tr><td>CommunityTreasuryDeployer</td><td><code>0x009F80F6Eab73806655B10E2A5f42Ed3F2A9125b</code></td><td>Deploys each Community's isolated Treasury.</td></tr><tr><td>CommunityMembershipModuleDeployer</td><td><code>0x1bC3fe5821B88d4Dcf5253Ee860D21eCEe235010</code></td><td>Deploys membership and role state module.</td></tr><tr><td>CommunityProposalModuleDeployer</td><td><code>0xe7421a97D168825E048E29eb70196918d71c5a7D</code></td><td>Deploys proposal and validator-review module.</td></tr><tr><td>CommunityVotingModuleDeployer</td><td><code>0xb3f60c1dB662b1d62F9Aa7652F95B62D819FfA6d</code></td><td>Deploys Binary/Slate voting module.</td></tr><tr><td>CommunityMilestoneModuleDeployer</td><td><code>0xdb7846846011792cf9c70391078a0399E8a91569</code></td><td>Deploys the winner-snapshot and milestone manager modules.</td></tr><tr><td>CommunityAdminActions library</td><td><code>0x889A087A90cf711D86B208681ea8AfE668479303</code></td><td>Linked CommunityHub library for quorum-protected Administration actions.</td></tr></tbody></table>
+      <h2>Current V3.2 Community Layer addresses</h2>
+      <table><thead><tr><th>Contract</th><th>Call address</th><th>Use</th></tr></thead><tbody><tr><td>CommunityFactory proxy</td><td><code>0xf793786BCecfbfE35a22E36180032b32BD5208Ba</code></td><td>Current V3.2 Community discovery, reservation and activation entrypoint.</td></tr><tr><td>CommunityTreasuryDeployer</td><td><code>0x374D742CC904edC4Dc09Bfd6BC941519969C1adf</code></td><td>Deploys each Community's isolated Treasury.</td></tr><tr><td>CommunityMembershipModuleDeployer</td><td><code>0x5196CC82fc05e6b4623c381a944a8D24b02984dd</code></td><td>Deploys membership and role state module.</td></tr><tr><td>CommunityProposalModuleDeployer</td><td><code>0x5286B45c3DA60F7341F3f0147163c6B42FeD01a3</code></td><td>Deploys proposal and validator-review module.</td></tr><tr><td>CommunityVotingModuleDeployer</td><td><code>0x9D6cef8dEC24ffea29ed1319ebc4E0d729DCe25F</code></td><td>Deploys Binary/Slate voting module.</td></tr><tr><td>CommunityMilestoneModuleDeployer</td><td><code>0xB1D4A3d54a0E7bC1CCA66F973A08b25F99FD37bf</code></td><td>Deploys the winner-snapshot and milestone manager modules.</td></tr><tr><td>CommunityAdminActions library</td><td><code>0x4755E0bc1CB4ffB958595d40A55d1F63862bC815</code></td><td>Linked CommunityHub library for quorum-protected Administration actions.</td></tr></tbody></table>
       <h2>Historical V3.0 compatibility address</h2>
       <p><code>0x811fFb3B53d43e608Ee4dF854aa1BdC471F37589</code> remains allowlisted in FundingPool only so already-created V3.0 Treasuries preserve their defined reserve route. It is not the creation entrypoint for V3.1 Communities.</p>
       <h2>Release anchors</h2>
-      <table><thead><tr><th>Anchor</th><th>Value</th><th>Why indexers and operators need it</th></tr></thead><tbody><tr><td>V3.1 Factory deployment</td><td><code>0x4f60aeca659d275ef8cef0c761441207a83a78012b1006c8a79b3beaca84ec32</code> / block <code>66809847</code></td><td>Start V3.1 Factory indexing here, not at block zero.</td></tr><tr><td>FundingPool V3.1-compatible upgrade</td><td><code>0x6a3f82c71d2cbc2130908e86b8210b913668508c4afd68551b931a006c048593</code> / block <code>66809444</code></td><td>Adds the additive Factory allowlist needed for V3.0 and V3.1 coexistence.</td></tr><tr><td>V3.0 Factory compatibility allowlist</td><td><code>0x7ccb8902cf7036951820126e051e18ca8508c8cc8349ffc34469d1a25a1cdf74</code></td><td>Preserves the reserve route for historic V3.0 Communities.</td></tr><tr><td>V3.1 Factory allowlist</td><td><code>0x845f814537778cdd61d2e11fe3eb80d4fda9557058212afc3ef884c70f16e66a</code></td><td>Allows active V3.1 Community Treasuries to route defined reserve inflows.</td></tr><tr><td>V2.3 queue retirement</td><td><code>0x7bcf54e4ec97e178e1dfdbfc5e533d52cda049a914762de2d1a295b201c5aabe</code></td><td>Cancelled legacy ideas #1-#4, returned their author bonds and fixed the new queue at #5.</td></tr></tbody></table>
+      <table><thead><tr><th>Anchor</th><th>Value</th><th>Why indexers and operators need it</th></tr></thead><tbody><tr><td>V3.2 Factory deployment</td><td><code>0x217bf856e206f18297c39caf8c474d48bf0e59caa70d39f58c0d9d795b57c6f6</code> / block <code>68888068</code></td><td>Current matching V3.2 bundle.</td></tr><tr><td>V3.2 Factory allowlist</td><td><code>0xb101ec91d9252961ceacf348bf6bcca695d234c8b7d475d00c058adb674205b4</code> / block <code>68888345</code></td><td>Preserves earlier approvals.</td></tr><tr><td>Historical V3.1 Factory deployment</td><td><code>0x4f60aeca659d275ef8cef0c761441207a83a78012b1006c8a79b3beaca84ec32</code> / block <code>66809847</code></td><td>Start V3.1 Factory indexing here, not at block zero.</td></tr><tr><td>FundingPool V3.1-compatible upgrade</td><td><code>0x6a3f82c71d2cbc2130908e86b8210b913668508c4afd68551b931a006c048593</code> / block <code>66809444</code></td><td>Adds the additive Factory allowlist needed for V3.0 and V3.1 coexistence.</td></tr><tr><td>V3.0 Factory compatibility allowlist</td><td><code>0x7ccb8902cf7036951820126e051e18ca8508c8cc8349ffc34469d1a25a1cdf74</code></td><td>Preserves the reserve route for historic V3.0 Communities.</td></tr><tr><td>V3.1 Factory allowlist</td><td><code>0x845f814537778cdd61d2e11fe3eb80d4fda9557058212afc3ef884c70f16e66a</code></td><td>Allows active V3.1 Community Treasuries to route defined reserve inflows.</td></tr><tr><td>V2.3 queue retirement</td><td><code>0x7bcf54e4ec97e178e1dfdbfc5e533d52cda049a914762de2d1a295b201c5aabe</code></td><td>Cancelled legacy ideas #1-#4, returned their author bonds and fixed the new queue at #5.</td></tr></tbody></table>
       <h2>Copy-ready client configuration</h2>
       <pre><code>NEXT_PUBLIC_CHAIN_ID=5042002
 NEXT_PUBLIC_ARC_RPC_URL=https://arc-testnet.drpc.org
@@ -180,10 +180,10 @@ NEXT_PUBLIC_GRANT_MANAGER_ADDRESS=0xA110baB4562d59d8bb7eDA4a05E53F40c678ccB2
 NEXT_PUBLIC_VOTER_PROGRESSION_ADDRESS=0xF6EB65957bb5e363FCD6B84AAdf76E41Ba754E14
 NEXT_PUBLIC_REPUTATION_SYSTEM_ADDRESS=0x3594C46983460733F6470f7b61De2f3bB2918a81
 NEXT_PUBLIC_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.3.0
-NEXT_PUBLIC_V3_FACTORY_ADDRESS=0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0
-NEXT_PUBLIC_V3_ADMIN_ACTIONS_LIBRARY_ADDRESS=0x889A087A90cf711D86B208681ea8AfE668479303
+NEXT_PUBLIC_V3_FACTORY_ADDRESS=0xf793786BCecfbfE35a22E36180032b32BD5208Ba
+NEXT_PUBLIC_V3_ADMIN_ACTIONS_LIBRARY_ADDRESS=0x4755E0bc1CB4ffB958595d40A55d1F63862bC815
 NEXT_PUBLIC_V3_EVENT_FROM_BLOCK=66809847
-NEXT_PUBLIC_V3_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.1.0</code></pre>
+NEXT_PUBLIC_V3_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.2.0</code></pre>
       <div class="callout info"><strong>Community addresses and runtime modules are dynamic.</strong> Do not add a static list of Hub, Treasury, Membership, Proposal, Voting or Milestone module addresses to application configuration. Resolve the active Community from Factory <code>CommunityCreated</code> events or <code>getCommunity</code>, then resolve its module addresses from the Hub.</div>
     `,
   },
@@ -196,16 +196,17 @@ NEXT_PUBLIC_V3_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-v
     tags: ["arc", "subgraph", "graphql", "indexing", "factory", "start-block"],
     content: `
       <p class="eyebrow">Arc Testnet / Indexer operations</p><h1>Two domains.<br /><span>One release discipline.</span></h1>
-      <p class="lead">V2 and V3 must be indexed independently. V2 is a known set of global contracts. V3 begins with one Factory and expands through dynamic Hub/Treasury templates after each canonical Community activation. Keeping the domains separate avoids mixing V2 round IDs with V3 proposal IDs and avoids global log scans across unknown Community deployments.</p>
+      <p class="lead">V2 and V3 must be indexed independently. V2 is a known set of global contracts. V3 begins with retained Factory sources and expands through dynamic Hub/Treasury templates after each canonical Community activation. Keeping the domains separate avoids mixing V2 round IDs with V3 proposal IDs and avoids global log scans across unknown Community deployments.</p>
       <h2>V2 versus V3 source map</h2>
-      <table><thead><tr><th>Index</th><th>Static sources</th><th>Discovers</th><th>Primary entities</th></tr></thead><tbody><tr><td>V2 subgraph</td><td>VotingSystem, IdeaRegistry, FundingPool, GrantManager</td><td>No dynamic contract set required.</td><td>Ideas, rounds, votes, reviews, distributions, payouts and milestone requests.</td></tr><tr><td>V3.1 subgraph</td><td>CommunityFactory at <code>0xe16C...1dD0</code>, from <code>66809847</code></td><td>Hub, Membership, Proposal, Voting, Milestone, Winner Snapshot and Treasury templates after <code>CommunityCreated</code>.</td><td>Communities, roles, proposals, validation, Binary/Slate votes, winner cohorts, milestone review and Treasury accounting.</td></tr></tbody></table>
+      <table><thead><tr><th>Index</th><th>Static sources</th><th>Discovers</th><th>Primary entities</th></tr></thead><tbody><tr><td>V2 subgraph</td><td>VotingSystem, IdeaRegistry, FundingPool, GrantManager</td><td>No dynamic contract set required.</td><td>Ideas, rounds, votes, reviews, distributions, payouts and milestone requests.</td></tr><tr><td>V3 graph v3.2.0</td><td>V3.1 Factory <code>0xe16C...1dD0</code> from <code>66809847</code> and V3.2 Factory <code>0xf793...08Ba</code> from <code>68888068</code></td><td>Hub, Membership, Proposal, Voting, Milestone, Winner Snapshot and Treasury templates after <code>CommunityCreated</code>.</td><td>Communities, roles, proposals, validation, Binary/Slate votes, winner cohorts, milestone review and Treasury accounting.</td></tr></tbody></table>
       <h2>Configure V3 manifest</h2>
       <p>The V3 repository ships a template manifest. Build the final manifest from the current Factory address and deployment block before code generation/deployment. Pinning the source prevents the exact <code>pruned history unavailable</code> failure seen when querying a public RPC from genesis.</p>
       <pre><code>cd bert-frontend/subgraph-v3
-export V3_FACTORY_ADDRESS=0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0
-export V3_EVENT_FROM_BLOCK=66809847
+export V3_FACTORY_ADDRESS=0xf793786BCecfbfE35a22E36180032b32BD5208Ba
+export V3_FACTORY_START_BLOCK=68888068
+# Generator also retains original V3.1 from 66809847.
 
-npm run configure-manifest
+npm run configure
 npm run codegen
 npm run build
 # Deploy with the Graph Studio key only in your local secure environment.</code></pre>
@@ -355,10 +356,10 @@ NEXT_PUBLIC_FUNDING_POOL_ADDRESS=0x5eDdccd772a9E0F079cC6646b529C20e3D46e585
 NEXT_PUBLIC_VOTING_SYSTEM_ADDRESS=0xD008fC96902A9680FF77305881Ad6C6C075e7a68
 NEXT_PUBLIC_GRANT_MANAGER_ADDRESS=0xA110baB4562d59d8bb7eDA4a05E53F40c678ccB2
 NEXT_PUBLIC_ARC_RPC_URL=https://arc-testnet.drpc.org
-NEXT_PUBLIC_V3_FACTORY_ADDRESS=0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0
-NEXT_PUBLIC_V3_ADMIN_ACTIONS_LIBRARY_ADDRESS=0x889A087A90cf711D86B208681ea8AfE668479303
+NEXT_PUBLIC_V3_FACTORY_ADDRESS=0xf793786BCecfbfE35a22E36180032b32BD5208Ba
+NEXT_PUBLIC_V3_ADMIN_ACTIONS_LIBRARY_ADDRESS=0x4755E0bc1CB4ffB958595d40A55d1F63862bC815
 NEXT_PUBLIC_V3_EVENT_FROM_BLOCK=66809847
-NEXT_PUBLIC_V3_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.1.0</code></pre>
+NEXT_PUBLIC_V3_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.2.0</code></pre>
       <p>Only values explicitly prefixed <code>NEXT_PUBLIC_</code> can be exposed to a Next.js browser bundle. That does not make them secret; addresses and public endpoints are intentionally inspectable. Never add an RPC credential, signing key or deployment key with this prefix.</p>
       <h2>Backend required variables</h2>
       <pre><code>CHAIN_ID=5042002
@@ -385,7 +386,7 @@ UPSTASH_REDIS_REST_TOKEN=...
           <tr><td>Backend boot</td><td>Open <code>/api/health</code>.</td><td>Returns <code>{"ok":true,"service":"bert-backend"}</code>.</td></tr>
           <tr><td>Demo endpoint guard</td><td>POST valid Arc request and wrong-chain request.</td><td>Arc succeeds; wrong chain is rejected.</td></tr>
           <tr><td>Frontend configuration</td><td>Open V2 ideas and V3 directory with Arc wallet.</td><td>No “set address” placeholders; reads target current release.</td></tr>
-          <tr><td>V3 wiring</td><td>Read FundingPool Factory approvals.</td><td>V3.0 and the manifest V3.1 Factory are both approved.</td></tr>
+          <tr><td>V3 wiring</td><td>Read FundingPool Factory approvals.</td><td>V3.0, V3.1 and the manifest V3.2 Factory are all approved.</td></tr>
           <tr><td>V3 index</td><td>Query Factory/Community entity.</td><td>Source starts at current Factory deployment block.</td></tr>
           <tr><td>Safety</td><td>Run secret scan before push.</td><td>No secrets in Core, frontend or backend history.</td></tr>
         </tbody>
@@ -644,10 +645,10 @@ NEXT_PUBLIC_FUNDING_POOL_ADDRESS=0x5eDdccd772a9E0F079cC6646b529C20e3D46e585
 NEXT_PUBLIC_VOTING_SYSTEM_ADDRESS=0xD008fC96902A9680FF77305881Ad6C6C075e7a68
 NEXT_PUBLIC_GRANT_MANAGER_ADDRESS=0xA110baB4562d59d8bb7eDA4a05E53F40c678ccB2
 NEXT_PUBLIC_ARC_RPC_URL=https://arc-testnet.drpc.org
-NEXT_PUBLIC_V3_FACTORY_ADDRESS=0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0
-NEXT_PUBLIC_V3_ADMIN_ACTIONS_LIBRARY_ADDRESS=0x889A087A90cf711D86B208681ea8AfE668479303
+NEXT_PUBLIC_V3_FACTORY_ADDRESS=0xf793786BCecfbfE35a22E36180032b32BD5208Ba
+NEXT_PUBLIC_V3_ADMIN_ACTIONS_LIBRARY_ADDRESS=0x4755E0bc1CB4ffB958595d40A55d1F63862bC815
 NEXT_PUBLIC_V3_EVENT_FROM_BLOCK=66809847
-NEXT_PUBLIC_V3_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.1.0
+NEXT_PUBLIC_V3_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.2.0
 NEXT_PUBLIC_BACKEND_URL=https://bert-backend-arc.vercel.app</code></pre>
       <p>The public values above are release metadata, not secrets. Their exact source is the versioned manifest <code>bert-core/deployments/arc-testnet-v3.json</code>. If the manifest changes, update the frontend configuration, backend configuration, subgraph source and documentation together as a release.</p>
 
@@ -672,7 +673,7 @@ export const contracts = {
 if (Number(process.env.NEXT_PUBLIC_CHAIN_ID) !== 5042002) {
   throw new Error("This release profile is only valid for Arc Testnet");
 }</code></pre>
-      <p>Address normalization is useful for comparisons, but never use a normalized string to hide a release mismatch. For example, a FundingPool can contain valid bytecode while the intended V3.1 Factory is not approved. Read the Factory approval set and compare it to the manifest before presenting V3 creation as available.</p>
+      <p>Address normalization is useful for comparisons, but never use a normalized string to hide a release mismatch. For example, a FundingPool can contain valid bytecode while the intended V3.2 Factory is not approved. Read the Factory approval set and compare it to the manifest before presenting V3 creation as available.</p>
 
       <h2>Wallet write sequence</h2>
       <div class="state-track">
@@ -857,9 +858,9 @@ for (const event of logs) {
       <h2>Release and incident checklist</h2>
       <ol class="numbered-flow">
         <li>Read the deployment manifest and verify every configured address has non-empty bytecode on Arc Testnet.</li>
-        <li>Read FundingPool's Factory approvals: V3.0 and the manifest V3.1 Factory must both be approved.</li>
+        <li>Read FundingPool's Factory approvals: V3.0, V3.1 and the manifest V3.2 Factory must all be approved.</li>
         <li>Check backend health after each deployment; then complete one fresh Demo PoP transaction to test signer-to-verifier compatibility.</li>
-        <li>Query the V3.1 Factory from block <code>66809847</code> and verify a new Community plus its runtime modules are indexed by the V3.1 subgraph.</li>
+        <li>Query the V3.2 Factory from block <code>68888068</code> and verify its runtime modules in graph v3.2.0. Retain the V3.1 source from <code>66809847</code> for old Communities.</li>
         <li>Run the V2/V3 matrix scenarios affected by the change, recording receipts and direct reads.</li>
         <li>For a suspected security issue, stop at minimum proof of impact and use the private advisory channel with redacted evidence.</li>
       </ol>
