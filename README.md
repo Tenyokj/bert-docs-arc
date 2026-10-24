@@ -2,7 +2,7 @@
   <img src="https://img.shields.io/badge/version-BERT%20Docs-cddc39?style=for-the-badge&labelColor=171717" alt="BERT Docs" />
   <img src="https://img.shields.io/badge/docs-standalone-8bc34a?style=for-the-badge&labelColor=171717" alt="Standalone docs" />
   <img src="https://img.shields.io/badge/theme-day%20%2F%20night-f4d03f?style=for-the-badge&labelColor=171717" alt="Day and night theme" />
-  <img src="https://img.shields.io/badge/domain-docs.bert.app-7cb342?style=for-the-badge&labelColor=171717" alt="docs.bert.app" />
+  <img src="https://img.shields.io/badge/domain-bertdao--docs.vercel.app-7cb342?style=for-the-badge&labelColor=171717" alt="bertdao-docs.vercel.app" />
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@ rules.
 
 This folder is intentionally isolated from the main frontend so it can be:
 - deployed as a separate static site
-- moved into its own repository later
+- maintained in its own repository
 - maintained as the canonical technical reference for BERT integrators
 
 ## Current network policy
@@ -63,7 +63,6 @@ deployment registry, and mainnet readiness conditions.
 | [Backend](https://github.com/Tenyokj/bert-backend-arc) | Verification and testnet backend service. |
 | [V2 subgraph](https://thegraph.com/studio/subgraph/bert-arc-testnet/) | Indexed V2 protocol history. |
 | [V3.1 subgraph](https://thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet/) | Indexed V3.1 Factory, Hub, runtime modules and Treasury history. |
-
 | [Telegram](https://t.me/bertdao) | Official BERT community channel. |
 | [YouTube](https://www.youtube.com/@bertdaoARC) | Official BERT video channel. |
 
@@ -103,6 +102,8 @@ The site is organized for protocol developers, not as a marketing guide:
 - **Infrastructure & operations**: Arc Testnet deployment registry, direct-read
   reference, RPC/subgraph operations, test matrix, Demo PoP and incident
   response.
+- **Community pilot**: a read-only starting point for organizers, an optional
+  guided testnet decision, and links to focused contributor tasks.
 
 Use the command search (`Cmd/Ctrl + K`) to search titles, tags, summaries and
 page content. Every code block has a copy control.

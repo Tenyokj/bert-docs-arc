@@ -120,7 +120,11 @@
       @media print {
         html { background: white; }
         body { width: auto; }
-        .page { min-height: 297mm; }
+        @page { size: A4; margin: 14mm 18mm; }
+        @page cover { size: A4; margin: 0; }
+        .cover { page: cover; }
+        .page { min-height: 0; padding: 0; }
+        .footer { position: static; margin-top: 8mm; }
         a { color: inherit; border-bottom: 0; }
       }
     </style>
@@ -129,11 +133,11 @@
     <section class="cover">
       <div class="cover-content">
         <div class="brand"><img src="../assets/bert-logo.png" alt="BERT logo" /> BERTDAO Protocol</div>
-        <p class="cover-kicker">Technical whitepaper / Version 1.2</p>
+        <p class="cover-kicker">Technical whitepaper / Version 1.3.0</p>
         <h1>Transparent capital coordination for <span>communities and grants.</span></h1>
         <p class="subtitle">A stablecoin-native protocol for stake-backed proposals, auditable decision-making, controlled treasury flows, and milestone-based release.</p>
         <div class="cover-meta">
-          <div><strong>Publication</strong>12 October 2026</div>
+          <div><strong>Publication</strong>24 October 2026</div>
           <div><strong>Current environment</strong>Arc Testnet / active development</div>
           <div><strong>Protocol scope</strong>BERT V2 Global Funding Layer and BERT V3 Community Layer</div>
           <div><strong>Canonical source</strong>github.com/Tenyokj/bert-core-arc</div>
@@ -152,6 +156,7 @@
         <strong>Identity disclosure.</strong>
         The public Arc Testnet dApp uses an explicitly labelled Demo verification path. It exercises the actual backend-attestation and onchain <code>PoPVerifierUpgradeable</code> flow, but it is not proof of personhood and must not be interpreted as Sybil resistance. The planned production policy is a World ID proof-of-personhood integration, subject to completion, review, and deployment readiness.
       </div>
+      <div class="callout warning"><strong>Source versus deployment, 24 October 2026.</strong> Original Arc V3.1 Communities retain their original immutable Managers, including automatic tranche transfers and the documented execution-recipient review gap. The unreleased V3.2 release (Manager 2.0.0) excludes that recipient from reviews and adds fresh Admin quorum for every 20/40/40 payment. It is not deployed. The dedicated follow-up section describes this implementation; the address appendix still identifies the original live deployment.</div>
       <h2>Abstract</h2>
       <p class="abstract">BERTDAO Protocol is programmable, stablecoin-native infrastructure for coordinating proposals and capital. BERT V2.3 operates a global grant flow: target-backed proposal intake, immutable milestone plans, round-based refundable USDC pledges, viable-winner selection after a snapshotted fee, progressive reserve accounting, and winning-backer-governed milestone releases. BERT V3 is an isolated Community Layer: each Community has its own immutable governance Hub and USDC Treasury, local membership, validator review, binary and slate voting, and quorum-protected administrative actions. Defined V3 protocol inflows route into the existing V2 global reserve without merging Community execution balances or governance state.</p>
       <p>The protocol is deliberately modular. Proposal metadata, vote lifecycle, token accounting, grant payout state, role authority, reputation, and progression each have a defined onchain owner. This reduces ambiguity for integrators and auditors: the interface is not the source of truth, and an offchain index does not replace a contract read when finality matters.</p>
@@ -169,7 +174,7 @@
         <a href="#mainnet"><span>10</span>Mainnet readiness conditions</a>
         <a href="#appendix"><span>11</span>Appendix: addresses and glossary</a>
       </nav>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.2 / 12 October 2026</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.3.0 / 24 October 2026</span></div>
     </section>
 
     <section class="page page-break" id="problem">
@@ -302,7 +307,7 @@
       </table>
       <div class="callout warning"><strong>Interpretation rule.</strong> A valid integration must present reserve, active round capital, locked author stake, and already-released payout as separate concepts. Collapsing them into one "treasury available" number would misrepresent the protocol's obligations.</div>
       <h2>Grant claim and milestone releases</h2>
-      <p>A winning author may call <code>claimGrant(roundId)</code> only after a viable round is ended, before the 14-day claim deadline and before the grant has been claimed. The contract determines the winning idea and reads its round-specific gross escrow. The current 5% round fee is held pending at settlement and vests only alongside capital actually released to the author. The grant is not released at once.</p>
+      <p>A winning author may call <code>claimGrant(roundId)</code> after a viable round ends, within the 14-day claim window and only once. GrantManager reads the round-specific net grant, after the snapshotted fee. The current 5% fee is held pending at settlement and vests alongside author releases. The schedule below is V2.3: a round snapshots backer mode at start. Legacy reviewer-mode rounds retain 30/40/30; their constants preserve executable behavior, not storage slots.</p>
       <div class="diagram">
         <div class="diagram-title">V2 grant release rail</div>
         <div class="flow"><div class="flow-item">20%<br /><small>initial claim</small></div><div class="arrow">&#8594;</div><div class="flow-item">40%<br /><small>in-process milestone</small></div><div class="arrow">&#8594;</div><div class="flow-item">40%<br /><small>completion milestone</small></div></div>
@@ -368,6 +373,7 @@
     <section class="page page-break">
       <p class="eyebrow">05 / BERT V3 continued</p>
       <h1>From proposal review to settlement.</h1>
+      <p class="small"><strong>Original deployed V3.1 policy.</strong> The payment changes in the following source-only section require new matching infrastructure; existing Communities are not upgraded.</p>
       <h2>Member proposals have a validation gate</h2>
       <p>Members create either binary or slate proposals. A Member proposal immediately locks the configured USDC anti-spam bond and enters <code>PendingValidation</code>. Validators cast one approval or rejection during the configured validation window. The proposal passes when approvals reach the immutable threshold; it fails early when the remaining possible approvals cannot reach that threshold; otherwise it can be finalized after the deadline using the approvals received.</p>
       <p>On validator rejection, the Member proposal bond is routed to the global BERT reserve. If the proposal passes validation, its bond is returned when the later vote or slate round settles, whether it wins or fairly loses. The distinction is intentional: validation rejection is a moderation decision; a fairly considered democratic loss should not use the same economic penalty.</p>
@@ -408,11 +414,31 @@
       <h2>Validator reward epochs</h2>
       <p>Validator rewards are measured in epochs. Member-proposal validation cases are counted, and an active-validator threshold determines whether a Validator is eligible. After the epoch and associated validation window close, rewards are finalized as equal claimable shares for active Validators. Rounding dust—or all rewards when no Validator is active—returns to execution balance. Claims are pull-based and protected against double claim.</p>
       <h2>Execution plans and withdrawals</h2>
-      <p>For every settled winner, only wallets in the sealed winning-supporter snapshot can review a milestone proof. Review uses support weight, not one-wallet-one-vote: at least 40% of supporter weight must participate, two-thirds of participating weight must approve, and the plan also needs at least <code>max(3, ceil(3% of supporter wallets))</code> approving wallets. The review window stays open for the immutable Community duration even after thresholds are reached. One rejected proof may be corrected after cooldown. A second rejection, proof expiry, or no quorum after grace fails the plan; only the unreleased amount becomes a pull refund for winning supporters. Silence never releases a tranche.</p>
+      <p>Only sealed winning supporters review; authors cannot vote for their own proposal. Review requires 40% support-weight participation, 6,667 bps (66.67%) participating-weight approval and <code>max(3, ceil(3% of supporters))</code> approving wallets. This differs from V2.3's exact two-thirds. Review stays open for the immutable duration. One rejection permits correction after 48 hours; a second rejection, proof expiry or no quorum after one two-day grace fails the plan. Only unreleased funds become supporter pull refunds. Silence never releases a tranche.</p>
+      <p class="small"><strong>Known policy gap, identified 24 October 2026:</strong> a non-Admin execution recipient can join as a Member, support another author's proposal and review its own execution. Executor exclusion is not independently enforced. Use a non-participating Administration execution wallet for pilots; the source fix is implemented, but deployment and independent review remain outstanding.</p>
       <p>Separately, a current Admin can create a withdrawal request only from available <code>executionBalance</code>, not from plan reserve. The request records recipient, amount, reason, metadata URI, and the creator's first approval; it reserves the amount immediately. Other current Admins approve once each. The Treasury transfers only after the Hub's immutable Admin threshold is met. A pending withdrawal can be cancelled only through the separate quorum-protected Admin action process, preventing one Admin from unilaterally undoing a reserved action.</p>
       <h2>Archive safety</h2>
       <p>Archive is a protected action. Community lifecycle changes, roster changes, pause/resume, and withdrawal cancellation use the linked <code>CommunityAdminActions</code> library through the Hub. The requester contributes the first approval; the immutable threshold is evaluated at execution time; requests expire after seven active Community days; paused time does not count. An Admin handover intentionally takes two actions: add the replacement, then remove the former Admin.</p>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / BERT V3.1: Treasury and quorum</span></div>
+    </section>
+
+    <section class="page page-break" id="v3-payment-follow-up">
+      <p class="eyebrow">05 / V3.2 Community Layer - unreleased</p>
+      <h1>Reviewed evidence and authorized payment are separate gates.</h1>
+      <div class="callout warning"><strong>Implemented, not deployed.</strong> V3.2 describes the Community Layer release; Manager 2.0.0, Hub 2.1.0 and Membership 1.1.0 are independent contract versions. V2 remains V2.3: this work changed V2 comments/documentation, not executable behavior. These are independent contract versions, not a mainnet release or an upgrade of original immutable Communities.</div>
+      <h2>Custody and payment stages</h2>
+      <p>All four lanes use the same fixed 20/40/40 execution schedule. Settlement reserves the execution budget and opens stage 0 authorization without paying it. A passed first proof opens stage 1; a passed completion proof opens stage 2. Every stage requires fresh explicit approvals from the Community's immutable Admin quorum. Earlier stage approvals and proposal or proof votes do not authorize a later payment.</p>
+      <table><thead><tr><th>Stage</th><th>Ready condition</th><th>Payment</th></tr></thead><tbody><tr><td>0</td><td>Winner settlement</td><td>Floor of 20% of execution budget</td></tr><tr><td>1</td><td>First proof passes supporter review</td><td>Floor of 40%</td></tr><tr><td>2</td><td>Completion proof passes supporter review</td><td>Entire remaining budget, approximately 40%</td></tr></tbody></table>
+      <p>The recipient, amount and plan/stage are fixed. After quorum, any wallet may relay the payment; the relay cannot redirect or increase it. Approval and actual payment must both occur before seven active Community days from readiness. A pause stops this clock and blocks approval, payment and expiry writes; it does not guarantee a seven-day wall-clock escape from indefinite pause.</p>
+      <h2>Current authority and independent review</h2>
+      <p>Approvals bind to the Admin's current role nonce. Removal and reappointment invalidate previous authorization. Execution verifies a strictly sorted, duplicate-free witness of exactly the quorum size. Historical approval events alone are not proof of current authorization.</p>
+      <p>The execution recipient cannot cast either review vote, even if it is a Member and financially supported another author's proposal. Its contribution remains part of the financial refund snapshot but is excluded from eligible review weight and reviewer count. Eligible reviewers require 40% weight participation, 6,667 bps participating approval and <code>max(3, ceil(3% of eligible reviewers))</code> approvals. An insufficient independent reviewer cohort cannot approve delivery.</p>
+      <h2>Timeout, refund and completion</h2>
+      <p>Proof deadlines start only after actual preceding payment. An approved completion proof is not a completed plan until the final transfer. If an unpaid stage expires, anyone may fail the plan and activate refunds for its entire not-actually-paid execution budget: 100%, 80%, or the remaining approximately 40%. Already paid amounts are not clawed back. Validator rewards remain separately accounted and are not refunded as execution budget. Failure never converts this reserve into free execution balance.</p>
+      <h2>Release boundary</h2>
+      <p>A new Hub artifact paired with an old Factory still selects that Factory's old module deployers. This rollout therefore uses a fresh matching infrastructure bundle and adds the new Factory to FundingPool's allowlist without removing existing Factories. Directory URLs and indexed identities bind chain, Factory and local Community ID. The updated V3 subgraph retains original modular Factory history and adds the new Factory's real deployment block. No address for the new release is claimed in this edition.</p>
+      <p class="small">Full rules and test evidence: <a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2-TRANCHE-QUORUM.md">Tranche quorum specification</a>. Automated regression tests are not a completed manual dApp E2E or independent audit.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / V3.2 payment follow-up</span></div>
     </section>
 
     <section class="page page-break" id="identity">
@@ -489,7 +515,7 @@
         </tbody>
       </table>
       <h2>V3 discovery model</h2>
-      <p>The V3.1 Subgraph indexes the Factory and uses dynamic Hub, Membership, Proposal, Voting, Milestone, Winner Snapshot and Treasury templates so newly activated Communities can become discoverable without hardcoding their runtime addresses into the frontend. This supports Community directories, role rosters, proposal history, rounds, winner cohorts, milestone activity, Treasury activity and lifecycle displays. Contract reads remain necessary where a current record decides whether a write action may proceed.</p>
+      <p>The original V3.1 Subgraph indexes its Factory and uses dynamic Hub, Membership, Proposal, Voting, Milestone, Winner Snapshot and Treasury templates so newly activated Communities can become discoverable without hardcoding their runtime addresses into the frontend. This supports Community directories, role rosters, proposal history, rounds, winner cohorts, milestone activity, Treasury activity and lifecycle displays. Contract reads remain necessary where a current record decides whether a write action may proceed.</p>
       <h2>Developer safeguards</h2>
       <ul>
         <li>Format Arc USDC with six decimals; do not assume an 18-decimal token.</li>
@@ -515,7 +541,7 @@
     <section class="page page-break" id="testnet">
       <p class="eyebrow">09 / Arc Testnet</p>
       <h1>Public deployment registry and current boundary.</h1>
-      <p class="lead">The following addresses identify the active Arc Testnet deployment as of the V3.1 release on 12 October 2026. They are not mainnet addresses and must never be reused as assumptions for a future production deployment. V3.0 is historical testnet infrastructure; new Community creation and V3 integrations use the modular V3.1 Factory.</p>
+      <p class="lead">The following addresses identify the active Arc Testnet deployment as of the V3.1 release on 12 October 2026. They are not mainnet addresses and must never be reused as assumptions for a future production deployment. V3.0 is historical testnet infrastructure; original deployed Community discovery uses the modular V3.1 Factory. The new V3.2 Hub artifact must not create Communities through that old Factory; wait for a matching new bundle. No V3.2 address is claimed here.</p>
       <h2>Network</h2>
       <table>
         <tbody>
@@ -628,7 +654,7 @@
         <thead><tr><th>Term</th><th>Meaning in BERT</th></tr></thead>
         <tbody>
           <tr><td>Active Community</td><td>A Factory-recorded Community whose reserved Treasury has been linked to a validated Hub.</td></tr>
-          <tr><td>Admin quorum</td><td>The immutable number of Community Admin approvals required to execute protected control-plane actions or a Treasury withdrawal.</td></tr>
+          <tr><td>Admin quorum</td><td>The immutable Admin approval threshold for protected actions and free-balance withdrawals; the source-only follow-up also applies it freshly to every execution tranche.</td></tr>
           <tr><td>Author stake / proposal bond</td><td>USDC collateral locked when a V2 idea or V3 Member proposal is created; the exact lifecycle depends on its layer and outcome.</td></tr>
           <tr><td>Community clock</td><td>V3 timestamp calculation that excludes paused time and freezes after archive.</td></tr>
           <tr><td>Execution plan</td><td>V3.1 winner budget with a 20% initial release and two supporter-reviewed 40% releases. The Administration execution wallet has no generic Treasury withdrawal right.</td></tr>
