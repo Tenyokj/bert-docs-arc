@@ -12,7 +12,7 @@
 # BERT Docs
 
 Standalone developer documentation portal for the **BERT** protocol. It
-documents BERT V2.3 conditional-pledge and V3.1 Community Layer integration, events, indexers, deployment
+documents BERT V2.3 conditional-pledge and V3.2 Community Layer integration (including retained V3.1 history), events, indexers, deployment
 operations and the current Arc Testnet boundary without presenting testnet
 behavior as a mainnet guarantee.
 
@@ -62,7 +62,7 @@ deployment registry, and mainnet readiness conditions.
 | [Frontend](https://github.com/Tenyokj/bert-front-arc) | Next.js dApp implementation. |
 | [Backend](https://github.com/Tenyokj/bert-backend-arc) | Verification and testnet backend service. |
 | [V2 subgraph](https://thegraph.com/studio/subgraph/bert-arc-testnet/) | Indexed V2 protocol history. |
-| [V3.1 subgraph](https://thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet/) | Indexed V3.1 Factory, Hub, runtime modules and Treasury history. |
+| [V3.2 subgraph](https://thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet/) | Indexed V3.1 and V3.2 Factories, Hubs, runtime modules and Treasury history. |
 | [Telegram](https://t.me/bertdao) | Official BERT community channel. |
 | [YouTube](https://www.youtube.com/@bertdaoARC) | Official BERT video channel. |
 

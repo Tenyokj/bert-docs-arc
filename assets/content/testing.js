@@ -8,7 +8,7 @@ export const testingDocs = [
     tags: ["pilot", "community", "organizers", "arc", "testnet", "contributors"],
     content: `
       <p class="eyebrow">BERT / Community pilot</p><h1>Start with one decision.<br /><span>Not a protocol migration.</span></h1>
-      <p class="lead">If your community has selected proposals and checked whether work was delivered, we want to learn how you do it today. BERT V3.1 is an open-source Arc Testnet prototype for community decisions and staged execution. We are looking for a few organizers willing to give honest feedback, not deposits or publicity.</p>
+      <p class="lead">If your community has selected proposals and checked whether work was delivered, we want to learn how you do it today. BERT V3.2 is an open-source Arc Testnet prototype for community decisions and staged execution. We are looking for a few organizers willing to give honest feedback, not deposits or publicity.</p>
       <div class="callout warning"><strong>Testnet only.</strong> Do not move real funds or import a valuable wallet. Testnet assets have no monetary value. Demo PoP is not production personhood verification, and this pilot is not a security audit or mainnet launch.</div>
       <h2>Choose your starting point</h2>
       <div class="doc-cards three-up"><a href="https://bertdao-console.vercel.app" target="_blank" rel="noreferrer" class="doc-card"><span class="mini-icon">01</span><h3>Look, no wallet</h3><p>Explore indexed Communities and proposals in the read-only BERT Console. Data can lag the chain.</p><b>Open Console →</b></a><a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/COMMUNITY-PILOT.md" target="_blank" rel="noreferrer" class="doc-card"><span class="mini-icon">02</span><h3>Discuss your process</h3><p>Read the pilot brief and six questions about your last real funding decision before trying a demo.</p><b>Read pilot brief →</b></a><a href="#tester-arc-testnet-kit" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Try a testnet flow</h3><p>Only if it fits: use separate test wallets, run one Community decision and preserve receipts.</p><b>Open tester kit →</b></a></div>
@@ -31,12 +31,12 @@ export const testingDocs = [
       <div class="callout warning"><strong>Testnet only.</strong> Use Arc Testnet assets or an isolated local Hardhat chain. Do not use real funds, real keys, seed phrases or production identity credentials. Demo PoP tests a real onchain access gate, not personhood or Sybil resistance.</div>
       <p>Organizing a group rather than testing code? Start with the <a href="#community-pilot" data-doc-link>Community pilot</a> and its read-only Console path.</p>
       <h2>Choose a contribution lane</h2>
-      <div class="doc-cards three-up"><a href="#tester-arc-testnet-kit" data-doc-link class="doc-card"><span class="mini-icon">01</span><h3>Arc Testnet kit</h3><p>Use the current dApp, addresses, Graph endpoints and testnet evidence template.</p><b>Open public kit →</b></a><a href="#tester-local-lab" data-doc-link class="doc-card"><span class="mini-icon">02</span><h3>Protocol QA</h3><p>Replay V2.3 and V3.1 lifecycle, accounting and role invariants locally.</p><b>Open local lab →</b></a><a href="#tester-security-reporting" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Security research</h3><p>Probe authorization, accounting, liveness, token behavior and upgrade boundaries.</p><b>Open security scope →</b></a></div>
+      <div class="doc-cards three-up"><a href="#tester-arc-testnet-kit" data-doc-link class="doc-card"><span class="mini-icon">01</span><h3>Arc Testnet kit</h3><p>Use the current dApp, addresses, Graph endpoints and testnet evidence template.</p><b>Open public kit →</b></a><a href="#tester-local-lab" data-doc-link class="doc-card"><span class="mini-icon">02</span><h3>Protocol QA</h3><p>Replay V2.3 and V3.2 lifecycle, accounting and role invariants locally.</p><b>Open local lab →</b></a><a href="#tester-security-reporting" data-doc-link class="doc-card"><span class="mini-icon">03</span><h3>Security research</h3><p>Probe authorization, accounting, liveness, token behavior and upgrade boundaries.</p><b>Open security scope →</b></a></div>
       <h2>Minimum evidence standard</h2>
       <ol class="numbered-flow"><li><strong>State environment.</strong><span>Commit SHA, local or Arc chain ID, and relevant addresses.</span></li><li><strong>Name actor.</strong><span>Wallet and intended role: Admin, Member, Validator, supporter or unrelated account.</span></li><li><strong>Replay exact steps.</strong><span>Commands, UI actions, calldata or minimal PoC.</span></li><li><strong>Show delta.</strong><span>Transaction hash, revert, direct read, balance change, log or screenshot.</span></li><li><strong>Name broken rule.</strong><span>Authorization, accounting, liveness, privacy, or UX invariant.</span></li></ol>
       <h2>Current scope</h2>
-      <table><thead><tr><th>Surface</th><th>Current target</th><th>What success proves</th></tr></thead><tbody><tr><td>V2.3</td><td>Conditional pledge funding and backer milestones</td><td>Losing pledges are not redirected; winner delivery is reviewable.</td></tr><tr><td>V3.1</td><td>Modular Community Layer</td><td>Four governance lanes, isolated Treasury buckets, and 20 / 40 / 40 delivery.</td></tr><tr><td>Frontend</td><td>Next.js dApp</td><td>Correct chain/address use and no false transaction success.</td></tr><tr><td>Indexers</td><td>V2/V3 Graph deployments</td><td>Historical discovery reconciles with live reads.</td></tr></tbody></table>
-      <p>The complete commands and reporting template live in the <a href="https://github.com/Tenyokj/bert-core-arc/blob/main/docs/TESTING.md" target="_blank" rel="noreferrer">Contributor Testing Guide</a>.</p>
+      <table><thead><tr><th>Surface</th><th>Current target</th><th>What success proves</th></tr></thead><tbody><tr><td>V2.3</td><td>Conditional pledge funding and backer milestones</td><td>Losing pledges are not redirected; winner delivery is reviewable.</td></tr><tr><td>V3.2</td><td>Modular Community Layer</td><td>Four governance lanes, isolated Treasury buckets, and 20 / 40 / 40 delivery.</td></tr><tr><td>Frontend</td><td>Next.js dApp</td><td>Correct chain/address use and no false transaction success.</td></tr><tr><td>Indexers</td><td>V2/V3 Graph deployments</td><td>Historical discovery reconciles with live reads.</td></tr></tbody></table>
+      <p>The complete commands and reporting template live in the <a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/TESTING.md" target="_blank" rel="noreferrer">Contributor Testing Guide</a>.</p>
     `,
   },
   {
@@ -50,16 +50,16 @@ export const testingDocs = [
       <p class="eyebrow">Contributor testing / Arc Testnet</p><h1>One test at a time.<br /><span>Record the chain evidence.</span></h1>
       <p class="lead">Use this path when you want to test the deployed dApp without running local infrastructure. It is real Arc Testnet execution with valueless test assets. Start with a single role and one focused lifecycle transition, then compare the receipt with a direct read and the relevant subgraph record.</p>
       <h2>Public endpoints</h2>
-      <table><thead><tr><th>Service</th><th>Value</th><th>Use</th></tr></thead><tbody><tr><td>dApp</td><td><a href="https://bertdao.vercel.app" target="_blank" rel="noreferrer">bertdao.vercel.app ↗</a></td><td>Reference V2/V3 test UI and Demo PoP flow.</td></tr><tr><td>Network</td><td>Arc Testnet / <code>5042002</code></td><td>Every wallet write must use this chain.</td></tr><tr><td>Public RPC</td><td><code>https://arc-testnet.drpc.org</code></td><td>Direct reads and manual reproduction.</td></tr><tr><td>V2 Graph endpoint</td><td><code>.../bert-arc-testnet/v0.3.0</code></td><td>V2 ideas, rounds and milestones.</td></tr><tr><td>V3.1 Graph endpoint</td><td><code>.../bert-v-3-1-arc-testnet/v3.1.0</code></td><td>Communities, modules, governance and milestones.</td></tr></tbody></table>
+      <table><thead><tr><th>Service</th><th>Value</th><th>Use</th></tr></thead><tbody><tr><td>dApp</td><td><a href="https://bertdao.vercel.app" target="_blank" rel="noreferrer">bertdao.vercel.app ↗</a></td><td>Reference V2/V3 test UI and Demo PoP flow.</td></tr><tr><td>Network</td><td>Arc Testnet / <code>5042002</code></td><td>Every wallet write must use this chain.</td></tr><tr><td>Public RPC</td><td><code>https://arc-testnet.drpc.org</code></td><td>Direct reads and manual reproduction.</td></tr><tr><td>V2 Graph endpoint</td><td><code>.../bert-arc-testnet/v0.3.0</code></td><td>V2 ideas, rounds and milestones.</td></tr><tr><td>V3.2 Graph endpoint</td><td><code>.../bert-v-3-1-arc-testnet/v3.2.0</code></td><td>Communities, modules, governance and milestones.</td></tr></tbody></table>
       <pre><code>V2_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.3.0
-V3_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.1.0
+V3_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.2.0
 V3_1_FACTORY=0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0
 V3_1_FACTORY_START_BLOCK=66809847</code></pre>
       <h2>Recommended wallet plan</h2>
-      <table><thead><tr><th>Wallet</th><th>V3.1 purpose</th><th>Do not combine with</th></tr></thead><tbody><tr><td>A</td><td>Community creator and initial Admin</td><td>Active Member or Validator.</td></tr><tr><td>B</td><td>Second Admin for quorum actions</td><td>Active Member or Validator.</td></tr><tr><td>C</td><td>Validator for Member-proposal review</td><td>Admin or active Member.</td></tr><tr><td>D/E/F</td><td>Members, proposal authors and voters</td><td>Author vote on the author's own proposal.</td></tr></tbody></table>
-      <h2>V3.1 smoke sequence</h2>
-      <ol class="numbered-flow"><li>Connect wallet A to Arc Testnet, complete Demo PoP and create a Community using the V3.1 Factory.</li><li>Confirm Factory activation, then record Hub, Treasury, Membership, Proposal, Voting and Milestone module addresses from the Hub.</li><li>Have wallets D/E/F join the Community; approve the Community Treasury, not FundingPool, for membership/voting actions.</li><li>Run one Admin Binary flow and one Member Binary flow: review/validation where applicable, vote, wait for deadline, settle and compare direct state with the V3.1 subgraph.</li><li>Only after the preceding flow is stable, test a winning execution plan and its 20/40/40 milestone path with the sealed winner cohort.</li></ol>
-      <div class="callout warning"><strong>Do not treat indexer data as write authorization.</strong> The V3.1 subgraph is for discovery/history. Before each wallet prompt, resolve the active Community through Factory, resolve its module addresses from Hub and simulate the exact write against current chain state.</div>
+      <table><thead><tr><th>Wallet</th><th>V3.2 purpose</th><th>Do not combine with</th></tr></thead><tbody><tr><td>A</td><td>Community creator and initial Admin</td><td>Active Member or Validator.</td></tr><tr><td>B</td><td>Second Admin for quorum actions</td><td>Active Member or Validator.</td></tr><tr><td>C</td><td>Validator for Member-proposal review</td><td>Admin or active Member.</td></tr><tr><td>D/E/F</td><td>Three independent winning supporters</td><td>Author or execution recipient review. Use a separate G wallet for a Member-proposal author.</td></tr></tbody></table>
+      <h2>V3.2 smoke sequence</h2>
+      <ol class="numbered-flow"><li>Connect wallet A to Arc Testnet, complete Demo PoP and create a Community using the V3.2 Factory.</li><li>Confirm Factory activation, then record Hub, Treasury, Membership, Proposal, Voting and Milestone module addresses from the Hub.</li><li>Have wallets D/E/F join the Community; approve the Community Treasury, not FundingPool, for membership/voting actions.</li><li>Run one Admin Binary flow and one Member Binary flow: review/validation where applicable, vote, wait for deadline, settle and compare direct state with the V3.2 subgraph.</li><li>Only after the preceding flow is stable, test the winning plan: settlement reserves without paying; Admins authorize each payment freshly; the independent winner cohort reviews both proofs. Test unpaid-stage expiry separately.</li></ol>
+      <div class="callout warning"><strong>Do not treat indexer data as write authorization.</strong> The V3.2 subgraph is for discovery/history. Before each wallet prompt, resolve the active Community through Factory, resolve its module addresses from Hub and simulate the exact write against current chain state.</div>
       <h2>What to submit</h2><p>For a pass or failure, provide the dApp URL/page, wallet role, transaction hash or revert, affected contract/module, expected result, actual result, a direct post-transaction read, and a screenshot only when it clarifies a UX issue. Use the <a href="#tester-product-qa" data-doc-link>product QA guide</a> for browser/RPC/indexer cases and the private security channel for an exploitable finding.</p>
     `,
   },
@@ -67,8 +67,8 @@ V3_1_FACTORY_START_BLOCK=66809847</code></pre>
     slug: "tester-local-lab",
     section: "Testing & contributing",
     group: "Start here",
-    title: "Local V3.1 protocol lab",
-    summary: "Deploy a disposable V2 + V3.1 stack, mint MockUSDC, issue local PoP records, and test eight explicit roles.",
+    title: "Local V3.2 protocol lab",
+    summary: "Deploy a disposable V2 + V3.2 stack, mint MockUSDC, issue local PoP records, and test eight explicit roles.",
     tags: ["hardhat", "localhost", "e2e", "mock-usdc", "pop", "v3.1"],
     content: `
       <p class="eyebrow">Contributor testing / Local environment</p><h1>One disposable chain.<br /><span>Eight explicit roles.</span></h1>
@@ -95,7 +95,7 @@ POP_VERIFIER_ADDRESS=&lt;PoPVerifierUpgradeable-proxy&gt; \\
 V3_PROXY_ADMIN_OWNER=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 \\
 npx hardhat run scripts/deploy/deploy-v3-2.ts --network localhost
 
-# These current sources deploy unreleased V3.2, not original V3.1.
+# These sources reproduce the deployed V3.2 policy in an isolated local lab, not original V3.1.
 # Substitute FundingPoolUpgradeable and V3_2_FACTORY_ADDRESS printed above.
 LOCAL_RPC_URL=http://127.0.0.1:8545 \\
 FUNDING_POOL_ADDRESS=&lt;FundingPoolUpgradeable-proxy&gt; \\
@@ -112,17 +112,17 @@ LOCAL_RPC_URL=http://127.0.0.1:8545 \\
 POP_VERIFIER_ADDRESS=&lt;PoPVerifierUpgradeable-proxy&gt; \\
 LOCAL_TEST_WALLET_COUNT=8 \\
 npx hardhat run scripts/local/verify-v3-test-wallets.ts --network localhost</code></pre></div>
-      <p>Next, put the printed values in the frontend's uncommitted <code>.env.local</code>, choose the Hardhat network, leave both subgraph URLs empty, run <code>npm run dev</code>, and import only the eight accounts printed by the current Hardhat node. The full environment template, timing commands and four-lane E2E matrix are maintained in <a href="https://github.com/Tenyokj/bert-core-arc/blob/main/docs/LOCAL-V3.1-E2E.md" target="_blank" rel="noreferrer">LOCAL-V3.1-E2E.md</a>.</p>
-      <p>The Factory authorization step is a security boundary. FundingPool accepts defined Community reserve inflows only from Treasuries activated by an explicitly approved Factory. V3.0 and V3.1 approvals coexist; if the V3.1 link is missing, reserve-routing E2E coverage is incomplete.</p>
-      <h2>Use time travel, not weaker policy</h2><p>V3.1 keeps a one-day minimum milestone review. Advance the local clock for testing; do not modify Solidity timing simply to make a demo faster.</p>
-      <div class="callout info"><strong>Exit criterion.</strong> Cover all four V3.1 lanes, one completed 20 / 40 / 40 execution plan, one failed-plan supporter refund, and negative eligibility checks.</div>
+      <p>Next, put the printed values in the frontend's uncommitted <code>.env.local</code>, choose the Hardhat network, leave both subgraph URLs empty, run <code>npm run dev</code>, and import only the eight accounts printed by the current Hardhat node. The full environment template, timing commands and four-lane E2E matrix are maintained in <a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/LOCAL-V3.1-E2E.md" target="_blank" rel="noreferrer">LOCAL-V3.1-E2E.md</a>.</p>
+      <p>The Factory authorization step is a security boundary. FundingPool accepts defined Community reserve inflows only from Treasuries activated by an explicitly approved Factory. V3.0, original V3.1 and V3.2 approvals coexist; if the V3.2 link is missing, reserve-routing E2E coverage is incomplete.</p>
+      <h2>Use time travel, not weaker policy</h2><p>V3.2 keeps a one-day minimum milestone review. Advance the local clock for testing; do not modify Solidity timing simply to make a demo faster.</p>
+      <div class="callout info"><strong>Exit criterion.</strong> Cover all four V3.2 lanes, one completed 20 / 40 / 40 execution plan, one failed-plan supporter refund, each stage's fresh Admin approvals/payment, 100/80/40 expiry refunds, and negative eligibility checks.</div>
     `,
   },
   {
     slug: "tester-v2-v3-matrix",
     section: "Testing & contributing",
     group: "Protocol matrix",
-    title: "V2.3 and V3.1 test matrix",
+    title: "V2.3 and V3.2 test matrix",
     summary: "Concrete functional and negative cases for funding, governance, Treasury accounting, milestones, and refunds.",
     tags: ["v2.3", "v3.1", "matrix", "refunds", "milestones", "treasury"],
     content: `
@@ -130,7 +130,7 @@ npx hardhat run scripts/local/verify-v3-test-wallets.ts --network localhost</cod
       <p class="lead">Every terminal protocol action needs a positive assertion, a negative assertion and an accounting assertion. Read contracts directly before and after each step; a UI label or raw ERC-20 transfer is not sufficient evidence.</p>
       <h2>V2.3: conditional pledge funding</h2>
       <table><thead><tr><th>ID</th><th>Action</th><th>Expected invariant</th></tr></thead><tbody><tr><td>V2-01</td><td>Create idea with author bond and minimum net target.</td><td>Bond and target store once in USDC base units; malformed intake reverts.</td></tr><tr><td>V2-02</td><td>Open eligible round and pledge to one candidate.</td><td>Candidate composition respects limits; pledge stays attributable to one voter/idea.</td></tr><tr><td>V2-03</td><td>Settle viable winner.</td><td>Only winner pledge capital becomes grant budget after disclosed fee policy.</td></tr><tr><td>V2-04</td><td>Claim loser or no-winner refund.</td><td>Each voter pulls own entitlement once; no pledge funds another idea.</td></tr><tr><td>V2-05</td><td>Review milestone, correction, expiry, failure.</td><td>Unreleased capital follows defined backer/refund policy; no duplicate release.</td></tr></tbody></table>
-      <h2>V3.1: four governance lanes</h2>
+      <h2>V3.2: four governance lanes</h2>
       <table><thead><tr><th>Lane</th><th>Entry route</th><th>Critical checks</th></tr></thead><tbody><tr><td>Admin Binary</td><td>Admin creates; Members vote YES/NO.</td><td>No Validator review or reward share; YES winner creates plan.</td></tr><tr><td>Member Binary</td><td>Member locks bond; Validators decide; Members vote.</td><td>Only Validators decide once; author cannot self-vote.</td></tr><tr><td>Admin Slate</td><td>Admin creates candidates and round.</td><td>One selection per Member; deterministic winner; one settlement.</td></tr><tr><td>Member Slate</td><td>Member candidates require validation before round.</td><td>Unapproved candidate cannot enter; winner starts same plan lifecycle.</td></tr></tbody></table>
       <h2>Execution-plan checks</h2>
       <div class="contract-rail"><div><b>20%</b><small>SETTLEMENT</small><strong>Reserved and released once</strong><span>Treasury reserves winner budget, then releases only first tranche to Administration execution wallet.</span></div><div><b>40%</b><small>MILESTONE ONE</small><strong>Supporter review</strong><span>Only eligible sealed supporters review. Weight quorum is 40%; approval is 6,667 bps (66.67%).</span></div><div><b>40%</b><small>MILESTONE TWO</small><strong>Terminal delivery</strong><span>Second proof follows same electorate. Failure makes only unspent funds refundable.</span></div></div>
@@ -170,7 +170,7 @@ npx hardhat --coverage
 slither . --filter-paths "node_modules|test|legacy"</code></pre></div>
       <div class="callout danger"><strong>Responsible disclosure.</strong> Do not phish, impersonate, attack public infrastructure, use real funds, or publish a live exploit path. For high-impact issues, stop at minimum proof and use the repository security contact rather than a public issue.</div>
       <h2>Report format</h2><pre><code>Title:
-Area: V2.3 / V3.1 / frontend / backend / indexer / operations
+Area: V2.3 / V3.2 / frontend / backend / indexer / operations
 Environment: commit SHA, chain ID, deployment addresses
 Actor and preconditions:
 Exact reproduction:
