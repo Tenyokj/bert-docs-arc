@@ -10,14 +10,12 @@ Whitepaper.
 
 ## Scope and status
 
-Deployment addendum (25 October 2026): V3.2.1 infrastructure and graph v3.2.1 are
-now deployed with Manager 2.0.1's correction-deadline fix. The HTML/PDF revision
-1.3.1 below is the dated 24 October V3.2.0 snapshot, not the current address registry.
-Use the [V3.2.1 release addendum](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2.1-ARC-TESTNET-RELEASE.md)
-for current addresses, receipts and immutable-instance limitations. This rollout
-has not regenerated the whitepaper PDF.
+Document revision **1.3.2 (25 October 2026)** includes deployed V3.2.1 infrastructure,
+graph v3.2.1 and Manager 2.0.1's correction-deadline fix. The HTML source and PDF
+are updated together. The [receipt-backed release record](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2.1-ARC-TESTNET-RELEASE.md)
+remains the operational authority for addresses and immutable-instance boundaries.
 
-The paper documents BERT V2.3 Global Funding Layer and the modular BERT V3.2
+The paper documents BERT V2.3 Global Funding Layer and the modular BERT V3.2.1
 Community Layer deployed on Arc Testnet with internal automated tests. Broader
 manual E2E testing and independent security review remain outstanding. V2.3 uses refundable,
 idea-specific pledges and winning-backer-governed 20/40/40 milestones; V3.2
@@ -30,12 +28,16 @@ It must be updated when a material protocol change, deployment change, audit,
 or mainnet policy decision occurs. Contract source and the current deployment
 manifest remain the authority for live values.
 
-Document revision 1.3.1 (24 October 2026) distinguishes original deployed V3.1
-from **V3.2 deployed on Arc Testnet on 24 October 2026** (Manager 2.0.0): execution-recipient review
+Document revision 1.3.2 distinguishes original deployed V3.1 from the V3.2 payment
+policy retained by **V3.2.1 deployed on Arc Testnet on 25 October 2026** (Manager 2.0.1): execution-recipient review
 exclusion, fresh Admin quorum for all 20/40/40 payments, seven-active-day
 authorization/payment expiry and refunds of the whole unpaid execution budget.
-The PDF and HTML now both include this section. The deployment appendix records current V3.2 addresses and receipt-backed anchors,
-while retaining historical V3.1 release evidence. V2 remains unchanged.
+The PDF and HTML now both include this section. The deployment appendix records current V3.2.1 addresses and receipt-backed anchors,
+while retaining historical V3.1 and V3.2.0 release evidence. A dedicated correction
+section explains rejection time + 48-hour cooldown + configured proof duration,
+non-extendable reopening and permissionless expiry of abandoned cooldowns.
+Existing immutable Managers are not upgraded; no new public pilot or independent
+audit is claimed. V2 remains unchanged.
 
 V2 and V3 remain separate parts of **one** whitepaper, not two independently
 versioned papers. Legacy V2 round policy, exact V3 review thresholds, Demo PoP
@@ -58,4 +60,4 @@ On macOS with Google Chrome installed:
 
 The source uses A4 print styling. Review the generated PDF before publishing.
 
-V2 remains V2.3; documentation/NatSpec corrections do not create V2.4 or V2.3.1. V3.2, each contract's custom version and this document's 1.3.1 revision are separate scopes.
+V2 remains V2.3; documentation/NatSpec corrections do not create V2.4 or V2.3.1. V3.2, each contract's custom version and this document's 1.3.2 revision are separate scopes.
