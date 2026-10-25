@@ -18,7 +18,7 @@ export const consoleDocs = [
       <h2>Query a collection</h2>
       <p>In Query Studio, choose the V2.3 or V3.2 source, open a starter query, edit it, and run it with <code>Ctrl/Command + Enter</code>. Use variables for filters and paging. Data Explorer is easier for quick inspection; Query Studio is the path for custom historical analysis. Copy the query or cURL, export the result, and include the indexed block when reporting a discrepancy.</p>
       <pre><code>V2_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.3.0
-V3_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.2.0
+V3_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.2.1
 ARC_CHAIN_ID=5042002</code></pre>
       <h2>Availability and limits</h2>
       <p>The beta refreshes its visible dashboard about every three minutes and uses short server-side caches. Query Studio calls are not part of that shared cache. The current Graph Studio development endpoints have a limited daily query budget; high traffic or many manual queries may cause throttling or empty/error states. Source health does not guarantee every individual query will succeed. This is not an SLA-backed alerting or production analytics service.</p>
