@@ -133,11 +133,11 @@
     <section class="cover">
       <div class="cover-content">
         <div class="brand"><img src="../assets/bert-logo.png" alt="BERT logo" /> BERTDAO Protocol</div>
-        <p class="cover-kicker">Technical whitepaper / Version 1.3.1</p>
+        <p class="cover-kicker">Technical whitepaper / Version 1.3.2</p>
         <h1>Transparent capital coordination for <span>communities and grants.</span></h1>
         <p class="subtitle">A stablecoin-native protocol for stake-backed proposals, auditable decision-making, controlled treasury flows, and milestone-based release.</p>
         <div class="cover-meta">
-          <div><strong>Publication</strong>24 October 2026</div>
+          <div><strong>Publication</strong>25 October 2026</div>
           <div><strong>Current environment</strong>Arc Testnet / active development</div>
           <div><strong>Protocol scope</strong>BERT V2 Global Funding Layer and BERT V3 Community Layer</div>
           <div><strong>Canonical source</strong>github.com/Tenyokj/bert-core-arc</div>
@@ -156,7 +156,7 @@
         <strong>Identity disclosure.</strong>
         The public Arc Testnet dApp uses an explicitly labelled Demo verification path. It exercises the actual backend-attestation and onchain <code>PoPVerifierUpgradeable</code> flow, but it is not proof of personhood and must not be interpreted as Sybil resistance. The planned production policy is a World ID proof-of-personhood integration, subject to completion, review, and deployment readiness.
       </div>
-      <div class="callout warning"><strong>Source versus deployment, 24 October 2026.</strong> Original Arc V3.1 Communities retain their original immutable Managers, including automatic tranche transfers and the documented execution-recipient review gap. V3.2 was deployed on Arc Testnet on 24 October 2026. Manager 2.0.0 excludes that recipient from reviews and adds fresh Admin quorum for every 20/40/40 payment. New Communities use the V3.2 Factory; original immutable Communities are not upgraded. The appendix identifies current infrastructure and historical release anchors.</div>
+      <div class="callout warning"><strong>Source versus deployment, 25 October 2026.</strong> Original Arc V3.1 Communities retain their original immutable Managers, including automatic tranche transfers and the documented execution-recipient review gap. V3.2.1 is deployed on Arc Testnet with Manager 2.0.1. It retains execution-recipient review exclusion and fresh Admin quorum for every 20/40/40 payment, and fixes correction-deadline liveness. New Communities use the V3.2.1 Factory; historical V3.2.0 Managers retain the earlier correction defect and original immutable Communities are not upgraded. The appendix identifies current infrastructure and historical release anchors.</div>
       <h2>Abstract</h2>
       <p class="abstract">BERTDAO Protocol is programmable, stablecoin-native infrastructure for coordinating proposals and capital. BERT V2.3 operates a global grant flow: target-backed proposal intake, immutable milestone plans, round-based refundable USDC pledges, viable-winner selection after a snapshotted fee, progressive reserve accounting, and winning-backer-governed milestone releases. BERT V3 is an isolated Community Layer: each Community has its own immutable governance Hub and USDC Treasury, local membership, validator review, binary and slate voting, and quorum-protected administrative actions. Defined V3 protocol inflows route into the existing V2 global reserve without merging Community execution balances or governance state.</p>
       <p>The protocol is deliberately modular. Proposal metadata, vote lifecycle, token accounting, grant payout state, role authority, reputation, and progression each have a defined onchain owner. This reduces ambiguity for integrators and auditors: the interface is not the source of truth, and an offchain index does not replace a contract read when finality matters.</p>
@@ -174,7 +174,7 @@
         <a href="#mainnet"><span>10</span>Mainnet readiness conditions</a>
         <a href="#appendix"><span>11</span>Appendix: addresses and glossary</a>
       </nav>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.3.1 / 24 October 2026</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.3.2 / 25 October 2026</span></div>
     </section>
 
     <section class="page page-break" id="problem">
@@ -222,7 +222,7 @@
           <tr><td>Voter / member</td><td>Commits configured USDC stake in a funding round, subject to live gates.</td><td>Locks entry stake, then casts one stake-backed vote per binary proposal or slate round.</td></tr>
           <tr><td>Backer / reviewer</td><td>A winning pledger governs V2 milestone escrow in proportion to its pledge; curator signals remain non-binding quality context.</td><td>Validator is a Community-local role that reviews Member proposals before they can be voted.</td></tr>
           <tr><td>Administrator</td><td>Configures roles, dependencies, parameters, pauses, and upgrades within the current model.</td><td>Local Admin creates proposals and rounds, manages withdrawals, and uses immutable local quorum for protected actions.</td></tr>
-          <tr><td>Integrator / indexer</td><td>Reads contract state and V2 events; may use the V2 Subgraph for discovery.</td><td>Discovers Communities through Factory events and indexes Hub, runtime-module and Treasury streams via the V3 subgraph v3.2.0.</td></tr>
+          <tr><td>Integrator / indexer</td><td>Reads contract state and V2 events; may use the V2 Subgraph for discovery.</td><td>Discovers Communities through Factory events and indexes Hub, runtime-module and Treasury streams via the V3 subgraph v3.2.1.</td></tr>
         </tbody>
       </table>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>02 / Principles and scope</span></div>
@@ -323,7 +323,7 @@
     <section class="page page-break" id="v3">
       <p class="eyebrow">05 / BERT V3.2</p>
       <h1>Community Layer: isolated governance with reviewable execution.</h1>
-      <p class="lead">BERT V3.2 enables an organization or group to create its own stake-gated governance domain. Every active Community combines an immutable <code>CommunityHub</code>, a paired <code>CommunityTreasury</code>, and focused runtime modules registered and activated by the shared <code>CommunityFactory</code>. V3.0 is retained only as historical Arc Testnet state; new Communities use V3.2.</p>
+      <p class="lead">BERT V3.2 enables an organization or group to create its own stake-gated governance domain. Every active Community combines an immutable <code>CommunityHub</code>, a paired <code>CommunityTreasury</code>, and focused runtime modules registered and activated by the shared <code>CommunityFactory</code>. V3.0 is retained only as historical Arc Testnet state; new Communities use V3.2.1.</p>
       <h2>Why V3 is separate from V2</h2>
       <p>V2 organizes global funding rounds and grants. V3.2 is designed for local Community governance: a Community needs its own membership boundary, its own Admin and Validator set, its own proposal review, its own voting electorate, its own Treasury, and its own protected execution process. Mixing those local rules into the V2 global state would weaken isolation and make policy harder to reason about.</p>
       <h2>Deployment and activation</h2>
@@ -425,7 +425,7 @@
     <section class="page page-break" id="v3-payment-follow-up">
       <p class="eyebrow">05 / V3.2 Community Layer - Arc Testnet</p>
       <h1>Reviewed evidence and authorized payment are separate gates.</h1>
-      <div class="callout warning"><strong>Deployed on Arc Testnet, 24 October 2026.</strong> V3.2 describes the Community Layer release; Manager 2.0.0, Hub 2.1.0 and Membership 1.1.0 are independent contract versions. V2 remains V2.3: this work changed V2 comments/documentation, not executable behavior. These are independent contract versions, not a mainnet release or an upgrade of original immutable Communities.</div>
+      <div class="callout warning"><strong>Deployed on Arc Testnet, 25 October 2026.</strong> V3.2.1 describes the Community Layer patch release; Manager 2.0.1, Hub 2.1.0 and Membership 1.1.0 are independent contract versions. V2 remains V2.3: this work changed V2 comments/documentation, not executable behavior. These are independent contract versions, not a mainnet release or an upgrade of original immutable Communities.</div>
       <h2>Custody and payment stages</h2>
       <p>All four lanes use the same fixed 20/40/40 execution schedule. Settlement reserves the execution budget and opens stage 0 authorization without paying it. A passed first proof opens stage 1; a passed completion proof opens stage 2. Every stage requires fresh explicit approvals from the Community's immutable Admin quorum. Earlier stage approvals and proposal or proof votes do not authorize a later payment.</p>
       <table><thead><tr><th>Stage</th><th>Ready condition</th><th>Payment</th></tr></thead><tbody><tr><td>0</td><td>Winner settlement</td><td>Floor of 20% of execution budget</td></tr><tr><td>1</td><td>First proof passes supporter review</td><td>Floor of 40%</td></tr><tr><td>2</td><td>Completion proof passes supporter review</td><td>Entire remaining budget, approximately 40%</td></tr></tbody></table>
@@ -436,9 +436,24 @@
       <h2>Timeout, refund and completion</h2>
       <p>Proof deadlines start only after actual preceding payment. An approved completion proof is not a completed plan until the final transfer. If an unpaid stage expires, anyone may fail the plan and activate refunds for its entire not-actually-paid execution budget: 100%, 80%, or the remaining approximately 40%. Already paid amounts are not clawed back. Validator rewards remain separately accounted and are not refunded as execution budget. Failure never converts this reserve into free execution balance.</p>
       <h2>Release boundary</h2>
-      <p>A new Hub artifact paired with an old Factory still selects that Factory's old module deployers. This rollout therefore uses a fresh matching infrastructure bundle and adds the new Factory to FundingPool's allowlist without removing existing Factories. Directory URLs and indexed identities bind chain, Factory and local Community ID. The updated V3 subgraph retains original modular Factory history and adds the new Factory's real deployment block. The current Factory is <code>0xf793786BCecfbfE35a22E36180032b32BD5208Ba</code>, deployed at block <code>68888068</code>. The v3.2.0 graph indexes it alongside original V3.1 history.</p>
+      <p>A new Hub artifact paired with an old Factory still selects that Factory's old module deployers. This rollout therefore uses a fresh matching infrastructure bundle and adds the new Factory to FundingPool's allowlist without removing existing Factories. Directory URLs and indexed identities bind chain, Factory and local Community ID. The updated V3 subgraph retains original modular Factory history and adds the new Factory's real deployment block. The current Factory is <code>0x23E023E0D8B3436319BC6e5e72615Bc7A0c6234E</code>, deployed at block <code>69044184</code>. The v3.2.1 graph indexes it alongside retained V3.1 and V3.2.0 history.</p>
       <p class="small">Full rules and test evidence: <a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2-TRANCHE-QUORUM.md">Tranche quorum specification</a>. Automated regression tests are not a completed manual dApp E2E or independent audit.</p>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / V3.2 payment follow-up</span></div>
+    </section>
+
+    <section class="page page-break" id="v3-correction-hotfix">
+      <p class="eyebrow">05 / V3.2.1 correction liveness</p>
+      <h1>One correction.<br />One fixed deadline.</h1>
+      <p class="lead">Manager 2.0.1 fixes a correction path that could become unusable after a long review. The patch changes timing and expiry, not who receives capital or who approves delivery.</p>
+      <h2>Correction window</h2>
+      <p>On the first rejected proof, the Manager assigns a fixed deadline measured in active Community time: rejection time + 48-hour correction cooldown + the Community's configured proof duration. The executor may reopen after cooldown; reopening never extends this deadline. Submission at the deadline is valid, while expiry requires time strictly after it.</p>
+      <table><thead><tr><th>State</th><th>What the patch permits</th></tr></thead><tbody><tr><td>Correction cooldown</td><td>One bounded opportunity to correct the rejected evidence.</td></tr><tr><td>Reopened correction</td><td>A new proof attempt within the same fixed correction deadline.</td></tr><tr><td>Abandoned cooldown or missed proof deadline</td><td>Permissionless failure through the Hub after expiry, without requiring the executor to reopen first.</td></tr><tr><td>Terminal failure</td><td>Supporters may claim only the unpaid execution budget. Paid tranches and separately accounted validator rewards are not clawed back.</td></tr></tbody></table>
+      <h3>What remains unchanged</h3>
+      <p>The 20/40/40 schedule, winning-supporter review, exact-recipient self-review exclusion, current Admin quorum for each payment, one-correction limit and pause-aware clock remain in effect. The patch does not alter V2.3, event signatures or the Graph schema.</p>
+      <h3>Immutable-instance boundary</h3>
+      <p>Changing the frontend or Factory default cannot repair an existing Community's immutable Manager. Use a new Community created through the V3.2.1 Factory for corrected pilots. Historical V3.2.0 Managers remain affected; memberships, votes and funds are not migrated automatically.</p>
+      <p class="small">Evidence: <a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2.1-ARC-TESTNET-RELEASE.md">V3.2.1 release record</a>. Internal regression tests and local browser E2E are not an independent audit or proof of a completed new public Community pilot.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>05 / V3.2.1 correction hotfix</span></div>
     </section>
 
     <section class="page page-break" id="identity">
@@ -515,7 +530,7 @@
         </tbody>
       </table>
       <h2>V3 discovery model</h2>
-      <p>The V3 subgraph v3.2.0 indexes both modular V3.1 and V3.2 Factories and uses dynamic Hub, Membership, Proposal, Voting, Milestone, Winner Snapshot and Treasury templates so newly activated Communities can become discoverable without hardcoding their runtime addresses into the frontend. This supports Community directories, role rosters, proposal history, rounds, winner cohorts, milestone activity, Treasury activity and lifecycle displays. Contract reads remain necessary where a current record decides whether a write action may proceed.</p>
+      <p>The V3 subgraph v3.2.1 indexes all three modular V3.1, V3.2.0 and V3.2.1 Factories and uses dynamic Hub, Membership, Proposal, Voting, Milestone, Winner Snapshot and Treasury templates so newly activated Communities can become discoverable without hardcoding their runtime addresses into the frontend. This supports Community directories, role rosters, proposal history, rounds, winner cohorts, milestone activity, Treasury activity and lifecycle displays. Contract reads remain necessary where a current record decides whether a write action may proceed.</p>
       <h2>Developer safeguards</h2>
       <ul>
         <li>Format Arc USDC with six decimals; do not assume an 18-decimal token.</li>
@@ -532,7 +547,7 @@
           <tr><td>Developer documentation</td><td><a href="https://bertdao-docs.vercel.app">https://bertdao-docs.vercel.app</a></td></tr>
           <tr><td>Core contracts</td><td><a href="https://github.com/Tenyokj/bert-core-arc">github.com/Tenyokj/bert-core-arc</a></td></tr>
           <tr><td>V2 Subgraph</td><td><a href="https://thegraph.com/studio/subgraph/bert-arc-testnet/">thegraph.com/studio/subgraph/bert-arc-testnet</a></td></tr>
-          <tr><td>V3 subgraph v3.2.0</td><td><a href="https://thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet/">thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet</a></td></tr>
+          <tr><td>V3 subgraph v3.2.1</td><td><a href="https://thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet/">thegraph.com/studio/subgraph/bert-v-3-1-arc-testnet</a></td></tr>
         </tbody>
       </table>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>08 / Data and developer interfaces</span></div>
@@ -541,7 +556,7 @@
     <section class="page page-break" id="testnet">
       <p class="eyebrow">09 / Arc Testnet</p>
       <h1>Public deployment registry and current boundary.</h1>
-      <p class="lead">The following addresses identify the current Arc Testnet deployment as of 24 October 2026: V2.3 and the new V3.2 Community Layer. They are not mainnet addresses. Original V3.1 Communities remain bound to Factory <code>0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0</code>; V3.0 is separate historical infrastructure. Never pair the new Hub artifact with an old Factory.</p>
+      <p class="lead">The following addresses identify the current Arc Testnet deployment as of 25 October 2026: V2.3 and the new V3.2.1 Community Layer. They are not mainnet addresses. Original V3.1 Communities remain bound to Factory <code>0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0</code>; V3.0 is separate historical infrastructure. Never pair the new Hub artifact with an old Factory.</p>
       <h2>Network</h2>
       <table>
         <tbody>
@@ -576,26 +591,31 @@
           <tr><td>ReputationSystemUpgradeable</td><td class="address">0x3594C46983460733F6470f7b61De2f3bB2918a81</td></tr>
         </tbody>
       </table>
-      <h2>Current V3.2 Community Layer addresses</h2>
+      <h2>Current V3.2.1 Community Layer addresses</h2>
       <table>
         <thead><tr><th>Contract</th><th>Address</th></tr></thead>
         <tbody>
-          <tr><td>CommunityFactory proxy</td><td class="address">0xf793786BCecfbfE35a22E36180032b32BD5208Ba</td></tr>
-          <tr><td>CommunityTreasuryDeployer</td><td class="address">0x374D742CC904edC4Dc09Bfd6BC941519969C1adf</td></tr>
-          <tr><td>CommunityMembershipModuleDeployer</td><td class="address">0x5196CC82fc05e6b4623c381a944a8D24b02984dd</td></tr>
-          <tr><td>CommunityProposalModuleDeployer</td><td class="address">0x5286B45c3DA60F7341F3f0147163c6B42FeD01a3</td></tr>
-          <tr><td>CommunityVotingModuleDeployer</td><td class="address">0x9D6cef8dEC24ffea29ed1319ebc4E0d729DCe25F</td></tr>
-          <tr><td>CommunityMilestoneModuleDeployer</td><td class="address">0xB1D4A3d54a0E7bC1CCA66F973A08b25F99FD37bf</td></tr>
-          <tr><td>CommunityAdminActions library</td><td class="address">0x4755E0bc1CB4ffB958595d40A55d1F63862bC815</td></tr>
+          <tr><td>CommunityFactory proxy</td><td class="address">0x23E023E0D8B3436319BC6e5e72615Bc7A0c6234E</td></tr>
+          <tr><td>Factory implementation</td><td class="address">0xE397EBb742d0D1c43392425D7B55632C22B18Abe</td></tr>
+          <tr><td>Factory ProxyAdmin</td><td class="address">0xfd9a838E1F727cfd25D52E3E3e93D42C73965d86</td></tr>
+          <tr><td>CommunityTreasuryDeployer</td><td class="address">0x5D11c6780FA89aF62b7A0B28ca502aaBBE81D11d</td></tr>
+          <tr><td>CommunityMembershipModuleDeployer</td><td class="address">0x04A432bbb627B276138c544d83079f0494634dC5</td></tr>
+          <tr><td>CommunityProposalModuleDeployer</td><td class="address">0x22a7a329d5fe207de241f1B4a53A2A3E757D99b9</td></tr>
+          <tr><td>CommunityVotingModuleDeployer</td><td class="address">0x75D5F8343580c2b8570187785ba70fC8aBBbe9B5</td></tr>
+          <tr><td>CommunityMilestoneModuleDeployer</td><td class="address">0x8E3EcA1AE38ACd266bB2A12eB4F2533211C36F46</td></tr>
+          <tr><td>CommunityAdminActions library</td><td class="address">0xE0f9265aF9dFD29D259C468bCC1786AA47080089</td></tr>
         </tbody>
       </table>
+      <p class="small">Historical V3.2.0 Factory <code>0xf793786BCecfbfE35a22E36180032b32BD5208Ba</code> from block <code>68888068</code> remains indexed and allowlisted, but its immutable Managers are not patched. V3.1 and V3.0 also keep their original contracts.</p>
       <h2>Current and historical release anchors</h2>
       <table>
         <thead><tr><th>Action</th><th>Transaction / block</th></tr></thead>
         <tbody>
           <tr><td>FundingPool additive Factory-allowlist upgrade</td><td class="address">0x6a3f82c71d2cbc2130908e86b8210b913668508c4afd68551b931a006c048593 (66809444)</td></tr>
-          <tr><td>V3.2 Factory deployment</td><td class="address">0x217bf856e206f18297c39caf8c474d48bf0e59caa70d39f58c0d9d795b57c6f6 (68888068)</td></tr>
-          <tr><td>V3.2 Factory authorization</td><td class="address">0xb101ec91d9252961ceacf348bf6bcca695d234c8b7d475d00c058adb674205b4 (68888345)</td></tr>
+          <tr><td>V3.2.1 Factory deployment</td><td class="address">0x311e3115421abfb5b3e83232d19575a1e670ff3fa53b0b4d0cc651d8501261ed (69044184)</td></tr>
+          <tr><td>V3.2.1 Factory authorization</td><td class="address">0x0068709ea7e3b176f77dd993e5b4dbdb98ea0f66e7ae5051836f2bb0820614c2 (69044535)</td></tr>
+          <tr><td>Historical V3.2.0 Factory deployment</td><td class="address">0x217bf856e206f18297c39caf8c474d48bf0e59caa70d39f58c0d9d795b57c6f6 (68888068)</td></tr>
+          <tr><td>Historical V3.2.0 Factory authorization</td><td class="address">0xb101ec91d9252961ceacf348bf6bcca695d234c8b7d475d00c058adb674205b4 (68888345)</td></tr>
           <tr><td>Historical V3.1 Factory deployment</td><td class="address">0x4f60aeca659d275ef8cef0c761441207a83a78012b1006c8a79b3beaca84ec32 (66809847)</td></tr>
           <tr><td>V3.0 Factory compatibility allowlist</td><td class="address">0x7ccb8902cf7036951820126e051e18ca8508c8cc8349ffc34469d1a25a1cdf74</td></tr>
           <tr><td>V3.1 Factory authorization</td><td class="address">0x845f814537778cdd61d2e11fe3eb80d4fda9557058212afc3ef884c70f16e66a</td></tr>
