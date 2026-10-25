@@ -170,3 +170,10 @@ For a security issue, do not open a public issue or pull request. Use the
 ## License
 
 Documentation and repository source are published under [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+
+## V3.2.1 deployment update (25 October 2026)
+
+Current Factory: `0x23E023E0D8B3436319BC6e5e72615Bc7A0c6234E`, block `69044184`.
+Graph version: `v3.2.1`; Studio slug remains `bert-v-3-1-arc-testnet`.
+The site distinguishes new Manager 2.0.1 correction rules from historical immutable
+Managers. See the [release record](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2.1-ARC-TESTNET-RELEASE.md).

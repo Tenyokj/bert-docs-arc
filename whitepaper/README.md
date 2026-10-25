@@ -10,6 +10,13 @@ Whitepaper.
 
 ## Scope and status
 
+Deployment addendum (25 October 2026): V3.2.1 infrastructure and graph v3.2.1 are
+now deployed with Manager 2.0.1's correction-deadline fix. The HTML/PDF revision
+1.3.1 below is the dated 24 October V3.2.0 snapshot, not the current address registry.
+Use the [V3.2.1 release addendum](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2.1-ARC-TESTNET-RELEASE.md)
+for current addresses, receipts and immutable-instance limitations. This rollout
+has not regenerated the whitepaper PDF.
+
 The paper documents BERT V2.3 Global Funding Layer and the modular BERT V3.2
 Community Layer deployed on Arc Testnet with internal automated tests. Broader
 manual E2E testing and independent security review remain outstanding. V2.3 uses refundable,
