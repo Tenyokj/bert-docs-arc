@@ -10,7 +10,15 @@ Whitepaper.
 
 ## Scope and status
 
-Document revision **1.3.2 (25 October 2026)** includes deployed V3.2.1 infrastructure,
+Document revision **1.4.0 (24 November 2026)** adds a separately marked,
+**undeployed V2.4 source candidate**, without changing the current public V2.3 +
+V3.2.1 deployment claim. Candidate pages describe the approved testnet 20%
+eligible-fee share, single fixed payee receiving 100% of Treasury receipts,
+48-hour policy notice, immutable recovery limits and bounded evidence. Full E2E,
+fresh preflight, write authorization, receipts and public activation remain gates.
+This revision is local until the docs changes are reviewed and published.
+
+Previous revision **1.3.2 (25 October 2026)** included deployed V3.2.1 infrastructure,
 graph v3.2.1 and Manager 2.0.1's correction-deadline fix. The HTML source and PDF
 are updated together. The [receipt-backed release record](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2.1-ARC-TESTNET-RELEASE.md)
 remains the operational authority for addresses and immutable-instance boundaries.
@@ -60,4 +68,7 @@ On macOS with Google Chrome installed:
 
 The source uses A4 print styling. Review the generated PDF before publishing.
 
-V2 remains V2.3; documentation/NatSpec corrections do not create V2.4 or V2.3.1. V3.2, each contract's custom version and this document's 1.3.2 revision are separate scopes.
+The public layer remains V2.3. The new V2.4 source candidate changes executable
+FundingPool behavior and therefore is not merely a NatSpec correction. Layer
+versions, individual contract versions and this paper's 1.4.0 revision are
+separate scopes; a document revision is not a deployed contract release.

@@ -288,8 +288,13 @@ function renderDocument(doc) {
     requestAnimationFrame(() => docEl.focus({ preventScroll: true }));
   };
 
-  if (typeof document.startViewTransition === "function") document.startViewTransition(render);
-  else render();
+  if (typeof document.startViewTransition === "function") {
+    const transition = document.startViewTransition(render);
+    // Rapid navigation can intentionally supersede the previous animation.
+    transition.ready.catch((error) => {
+      if (error.name !== "AbortError") throw error;
+    });
+  } else render();
 }
 
 function updateFromHash() {

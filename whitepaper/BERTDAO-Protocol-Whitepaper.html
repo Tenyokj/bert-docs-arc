@@ -124,7 +124,8 @@
         @page cover { size: A4; margin: 0; }
         .cover { page: cover; }
         .page { min-height: 0; padding: 0; }
-        .footer { position: static; margin-top: 8mm; }
+        .footer { position: static; margin-top: 4mm; break-before: avoid-page; }
+        .revenue-candidate h2 { margin-top: 6mm; }
         a { color: inherit; border-bottom: 0; }
       }
     </style>
@@ -133,11 +134,11 @@
     <section class="cover">
       <div class="cover-content">
         <div class="brand"><img src="../assets/bert-logo.png" alt="BERT logo" /> BERTDAO Protocol</div>
-        <p class="cover-kicker">Technical whitepaper / Version 1.3.2</p>
+        <p class="cover-kicker">Technical whitepaper / Revision 1.4.0</p>
         <h1>Transparent capital coordination for <span>communities and grants.</span></h1>
         <p class="subtitle">A stablecoin-native protocol for stake-backed proposals, auditable decision-making, controlled treasury flows, and milestone-based release.</p>
         <div class="cover-meta">
-          <div><strong>Publication</strong>25 October 2026</div>
+          <div><strong>Source revision</strong>24 November 2026 / includes unreleased V2.4</div>
           <div><strong>Current environment</strong>Arc Testnet / active development</div>
           <div><strong>Protocol scope</strong>BERT V2 Global Funding Layer and BERT V3 Community Layer</div>
           <div><strong>Canonical source</strong>github.com/Tenyokj/bert-core-arc</div>
@@ -150,7 +151,7 @@
       <h1>Read this before evaluating BERT.</h1>
       <div class="callout warning">
         <strong>Development-stage disclosure.</strong>
-        BERT is deployed and exercised on Arc Testnet. Testnet transactions are real testnet transactions, but test assets and testnet outcomes do not have monetary value. This paper describes the current implementation and intended architecture; it is not an offer, investment memorandum, promise of returns, security audit, or mainnet launch announcement.
+        Public deployments remain V2.3 + V3.2.1 on Arc Testnet. Revision 1.4.0 adds a separately marked, undeployed V2.4 treasury candidate. Testnet assets have no monetary value. This is not an offer, investment memorandum, promise of returns, security audit or mainnet launch announcement.
       </div>
       <div class="callout risk">
         <strong>Identity disclosure.</strong>
@@ -166,6 +167,7 @@
         <a href="#principles"><span>02</span>Design principles and scope</a>
         <a href="#architecture"><span>03</span>System architecture</a>
         <a href="#v2"><span>04</span>BERT V2: global funding layer</a>
+        <a href="#v2-4-candidate"><span>04a</span>V2.4 treasury candidate - not deployed</a>
         <a href="#v3"><span>05</span>BERT V3: Community Layer</a>
         <a href="#identity"><span>06</span>Human-verification boundary</a>
         <a href="#security"><span>07</span>Security, trust, and operations</a>
@@ -174,7 +176,7 @@
         <a href="#mainnet"><span>10</span>Mainnet readiness conditions</a>
         <a href="#appendix"><span>11</span>Appendix: addresses and glossary</a>
       </nav>
-      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Version 1.3.2 / 25 October 2026</span></div>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>Revision 1.4.0 / 24 November 2026</span></div>
     </section>
 
     <section class="page page-break" id="problem">
@@ -302,7 +304,7 @@
           <tr><td><code>authorStakes</code></td><td>Proposal-linked collateral, separate from a general donation.</td><td>Idea creation through the Registry</td></tr>
           <tr><td><code>poolByRoundAndIdea</code></td><td>Capital committed to a particular idea in a particular round.</td><td>Votes through VotingSystem</td></tr>
           <tr><td><code>protocolReserve</code></td><td>Capital tracked outside active distributable round balances.</td><td>Slashed/rejected stake, explicit reserve movements, authenticated V3 reserve inflows</td></tr>
-          <tr><td><code>totalPoolBalance</code></td><td>Live accounted pool value, reconciled with the token balance subject to reserve separation.</td><td>System accounting</td></tr>
+          <tr><td><code>totalPoolBalance</code></td><td>Recorded custody, not freely spendable capital. The V2.4 candidate explicitly reconciles the full balance inclusive of reserve.</td><td>System accounting; verify actual custody and liabilities separately</td></tr>
         </tbody>
       </table>
       <div class="callout warning"><strong>Interpretation rule.</strong> A valid integration must present reserve, active round capital, locked author stake, and already-released payout as separate concepts. Collapsing them into one "treasury available" number would misrepresent the protocol's obligations.</div>
@@ -318,6 +320,35 @@
       <h2>V2 policy surfaces</h2>
       <p>Stake minima, round size, duration, pledge fee, minimum funding targets, vote caps, verified-human gating, trusted signer, and module dependencies are operational policy. Any future governance process must treat parameter changes as security- and UX-relevant changes, rehearse them on a staging environment, and record their effect in a changelog.</p>
       <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04 / BERT V2: capital and grants</span></div>
+    </section>
+
+    <section class="page page-break revenue-candidate" id="v2-4-candidate">
+      <p class="eyebrow">04a / V2.4 source candidate - not deployed</p>
+      <h1>Transparent custody.<br />A separate earned-fee Treasury.</h1>
+      <div class="callout warning"><strong>Release boundary: 24 November 2026.</strong> V2.4 is prepared locally, not deployed or activated. Public V2.3 and V3.2.1 remain unchanged. FundingPool 2.0.0 is a candidate proxy implementation; ProtocolRevenueTreasury 1.0.0 is a new immutable, ownerless contract, not a proxy.</div>
+      <h2>Custody is not team income</h2>
+      <p>The candidate reports actual tokens, recorded custody, protocol reserve, pending earned revenue, other accounted funds, unrecorded surplus and shortfall. Recorded custody includes reserve and pending revenue. Other funds are an aggregate, not an invented exhaustive historical liability ledger. A direct deposit does not create investor ownership, a withdrawal share or APY.</p>
+      <p>Only a snapshotted share of earned success fees from recorded winning pledges creates Treasury revenue. Author bonds, direct deposits, grant principal, refunds, token surplus, V3 reserve inflows and reserve-funded top-ups are excluded from that earnings base. Old rounds retain their original rules; old reserve is never retroactively assigned to the team.</p>
+      <h2>Approved testnet terms, not yet active</h2>
+      <p>The owner selected 20% of eligible earned fees for Treasury (2,000 bps), with the remainder retained as protocol reserve. With 1,000 USDC in winning pledges and a 5% fee, complete execution pays the author 950 USDC and vests 50 USDC of fees: 10 to Treasury, 40 to reserve. The author still follows 20/40/40 of the net grant. Only actually paid stages vest fees; unpaid gross escrow follows the existing refund path. Token-unit rounding applies.</p>
+      <div class="diagram"><div class="diagram-title">One earning, distinct accounting transitions</div><div class="flow"><div class="flow-item">Grant tranche paid<br /><small>eligible fee vests</small></div><div class="arrow">&#8594;</div><div class="flow-item">Treasury credit<br /><small>still held in pool</small></div><div class="arrow">&#8594;</div><div class="flow-item">Collect to Treasury<br /><small>fixed destination</small></div><div class="arrow">&#8594;</div><div class="flow-item">Release to payee<br /><small>fixed beneficiary</small></div></div></div>
+      <p>A blocked collection cannot undo an already paid grant stage. Collection and beneficiary payments are permissionless relays, not permission to choose a different destination. This candidate adds no investor equity, yield strategy, new token, sponsored round, V2 milestone-policy change or V3 Factory migration.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04a / V2.4 candidate: economics</span></div>
+    </section>
+
+    <section class="page page-break revenue-candidate">
+      <p class="eyebrow">04a / V2.4 candidate continued</p>
+      <h1>Announced policy.<br />Immutable recipients. Explicit limits.</h1>
+      <h2>48-hour future-round notice</h2>
+      <p>The owner approved a 48-hour delay between scheduling and activating a Treasury receiver/fee share. This is a protocol design choice, not an Arc requirement. Immediately after upgrading, revenue remains disabled without a reinitializer. Scheduling starts the real notice period; replacement restarts it, cancellation does not alter the current policy, and anyone may execute the exact pending policy after expiry.</p>
+      <p>Each new round snapshots its receiver and share. Later activation, disabling or rotation cannot redirect an old round's earned credits. The first nonzero schedule pins the revenue asset even if subsequently cancelled. This notice does not constrain ProxyAdmin upgrades or timelock every existing Admin action.</p>
+      <h2>Fixed split and recovery boundary</h2>
+      <p>Each Treasury fixes its pool, token and 1-16 unique payees whose shares sum to 10,000 bps. The selected testnet payee is <code>0xA4B0a01dB1d68D4CDB007F78bAB63Cb4ebd814bF</code>, receiving 100% of Treasury receipts, not 100% of pool funds. It is also the current administrator; this is not decentralized custody or a mainnet arrangement.</p>
+      <p>No owner, arbitrary rescue or payee rotation exists. Lost keys, issuer freeze/blocklist restrictions or inaccessible recipients can permanently strand entitlements. A replacement Treasury affects future policy only. Pool upgrades and USDC issuer authority remain trust assumptions. Matching receiver getters alone are not runtime verification.</p>
+      <h2>Evidence is bounded, rollout remains pending</h2>
+      <p>Local evidence includes 268 core tests, a pinned custody inventory, bounded native-Arc upgrade/transfer probes, client checks and V2 event indexing. The frontend suite has 87 tests including ten new mapping checks; both Graph manifests build to WASM. Eleven compiled local receipt logs replay consistently with getters without double counting claim and collection. That is not native Graph Node query/reorg or full wallet/GrantManager acceptance.</p>
+      <p>The release configuration records testnet terms separately from deployment receipts. Full E2E, fresh accounting/authority/runtime preflight, explicit public authorization, verified Treasury construction, upgrade and Graph/client rollout remain gates. Slither and dependency risks are documented, not declared resolved. A blind downgrade after revenue accrues is unsafe because old code does not account for the earmarked credits.</p>
+      <div class="footer"><span>BERTDAO Protocol Whitepaper</span><span>04a / V2.4 candidate: policy and release gates</span></div>
     </section>
 
     <section class="page page-break" id="v3">
