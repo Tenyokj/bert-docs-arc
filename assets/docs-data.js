@@ -5,5 +5,6 @@ import { v3Docs } from "./content/v3.js";
 import { testnetDocs } from "./content/testnet.js";
 import { testingDocs } from "./content/testing.js";
 import { consoleDocs } from "./content/console.js";
+import { revenueDocs } from "./content/revenue.js";
 
-export const docs = [...startDocs, ...consoleDocs, ...developerDocs, ...v2Docs, ...v3Docs, ...testingDocs, ...testnetDocs];
+export const docs = [...startDocs, ...consoleDocs, ...developerDocs, ...v2Docs, ...revenueDocs, ...v3Docs, ...testingDocs, ...testnetDocs];
