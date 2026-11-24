@@ -22,11 +22,13 @@ refunds, progressive fees and backer-governed 20/40/40 escrow releases. It is
 intentionally separate from V3 Community Treasury accounting and governance
 rules.
 
-Unreleased source reference: the separate **V2.4 / Unreleased candidate** section
+Current rollout reference: the separate **V2.4 / Arc Testnet rollout** section
 documents transparent accounting, earned-fee revenue, fixed Treasury payees,
-indexer semantics and release gates. Public deployments remain V2.3 + V3.2.1.
-The new source content is local until this docs branch is reviewed and deployed;
-it does not claim the candidate's upgrade or revenue activation has happened.
+indexer semantics and release gates. FundingPool 2.0.0 and immutable Treasury
+1.0.0 are deployed; V3.2.1 contracts are unchanged. The 2000-bps eligible-fee policy
+is scheduled, not active until a separate transaction after 2026-11-26 22:03:24 UTC.
+The public revenue pilot remains pending. These documentation edits remain local
+until their own reviewed commit/publication; contract deployment is not docs deployment.
 
 This folder is intentionally isolated from the main frontend so it can be:
 - deployed as a separate static site
@@ -106,7 +108,7 @@ The site is organized for protocol developers, not as a marketing guide:
 - **BERT V2.3 / Contract reference**: conditional pledge flow, viable funding
   targets, immutable plans, backer milestones, refunds and lazy voter
   progression.
-- **BERT V2.4 / Unreleased candidate**: transparent accounting, eligible earned
+- **BERT V2.4 / Arc Testnet rollout**: transparent accounting, eligible earned
   fees, fixed Treasury beneficiaries, selected testnet terms and rollout gates.
 - **BERT V3 / Contract reference**: Factory-created Communities, Hubs,
   Treasuries, validation, rounds and quorum-protected actions.
