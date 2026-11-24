@@ -10,12 +10,12 @@ Whitepaper.
 
 ## Scope and status
 
-Document revision **1.4.0 (24 November 2026)** adds a separately marked,
-**undeployed V2.4 source candidate**, without changing the current public V2.3 +
-V3.2.1 deployment claim. Candidate pages describe the approved testnet 20%
-eligible-fee share, single fixed payee receiving 100% of Treasury receipts,
-48-hour policy notice, immutable recovery limits and bounded evidence. Full E2E,
-fresh preflight, write authorization, receipts and public activation remain gates.
+Document revision **1.4.1 (24 November 2026)** records the installed V2.4 contracts,
+verified V2 Graph/client rollout and scheduled-but-inactive eligible-fee policy.
+Separate activation is possible at/after 26 November 2026, 22:03:24 UTC; the public
+revenue pilot and independent audit remain outstanding. V3.2.1 contracts are
+unchanged. The sole payee has 100% of Treasury receipts, not pool custody.
+Revision 1.4.0 described the earlier source candidate; it is not current live status.
 This revision is local until the docs changes are reviewed and published.
 
 Previous revision **1.3.2 (25 October 2026)** included deployed V3.2.1 infrastructure,
@@ -23,7 +23,7 @@ graph v3.2.1 and Manager 2.0.1's correction-deadline fix. The HTML source and PD
 are updated together. The [receipt-backed release record](https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/V3.2.1-ARC-TESTNET-RELEASE.md)
 remains the operational authority for addresses and immutable-instance boundaries.
 
-The paper documents BERT V2.3 Global Funding Layer and the modular BERT V3.2.1
+The paper documents V2.4 treasury rollout with retained V2.3 grant rules and the modular BERT V3.2.1
 Community Layer deployed on Arc Testnet with internal automated tests. Broader
 manual E2E testing and independent security review remain outstanding. V2.3 uses refundable,
 idea-specific pledges and winning-backer-governed 20/40/40 milestones; V3.2
@@ -68,7 +68,7 @@ On macOS with Google Chrome installed:
 
 The source uses A4 print styling. Review the generated PDF before publishing.
 
-The public layer remains V2.3. The new V2.4 source candidate changes executable
+The installed V2.4 implementation changes executable
 FundingPool behavior and therefore is not merely a NatSpec correction. Layer
-versions, individual contract versions and this paper's 1.4.0 revision are
+versions, individual contract versions and this paper's 1.4.1 revision are
 separate scopes; a document revision is not a deployed contract release.
