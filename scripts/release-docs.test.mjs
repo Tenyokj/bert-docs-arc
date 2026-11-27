@@ -6,12 +6,12 @@ import { docs } from "../assets/docs-data.js";
 const paper = readFileSync(new URL("../whitepaper/BERTDAO-Protocol-Whitepaper.html", import.meta.url), "utf8");
 const candidates = docs.filter((doc) => doc.section === "BERT V2.4 / Arc Testnet rollout");
 
-test("documentation retains unique routes and three rollout pages without claiming activation", () => {
+test("documentation retains unique routes and three rollout pages with receipt-backed activation", () => {
   assert.equal(new Set(docs.map((doc) => doc.slug)).size, docs.length);
   assert.equal(candidates.length, 3);
   for (const doc of candidates) {
-    assert(/not active/i.test(doc.content));
-    assert(/scheduled|Scheduled|policy is scheduled/i.test(doc.content));
+    assert(/active policy|policy active|policy is active|activation transaction|activation is confirmed|policy activation is confirmed/i.test(doc.content));
+    assert(/74359134/.test(doc.content));
   }
 });
 test("candidate navigation links resolve without replacing deployed V2/V3 references", () => {
@@ -33,8 +33,10 @@ test("approved testnet fee/recipient terms and recovery limits remain distinct f
   assert(text.includes("permanently strand"));
   assert(text.includes("readyToBroadcast: false"));
 });
-test("one whitepaper distinguishes installed contracts, scheduled policy and pending public pilot", () => {
-  assert(paper.includes("Revision 1.4.1"));
+test("one whitepaper distinguishes installed contracts, activated policy and pending public pilot", () => {
+  assert(paper.includes("Revision 1.4.2"));
+  assert(paper.includes("27 November 2026, 10:03:38 UTC"));
+  assert(paper.includes("74359134"));
   assert(paper.includes("FundingPool 2.0.0 is installed"));
   assert(paper.includes("26 November 2026, 22:03:24 UTC"));
   assert(paper.includes("public revenue pilot remains pending"));
