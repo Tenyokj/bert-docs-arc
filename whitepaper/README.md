@@ -10,9 +10,9 @@ Whitepaper.
 
 ## Scope and status
 
-Document revision **1.4.1 (24 November 2026)** records the installed V2.4 contracts,
-verified V2 Graph/client rollout and scheduled-but-inactive eligible-fee policy.
-Separate activation is possible at/after 26 November 2026, 22:03:24 UTC; the public
+Document revision **1.4.2 (27 November 2026)** records the installed V2.4 contracts,
+verified V2 Graph/client rollout and activated 2000-bps eligible-fee policy.
+Activation is confirmed at block74359134, 2026-11-27 10:03:38 UTC; the public
 revenue pilot and independent audit remain outstanding. V3.2.1 contracts are
 unchanged. The sole payee has 100% of Treasury receipts, not pool custody.
 Revision 1.4.0 described the earlier source candidate; it is not current live status.

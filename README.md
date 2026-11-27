@@ -26,7 +26,7 @@ Current rollout reference: the separate **V2.4 / Arc Testnet rollout** section
 documents transparent accounting, earned-fee revenue, fixed Treasury payees,
 indexer semantics and release gates. FundingPool 2.0.0 and immutable Treasury
 1.0.0 are deployed; V3.2.1 contracts are unchanged. The 2000-bps eligible-fee policy
-is scheduled, not active until a separate transaction after 2026-11-26 22:03:24 UTC.
+is active since November 27, 2026, 10:03:38 UTC (block 74359134).
 The public revenue pilot remains pending. These documentation edits remain local
 until their own reviewed commit/publication; contract deployment is not docs deployment.
 
