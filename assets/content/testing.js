@@ -35,7 +35,7 @@ export const testingDocs = [
       <h2>Minimum evidence standard</h2>
       <ol class="numbered-flow"><li><strong>State environment.</strong><span>Commit SHA, local or Arc chain ID, and relevant addresses.</span></li><li><strong>Name actor.</strong><span>Wallet and intended role: Admin, Member, Validator, supporter or unrelated account.</span></li><li><strong>Replay exact steps.</strong><span>Commands, UI actions, calldata or minimal PoC.</span></li><li><strong>Show delta.</strong><span>Transaction hash, revert, direct read, balance change, log or screenshot.</span></li><li><strong>Name broken rule.</strong><span>Authorization, accounting, liveness, privacy, or UX invariant.</span></li></ol>
       <h2>Current scope</h2>
-      <table><thead><tr><th>Surface</th><th>Current target</th><th>What success proves</th></tr></thead><tbody><tr><td>V2.3</td><td>Conditional pledge funding and backer milestones</td><td>Losing pledges are not redirected; winner delivery is reviewable.</td></tr><tr><td>V3.2</td><td>Modular Community Layer</td><td>Four governance lanes, isolated Treasury buckets, and 20 / 40 / 40 delivery.</td></tr><tr><td>Frontend</td><td>Next.js dApp</td><td>Correct chain/address use and no false transaction success.</td></tr><tr><td>Indexers</td><td>V2/V3 Graph deployments</td><td>Historical discovery reconciles with live reads.</td></tr></tbody></table>
+      <table><thead><tr><th>Surface</th><th>Current target</th><th>What success proves</th></tr></thead><tbody><tr><td>V2.4</td><td>V2.3 pledge/grant mechanics plus eligible earned-fee revenue</td><td>Losing pledges are not redirected; winner delivery is reviewable.</td></tr><tr><td>V3.2.1</td><td>Modular Community Layer with correction hotfix</td><td>Four governance lanes, isolated Treasury buckets, and 20 / 40 / 40 delivery.</td></tr><tr><td>Frontend</td><td>Next.js dApp</td><td>Correct chain/address use and no false transaction success.</td></tr><tr><td>Indexers</td><td>V2/V3 Graph deployments</td><td>Historical discovery reconciles with live reads.</td></tr></tbody></table>
       <p>The complete commands and reporting template live in the <a href="https://github.com/Tenyokj/bert-core-arc/blob/arc-usdc-migration/docs/TESTING.md" target="_blank" rel="noreferrer">Contributor Testing Guide</a>.</p>
     `,
   },
@@ -50,8 +50,8 @@ export const testingDocs = [
       <p class="eyebrow">Contributor testing / Arc Testnet</p><h1>One test at a time.<br /><span>Record the chain evidence.</span></h1>
       <p class="lead">Use this path when you want to test the deployed dApp without running local infrastructure. It is real Arc Testnet execution with valueless test assets. Start with a single role and one focused lifecycle transition, then compare the receipt with a direct read and the relevant subgraph record.</p>
       <h2>Public endpoints</h2>
-      <table><thead><tr><th>Service</th><th>Value</th><th>Use</th></tr></thead><tbody><tr><td>dApp</td><td><a href="https://bertdao.vercel.app" target="_blank" rel="noreferrer">bertdao.vercel.app ↗</a></td><td>Reference V2/V3 test UI and Demo PoP flow.</td></tr><tr><td>Network</td><td>Arc Testnet / <code>5042002</code></td><td>Every wallet write must use this chain.</td></tr><tr><td>Public RPC</td><td><code>https://arc-testnet.drpc.org</code></td><td>Direct reads and manual reproduction.</td></tr><tr><td>V2 Graph endpoint</td><td><code>.../bert-arc-testnet/v0.3.0</code></td><td>V2 ideas, rounds and milestones.</td></tr><tr><td>V3.2 Graph endpoint</td><td><code>.../bert-v-3-1-arc-testnet/v3.2.1</code></td><td>Communities, modules, governance and milestones.</td></tr></tbody></table>
-      <pre><code>V2_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.3.0
+      <table><thead><tr><th>Service</th><th>Value</th><th>Use</th></tr></thead><tbody><tr><td>dApp</td><td><a href="https://bertdao.vercel.app" target="_blank" rel="noreferrer">bertdao.vercel.app ↗</a></td><td>Reference V2/V3 test UI and Demo PoP flow.</td></tr><tr><td>Network</td><td>Arc Testnet / <code>5042002</code></td><td>Every wallet write must use this chain.</td></tr><tr><td>Public RPC</td><td><code>https://arc-testnet.drpc.org</code></td><td>Direct reads and manual reproduction.</td></tr><tr><td>V2 Graph endpoint</td><td><code>.../bert-arc-testnet/v0.4.0</code></td><td>V2 ideas, rounds and milestones.</td></tr><tr><td>V3.2 Graph endpoint</td><td><code>.../bert-v-3-1-arc-testnet/v3.2.1</code></td><td>Communities, modules, governance and milestones.</td></tr></tbody></table>
+      <pre><code>V2_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.4.0
 V3_GRAPH=https://api.studio.thegraph.com/query/1742046/bert-v-3-1-arc-testnet/v3.2.1
 V3_1_FACTORY=0xe16Cd61a21feA97393e6eEE3A7F7A26828021dD0
 V3_1_FACTORY_START_BLOCK=66809847</code></pre>
@@ -67,8 +67,8 @@ V3_1_FACTORY_START_BLOCK=66809847</code></pre>
     slug: "tester-local-lab",
     section: "Testing & contributing",
     group: "Start here",
-    title: "Local V3.2 protocol lab",
-    summary: "Deploy a disposable V2 + V3.2 stack, mint MockUSDC, issue local PoP records, and test eight explicit roles.",
+    title: "Local V2/V3 protocol lab",
+    summary: "Deploy a disposable current-source V2 + V3 stack, mint MockUSDC, issue local PoP records, and test eight explicit roles.",
     tags: ["hardhat", "localhost", "e2e", "mock-usdc", "pop", "v3.1"],
     content: `
       <p class="eyebrow">Contributor testing / Local environment</p><h1>One disposable chain.<br /><span>Eight explicit roles.</span></h1>
@@ -95,7 +95,7 @@ POP_VERIFIER_ADDRESS=&lt;PoPVerifierUpgradeable-proxy&gt; \\
 V3_PROXY_ADMIN_OWNER=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 \\
 npx hardhat run scripts/deploy/deploy-v3-2.ts --network localhost
 
-# These sources reproduce the deployed V3.2 policy in an isolated local lab, not original V3.1.
+# Pinned current source includes the V3.2.1 correction hotfix; original V3.1/V3.2.0 instances differ.
 # Substitute FundingPoolUpgradeable and V3_2_FACTORY_ADDRESS printed above.
 LOCAL_RPC_URL=http://127.0.0.1:8545 \\
 FUNDING_POOL_ADDRESS=&lt;FundingPoolUpgradeable-proxy&gt; \\
@@ -122,7 +122,7 @@ npx hardhat run scripts/local/verify-v3-test-wallets.ts --network localhost</cod
     slug: "tester-v2-v3-matrix",
     section: "Testing & contributing",
     group: "Protocol matrix",
-    title: "V2.3 and V3.2 test matrix",
+    title: "V2 funding and V3.2.1 test matrix",
     summary: "Concrete functional and negative cases for funding, governance, Treasury accounting, milestones, and refunds.",
     tags: ["v2.3", "v3.1", "matrix", "refunds", "milestones", "treasury"],
     content: `
@@ -130,10 +130,10 @@ npx hardhat run scripts/local/verify-v3-test-wallets.ts --network localhost</cod
       <p class="lead">Every terminal protocol action needs a positive assertion, a negative assertion and an accounting assertion. Read contracts directly before and after each step; a UI label or raw ERC-20 transfer is not sufficient evidence.</p>
       <h2>V2.3: conditional pledge funding</h2>
       <table><thead><tr><th>ID</th><th>Action</th><th>Expected invariant</th></tr></thead><tbody><tr><td>V2-01</td><td>Create idea with author bond and minimum net target.</td><td>Bond and target store once in USDC base units; malformed intake reverts.</td></tr><tr><td>V2-02</td><td>Open eligible round and pledge to one candidate.</td><td>Candidate composition respects limits; pledge stays attributable to one voter/idea.</td></tr><tr><td>V2-03</td><td>Settle viable winner.</td><td>Only winner pledge capital becomes grant budget after disclosed fee policy.</td></tr><tr><td>V2-04</td><td>Claim loser or no-winner refund.</td><td>Each voter pulls own entitlement once; no pledge funds another idea.</td></tr><tr><td>V2-05</td><td>Review milestone, correction, expiry, failure.</td><td>Unreleased capital follows defined backer/refund policy; no duplicate release.</td></tr></tbody></table>
-      <h2>V3.2: four governance lanes</h2>
+      <h2>V3.2.1: four governance lanes</h2>
       <table><thead><tr><th>Lane</th><th>Entry route</th><th>Critical checks</th></tr></thead><tbody><tr><td>Admin Binary</td><td>Admin creates; Members vote YES/NO.</td><td>No Validator review or reward share; YES winner creates plan.</td></tr><tr><td>Member Binary</td><td>Member locks bond; Validators decide; Members vote.</td><td>Only Validators decide once; author cannot self-vote.</td></tr><tr><td>Admin Slate</td><td>Admin creates candidates and round.</td><td>One selection per Member; deterministic winner; one settlement.</td></tr><tr><td>Member Slate</td><td>Member candidates require validation before round.</td><td>Unapproved candidate cannot enter; winner starts same plan lifecycle.</td></tr></tbody></table>
       <h2>Execution-plan checks</h2>
-      <div class="contract-rail"><div><b>20%</b><small>SETTLEMENT</small><strong>Reserved and released once</strong><span>Treasury reserves winner budget, then releases only first tranche to Administration execution wallet.</span></div><div><b>40%</b><small>MILESTONE ONE</small><strong>Supporter review</strong><span>Only eligible sealed supporters review. Weight quorum is 40%; approval is 6,667 bps (66.67%).</span></div><div><b>40%</b><small>MILESTONE TWO</small><strong>Terminal delivery</strong><span>Second proof follows same electorate. Failure makes only unspent funds refundable.</span></div></div>
+      <div class="contract-rail"><div><b>20%</b><small>SETTLEMENT</small><strong>Reserve, authorize, then pay</strong><span>Settlement pays nothing in V3.2.1. Fresh Admin quorum and transfer are required within seven active Community days for the first 20%.</span></div><div><b>40%</b><small>MILESTONE ONE</small><strong>Review, then fresh authorization</strong><span>Eligible sealed supporters review: 40% participation, 6,667-bps approval and the minimum address floor. Fresh Admin quorum and transfer follow; review alone does not pay.</span></div><div><b>40%</b><small>MILESTONE TWO</small><strong>Final payment completes delivery</strong><span>Second proof follows the eligible electorate and needs a fresh payment authorization. Failure/expiry refunds the entire unpaid execution budget.</span></div></div>
       <table><thead><tr><th>Negative case</th><th>Expected result</th></tr></thead><tbody><tr><td>Unrelated Member, NO voter, author, or executor reviews proof.</td><td>Revert: winner snapshot eligibility cannot be bypassed.</td></tr><tr><td>Review lacks quorum.</td><td>Only documented grace route opens; silence never auto-pays executor.</td></tr><tr><td>First proof fails.</td><td>One correction after cooldown.</td></tr><tr><td>Corrected proof fails or proof expires.</td><td>Plan fails; unreleased reserve is pro-rata claimable only by winner supporters.</td></tr><tr><td>Community pauses during deadline.</td><td>Community clock freezes voting, proof, review and action windows.</td></tr></tbody></table>
     `,
   },

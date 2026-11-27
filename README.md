@@ -11,6 +11,30 @@
 
 # BERT Docs
 
+## Handbook And Documentation Site
+
+The handbook combines task-oriented user guides, V2/V3 integration guides and
+version-pinned Solidity references. The site provides light/dark themes,
+collapsible navigation, full-text search and copyable code examples. See
+[DOCS-REDESIGN.md](./DOCS-REDESIGN.md) for scope and verification, and
+[RELEASE-NOTES.md](./RELEASE-NOTES.md) for the documentation release.
+This is independent of contract versions and does not upgrade onchain state.
+
+```sh
+node scripts/preview.mjs
+# Open http://127.0.0.1:3200
+node --test scripts/release-docs.test.mjs scripts/handbook.test.mjs
+node scripts/browser-smoke.mjs
+```
+
+Browser checks reuse `@playwright/test` from the frontend checkout. Set
+`BERT_FRONTEND_PACKAGE` to that checkout's absolute `package.json` path if needed.
+Refresh the pinned reference with `BERT_CORE_PATH=/path/to/bert-core node
+scripts/sync-reference.mjs`, then review the generated diff and rerun checks.
+The generator rejects uncommitted changes in Core contracts/docs.
+
+## Protocol scope
+
 Standalone developer documentation portal for the **BERT** protocol. It
 documents BERT V2.3 conditional-pledge and V3.2 Community Layer integration (including retained V3.1 history), events, indexers, deployment
 operations and the current Arc Testnet boundary without presenting testnet
@@ -27,8 +51,8 @@ documents transparent accounting, earned-fee revenue, fixed Treasury payees,
 indexer semantics and release gates. FundingPool 2.0.0 and immutable Treasury
 1.0.0 are deployed; V3.2.1 contracts are unchanged. The 2000-bps eligible-fee policy
 is active since November 27, 2026, 10:03:38 UTC (block 74359134).
-The public revenue pilot remains pending. These documentation edits remain local
-until their own reviewed commit/publication; contract deployment is not docs deployment.
+The public revenue pilot remains pending. Documentation publication and contract
+deployment are separate; neither establishes completion of that pilot.
 
 This folder is intentionally isolated from the main frontend so it can be:
 - deployed as a separate static site

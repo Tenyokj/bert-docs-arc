@@ -6,5 +6,25 @@ import { testnetDocs } from "./content/testnet.js";
 import { testingDocs } from "./content/testing.js";
 import { consoleDocs } from "./content/console.js";
 import { revenueDocs } from "./content/revenue.js";
+import { handbookDocs } from "./content/handbook.js";
+import { contractDocs, sourceGuideDocs, referenceRevision } from "./reference.js";
 
-export const docs = [...startDocs, ...consoleDocs, ...developerDocs, ...v2Docs, ...revenueDocs, ...v3Docs, ...testingDocs, ...testnetDocs];
+const originalDocs = [...startDocs.filter((doc) => doc.slug !== "docs-home"), ...consoleDocs, ...developerDocs, ...v2Docs, ...revenueDocs, ...v3Docs, ...testingDocs, ...testnetDocs];
+const sectionFor = (doc) => {
+  if (doc.slug === "protocol-map") return "Getting started";
+  if (doc.slug === "bert-console") return "Using the app";
+  if (doc.section.includes("V2")) return "V2 global funding";
+  if (doc.section.includes("V3")) return "V3 Communities";
+  if (["integration-quickstart", "client-and-network", "indexing-and-subgraphs"].includes(doc.slug)) return "Developers";
+  if (doc.section.includes("Testing")) return "Developers";
+  return "Security & operations";
+};
+const guides = originalDocs.map((doc) => ({...doc, legacySection:doc.section, section:sectionFor(doc),content:doc.content + `<p class="source-note">Version-specific guide. For current/legacy boundaries see <a href="#release-history">release history</a>; for implementation-level detail see <a href="#contract-directory">contract reference</a>. Core source snapshot <code>${referenceRevision.slice(0,7)}</code>. Testnet only.</p>`}));
+const directory = {slug:"contract-directory",title:"Contract directory",section:"Contract reference",summary:"Source-derived APIs, responsibilities and pinned implementations across global and Community components.",tags:["contracts","modules","api"],content:`<p class="eyebrow">Reference</p><h1>Contract directory</h1><p class="lead">Find the component responsible for a state transition, a permission or a balance. Names alone do not establish a deployed version.</p><div class="callout info">Pinned Core revision <code>${referenceRevision.slice(0,7)}</code>. Generated interfaces and source are reference material; the selected deployment, inherited APIs and live guards remain authoritative.</div><h2>Components and interfaces</h2><table><tr><th>Component</th><th>Responsibility</th></tr>${contractDocs.map(doc=>`<tr><td><a href="#${doc.slug}">${doc.title}</a></td><td>${doc.summary}</td></tr>`).join("")}</table>`};
+const sectionOrder=["Getting started","Using the app","V2 global funding","V3 Communities","Developers","Contract reference","Security & operations","Versions & direction","Source guides"];
+const glossary={slug:"glossary",title:"Glossary",section:"Getting started",summary:"Terms that must not be confused when using or integrating BERT.",tags:["glossary","terms"],content:`<h1>Glossary</h1><table><tr><th>Term</th><th>Meaning</th></tr>${Object.entries({"Author bond":"Anti-spam stake attached to a proposal, not its minimum funding target.","Conditional pledge":"V2 support attributed to a selected idea and its defined refund paths.","Net grant":"Author funding after the round fee; 20/40/40 applies to this amount in backer mode.","Milestone proof":"Evidence submitted for eligible review; it is not a payment receipt.","Execution recipient":"Fixed address receiving Community execution tranches, distinct from the Treasury holding them.","Quorum":"Required participation or authorization threshold, not necessarily independent human identities.","Snapshot":"Recorded cohort, weight or policy anchoring later decisions; not every current Member is eligible.","Reserve":"A named accounting category, not all tokens held by a contract.","Releasable":"An available entitlement under a particular claim path, not all custody.","Community time":"Pause-aware clock used by configured local deadlines.","Implementation":"Logic behind a proxy or a module generation; distinct from the proxy address.","Legacy":"Retained historical behavior, not automatically upgraded by publishing new source.","Basis points":"10000 bps = 100%; 2000 bps = 20%.","Indexer":"Derived historical/read model which may lag or fail; not the authority for financial writes."}).map(([key,value])=>`<tr><td>${key}</td><td>${value}</td></tr>`).join("")}</table><p>Continue with <a href="#global-roles-progression">role distinctions</a> or <a href="#protocol-map">the architecture</a>.</p>`};
+const all=[...handbookDocs,glossary,...guides,directory,...contractDocs,...sourceGuideDocs];
+all.sort((a,b)=>sectionOrder.indexOf(a.section)-sectionOrder.indexOf(b.section));
+const map={slug:"documentation-map",section:"Getting started",title:"Documentation map",summary:"All handbook guides, layer references and source documents.",tags:["index","navigation"],content:`<h1>Documentation map</h1><p class="lead">Choose a task first, then use the deeper source reference when you need exact behavior.</p>${sectionOrder.map(section=>`<h2>${section}</h2><ul>${all.filter(doc=>doc.section===section).map(doc=>`<li><a href="#${doc.slug}">${doc.title}</a> — ${doc.summary}</li>`).join("")}</ul>`).join("")}`};
+all.splice(all.findIndex(doc=>doc.section!=="Getting started"),0,map);
+export const docs=all;

@@ -1,4 +1,12 @@
 import { docs } from "./docs-data.js";
+import { icon, hydrateIcons } from "./icons.js";
+
+hydrateIcons();
+document.querySelectorAll('.site-footer a:not(.wordmark)').forEach(link => {
+  const label = link.textContent.replace(/\s*↗$/, '');
+  const name = /github/i.test(label) ? 'github' : /console|indexing/i.test(label) ? 'terminal' : /whitepaper/i.test(label) ? 'file' : /security|disclosure/i.test(label) ? 'shield' : /history/i.test(label) ? 'history' : /website/i.test(label) ? 'globe' : /contract|architecture/i.test(label) ? 'layers' : /contribut/i.test(label) ? 'users' : /quick|first/i.test(label) ? 'rocket' : 'book';
+  link.innerHTML = `${icon(name)}<span>${label}</span>${/^https?:/.test(link.getAttribute('href')) ? icon('external', 'external-icon') : ''}`;
+});
 
 const navEl = document.getElementById("nav");
 const docEl = document.getElementById("doc");
@@ -19,6 +27,8 @@ let selectedSearchIndex = 0;
 let lastSearchResults = [];
 const expandedSections = new Set();
 const expandedGroups = new Set();
+const searchBodies = new Map(docs.map((doc) => [doc.slug, toText(doc.content).toLowerCase()]));
+let headingObserver;
 
 function escapeHtml(value) {
   return value.replace(/[&<>'"]/g, (character) => ({
@@ -45,30 +55,21 @@ function getDocFromHash() {
 }
 
 function sectionIcon(section) {
-  const name = section.toLowerCase();
-  if (name.includes("v2")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z\"/><path d=\"m4.5 7.8 7.5 4.3 7.5-4.3M12 12v8.5\"/></svg>";
-  if (name.includes("v3")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"8\"/><path d=\"M12 4V2m0 20v-2M4 12H2m20 0h-2m-2.3-5.7-1.4 1.4m-8.6 8.6-1.4 1.4m0-10.3 1.4 1.4m8.6 8.6 1.4 1.4\"/></svg>";
-  if (name.includes("testnet")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7 3h10m-8 0v4.2l-4.1 7.1A4.6 4.6 0 0 0 8.9 21h6.2a4.6 4.6 0 0 0 4-6.7L15 7.2V3\"/><path d=\"M8 15h8\"/></svg>";
-  return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3v18m9-9H3\"/><circle cx=\"12\" cy=\"12\" r=\"8\"/></svg>";
+  return icon({
+    "Getting started": "book", "Using the app": "rocket", "V2 global funding": "wallet",
+    "V3 Communities": "users", "Developers": "code", "Contract reference": "layers",
+    "Security & operations": "shield", "Versions & direction": "history", "Source guides": "file",
+  }[section]);
 }
 
-function chevronIcon() {
-  return "<svg class=\"nav-chevron\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 5 7 7-7 7\"/></svg>";
-}
+function chevronIcon() { return icon("chevron", "nav-chevron"); }
 
 function groupIcon(group) {
-  const name = group.toLowerCase();
-  if (name.includes("capital") || name.includes("grant")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 7h16v11H4z\"/><path d=\"M8 7V5h8v2m-5 4h2\"/></svg>";
-  if (name.includes("security")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3 5 6v5c0 4.4 2.8 7.5 7 10 4.2-2.5 7-5.6 7-10V6z\"/><path d=\"m9 12 2 2 4-4\"/></svg>";
-  return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 6.5h16M4 12h16M4 17.5h10\"/></svg>";
+  return icon(/security/i.test(group) ? "shield" : /capital|grant/i.test(group) ? "wallet" : "layers");
 }
 
 function pageIcon(title) {
-  const name = title.toLowerCase();
-  if (name.includes("quick") || name.includes("start")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m13 3-9 10h7l-1 8 10-12h-7z\"/></svg>";
-  if (name.includes("reference") || name.includes("address")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3z\"/><path d=\"M5 4v16a3 3 0 0 1 3-3h11\"/></svg>";
-  if (name.includes("security") || name.includes("invariant")) return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3 5 6v5c0 4.4 2.8 7.5 7 10 4.2-2.5 7-5.6 7-10V6z\"/><path d=\"m9 12 2 2 4-4\"/></svg>";
-  return "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 4h9l3 3v13H6z\"/><path d=\"M9 12h6m-6 4h4m2-12v4h4\"/></svg>";
+  return icon(/quick|start/i.test(title) ? "rocket" : /security|invariant/i.test(title) ? "shield" : /history|release/i.test(title) ? "history" : "file");
 }
 
 function renderNav() {
@@ -78,17 +79,12 @@ function renderNav() {
     return all;
   }, new Map());
 
-  const activeDoc = getCurrentDoc();
-  const activeSection = activeDoc.section;
-  expandedSections.add(activeSection);
-  if (activeDoc.group) expandedGroups.add(`${activeSection}::${activeDoc.group}`);
-
   navEl.innerHTML = [...sections.entries()].map(([section, sectionDocs]) => `
     <section class="nav-section ${expandedSections.has(section) ? "is-open" : ""}">
       <button class="nav-section-trigger" type="button" data-section-toggle="${escapeHtml(section)}" aria-expanded="${expandedSections.has(section)}">
-        <span class="nav-icon">${sectionIcon(section)}</span><span>${escapeHtml(section)}</span>${chevronIcon()}
+        <span class="nav-icon">${sectionIcon(section)}</span><span class="nav-label">${escapeHtml(section)}</span><small class="nav-count">${sectionDocs.length}</small>${chevronIcon()}
       </button>
-      <div class="nav-section-pages"><div class="nav-section-inner">
+      <div class="nav-section-pages" ${expandedSections.has(section) ? '' : 'inert'}><div class="nav-section-inner">
         ${sectionDocs.filter((doc) => !doc.group).map((doc) => `<a class="nav-direct-link ${doc.slug === activeSlug ? "active" : ""}" href="#${doc.slug}" data-nav-slug="${doc.slug}"><span class="nav-sub-icon">${pageIcon(doc.title)}</span>${escapeHtml(doc.title)}</a>`).join("")}
         ${[...sectionDocs.filter((doc) => doc.group).reduce((all, doc) => {
           if (!all.has(doc.group)) all.set(doc.group, []);
@@ -105,7 +101,7 @@ function renderNav() {
             <button class="nav-group-trigger" type="button" data-group-toggle="${escapeHtml(groupKey)}" aria-expanded="${groupOpen}">
               <span class="nav-sub-icon">${groupIcon(group)}</span><span>${escapeHtml(group)}</span>${chevronIcon()}
             </button>
-            <div class="nav-group-pages"><div class="nav-group-inner">${groupDocs.map((doc) => `<a href="#${doc.slug}" data-nav-slug="${doc.slug}" class="${doc.slug === activeSlug ? "active" : ""}">${escapeHtml(doc.title)}</a>`).join("")}</div></div>
+            <div class="nav-group-pages" ${groupOpen ? '' : 'inert'}><div class="nav-group-inner">${groupDocs.map((doc) => `<a href="#${doc.slug}" data-nav-slug="${doc.slug}" class="${doc.slug === activeSlug ? "active" : ""}"><span class="nav-sub-icon">${pageIcon(doc.title)}</span><span>${escapeHtml(doc.title)}</span></a>`).join("")}</div></div>
           </div>`;
         }).join("")}
       </div></div>
@@ -115,18 +111,22 @@ function renderNav() {
   navEl.querySelectorAll("[data-section-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
       const section = button.dataset.sectionToggle;
-      if (expandedSections.has(section)) expandedSections.delete(section);
-      else expandedSections.add(section);
-      renderNav();
+      const open = !expandedSections.has(section);
+      if (open) expandedSections.add(section); else expandedSections.delete(section);
+      button.closest('.nav-section').classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      button.nextElementSibling.inert = !open;
     });
   });
 
   navEl.querySelectorAll("[data-group-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
       const group = button.dataset.groupToggle;
-      if (expandedGroups.has(group)) expandedGroups.delete(group);
-      else expandedGroups.add(group);
-      renderNav();
+      const open = !expandedGroups.has(group);
+      if (open) expandedGroups.add(group); else expandedGroups.delete(group);
+      button.closest('.nav-group').classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      button.nextElementSibling.inert = !open;
     });
   });
 
@@ -154,9 +154,21 @@ function renderOutline() {
     while (usedIds.has(id)) id = `${base}-${suffix++}`;
     usedIds.add(id);
     heading.id = id;
+    const link = document.createElement("a");
+    link.className = "heading-link";
+    link.href = `#${activeSlug}:${id}`;
+    link.textContent = "#";
+    link.setAttribute("aria-label", `Link to ${heading.textContent}`);
+    heading.append(link);
   });
 
-  outlineEl.innerHTML = `<p>On this page</p>${headings.map((heading) => `<a class="${heading.tagName === "H3" ? "subheading" : ""}" href="#${activeSlug}:${heading.id}">${escapeHtml(heading.textContent || "")}</a>`).join("")}`;
+  outlineEl.innerHTML = `<p>${icon('list')}On this page</p>${headings.map((heading) => `<a class="${heading.tagName === "H3" ? "subheading" : ""}" href="#${activeSlug}:${heading.id}">${escapeHtml(heading.firstChild?.textContent || "")}</a>`).join("")}`;
+  headingObserver?.disconnect();
+  headingObserver = new IntersectionObserver((entries) => {
+    const visible = entries.find((entry) => entry.isIntersecting);
+    if (visible) outlineEl.querySelectorAll("a").forEach((link) => link.classList.toggle("current", link.hash.endsWith(`:${visible.target.id}`)));
+  }, { rootMargin: "-90px 0px -65% 0px" });
+  headings.forEach((heading) => headingObserver.observe(heading));
 }
 
 function renderPager() {
@@ -164,8 +176,8 @@ function renderPager() {
   const previous = index > 0 ? docs[index - 1] : null;
   const next = index < docs.length - 1 ? docs[index + 1] : null;
   pagerEl.innerHTML = `
-    ${previous ? `<a href="#${previous.slug}"><span>Previous</span><strong>${escapeHtml(previous.title)} <i>←</i></strong></a>` : "<div></div>"}
-    ${next ? `<a class="next" href="#${next.slug}"><span>Next</span><strong>${escapeHtml(next.title)} <i>→</i></strong></a>` : "<div></div>"}
+    ${previous ? `<a href="#${previous.slug}"><span>${icon('arrow', 'arrow-back')}Previous</span><strong>${escapeHtml(previous.title)}</strong></a>` : "<div></div>"}
+    ${next ? `<a class="next" href="#${next.slug}"><span>Next${icon('arrow')}</span><strong>${escapeHtml(next.title)}</strong></a>` : "<div></div>"}
   `;
 }
 
@@ -182,6 +194,14 @@ function attachDocumentLinks() {
 
 function enhanceCodeSamples() {
   docEl.querySelectorAll("pre > code").forEach((code, index) => {
+    const raw = code.textContent;
+    if (raw.length < 25000 && !code.dataset.highlighted) {
+      code.innerHTML = (raw.match(/\/\/[^\n]*|#[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:function|const|let|return|import|from|export|async|await|contract|interface|struct|enum|event|error|public|external|view|pure|uint256|address|bool|if|else|true|false|npm|node|git)\b|\b\d+(?:\.\d+)?\b|[\s\S]/g) || []).map((token) => {
+        const kind = /^(\/\/|#)/.test(token) ? "comment" : /^["']/.test(token) ? "string" : /^\d/.test(token) ? "number" : token.length > 1 && /^\w/.test(token) ? "keyword" : "";
+        return kind ? `<span class="token-${kind}">${escapeHtml(token)}</span>` : escapeHtml(token);
+      }).join("");
+      code.dataset.highlighted = "true";
+    }
     if (!code.id) code.id = `${activeSlug}-code-${index + 1}`;
     if (code.closest(".code-sample")) return;
 
@@ -191,13 +211,13 @@ function enhanceCodeSamples() {
     const header = document.createElement("div");
     header.className = "code-sample-header";
     const label = document.createElement("span");
-    label.textContent = "Integration example";
+    label.textContent = code.dataset.language || "Code example";
     const copy = document.createElement("button");
     copy.type = "button";
     copy.className = "code-copy-button";
     copy.dataset.copyCode = code.id;
     copy.dataset.copyLabel = "Copy";
-    copy.textContent = "Copy";
+    copy.innerHTML = `${icon('copy')}Copy`;
 
     header.append(label, copy);
     pre.before(sample);
@@ -231,13 +251,13 @@ function attachDocumentInteractions() {
       const label = button.dataset.copyLabel || "Copy";
       try {
         await copyText(code.trim());
-        button.textContent = "Copied";
+        button.innerHTML = `${icon('check')}Copied`;
         button.classList.add("copied");
       } catch {
         button.textContent = "Copy unavailable";
       }
       window.setTimeout(() => {
-        button.textContent = label;
+        button.innerHTML = `${icon('copy')}${escapeHtml(label)}`;
         button.classList.remove("copied");
       }, 1800);
     });
@@ -274,12 +294,30 @@ function renderDocument(doc) {
   if (!doc) return;
   const render = () => {
     activeSlug = doc.slug;
+    expandedSections.add(doc.section);
+    if (doc.group) expandedGroups.add(`${doc.section}::${doc.group}`);
     document.title = `${doc.title} | BERT Docs`;
     docEl.innerHTML = `
-      <div class="doc-meta"><span>${escapeHtml(doc.section)}</span><span>•</span><span>${doc.tags.slice(0, 3).map(escapeHtml).join(" / ")}</span></div>
+      <div class="doc-meta"><a href="#docs-home">BERT Docs</a>${icon('chevron')}<span>${escapeHtml(doc.section)}</span></div>
       ${doc.content}
     `;
+    docEl.classList.toggle('doc-home', doc.slug === 'docs-home');
+    if (doc.slug === 'docs-home') docEl.querySelector('h1').innerHTML = 'BERT<span>documentation.</span>';
+    docEl.querySelectorAll('.doc-card').forEach((card, index) => {
+      const target = card.getAttribute('href') || '';
+      const name = /security|trust/i.test(target) ? 'shield' : /integrat|develop/i.test(target) ? 'code' : /protocol|account/i.test(target) ? 'layers' : /community|v3/i.test(target) ? 'users' : 'rocket';
+      card.dataset.tone = String(index % 4);
+      const mark = document.createElement('span'); mark.className = 'card-symbol'; mark.innerHTML = icon(name); card.prepend(mark);
+    });
+    if (doc.slug === 'docs-home') docEl.querySelector('.lead').after(docEl.querySelector('.doc-cards'));
+    docEl.querySelectorAll('[data-copy-code]').forEach(button => { button.innerHTML = `${icon('copy')}${escapeHtml(button.dataset.copyLabel || 'Copy')}`; });
+    document.querySelectorAll('[data-shortcut]').forEach(link => {
+      const selected = link.dataset.shortcut === doc.section || (link.hash === '#docs-home' && doc.section === 'Using the app');
+      link.classList.toggle('active', selected);
+      if (selected) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+    });
     enhanceCodeSamples();
+    docEl.querySelectorAll('.code-sample-header > span').forEach(label => { label.innerHTML = `${icon('code')}${escapeHtml(label.textContent)}`; });
     renderNav();
     renderOutline();
     renderPager();
@@ -288,17 +326,12 @@ function renderDocument(doc) {
     requestAnimationFrame(() => docEl.focus({ preventScroll: true }));
   };
 
-  if (typeof document.startViewTransition === "function") {
-    const transition = document.startViewTransition(render);
-    // Rapid navigation can intentionally supersede the previous animation.
-    transition.ready.catch((error) => {
-      if (error.name !== "AbortError") throw error;
-    });
-  } else render();
+  render();
 }
 
 function updateFromHash() {
   const hash = window.location.hash.replace(/^#/, "");
+  if (hash === "doc") { docEl.focus(); return; }
   const [pageSlug, headingId] = hash.split(":");
   const doc = docsBySlug.get(pageSlug) || docs[0];
   renderDocument(doc);
@@ -315,7 +348,8 @@ function scoreDocument(doc, query) {
   const summary = doc.summary.toLowerCase();
   const section = doc.section.toLowerCase();
   const tags = doc.tags.join(" ").toLowerCase();
-  const body = toText(doc.content).toLowerCase();
+  const body = searchBodies.get(doc.slug) || "";
+  if (!terms.every((term) => `${title} ${summary} ${section} ${tags} ${body}`.includes(term))) return { doc, score: 0 };
   const score = terms.reduce((total, term) => total
     + (title.includes(term) ? 12 : 0)
     + (tags.includes(term) ? 9 : 0)
@@ -325,9 +359,9 @@ function scoreDocument(doc, query) {
   return { doc, score };
 }
 
-function renderSearchResults() {
+function renderSearchResults(resetSelection = true) {
   const query = searchInput.value.trim();
-  selectedSearchIndex = 0;
+  if (resetSelection) selectedSearchIndex = 0;
   if (!query) {
     lastSearchResults = docs.slice(0, 6);
     searchResults.innerHTML = `<p class="search-label">Suggested reading</p>${lastSearchResults.map((doc, index) => searchItem(doc, index)).join("")}`;
@@ -339,6 +373,8 @@ function renderSearchResults() {
     ? `<p class="search-label">${lastSearchResults.length} matching ${lastSearchResults.length === 1 ? "page" : "pages"}</p>${lastSearchResults.slice(0, 12).map((doc, index) => searchItem(doc, index)).join("")}`
     : `<div class="empty-search"><strong>No documentation page matches “${escapeHtml(query)}”.</strong><span>Try a module, contract, role, flow or invariant.</span></div>`;
   bindSearchResults();
+  const selected = searchResults.querySelector(".selected");
+  selected?.scrollIntoView({ block: "nearest" });
 }
 
 function searchItem(doc, index) {
@@ -367,35 +403,67 @@ function openSearch() {
 function closeNavigation() {
   sidebarEl.classList.remove("open");
   navBackdrop.classList.remove("visible");
+  document.body.classList.remove("nav-open");
+  navToggle.setAttribute("aria-expanded", String(!matchMedia("(max-width: 760px)").matches && !document.body.classList.contains("nav-collapsed")));
+  sidebarEl.inert = matchMedia('(max-width: 760px)').matches || document.body.classList.contains('nav-collapsed');
 }
 
 function openNavigation() {
+  sidebarEl.inert = false;
   sidebarEl.classList.add("open");
   navBackdrop.classList.add("visible");
+  document.body.classList.add("nav-open");
+  navToggle.setAttribute("aria-expanded", "true");
+  document.getElementById("navClose").focus();
 }
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  localStorage.setItem("bert-docs-theme", theme);
-  themeToggle.textContent = theme === "dark" ? "◐" : "◑";
+  try { localStorage.setItem("bert-docs-theme", theme); } catch { /* Reading docs must work with blocked storage. */ }
+  themeToggle.innerHTML = icon(theme === 'dark' ? 'sun' : 'moon');
+  themeToggle.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} theme`);
 }
 
-const storedTheme = localStorage.getItem("bert-docs-theme");
+let storedTheme;
+try { storedTheme = localStorage.getItem("bert-docs-theme"); } catch { /* Use system preference. */ }
 applyTheme(storedTheme || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
 
 themeToggle.addEventListener("click", () => applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
 searchTrigger.addEventListener("click", openSearch);
-searchInput.addEventListener("input", renderSearchResults);
+searchInput.addEventListener("input", () => renderSearchResults());
+document.getElementById("searchClose").addEventListener("click", () => searchDialog.close());
+searchDialog.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    searchDialog.close();
+  }
+});
 searchInput.addEventListener("keydown", (event) => {
   const available = lastSearchResults.slice(0, 12);
-  if (event.key === "ArrowDown" && available.length) { event.preventDefault(); selectedSearchIndex = Math.min(selectedSearchIndex + 1, available.length - 1); renderSearchResults(); }
-  if (event.key === "ArrowUp" && available.length) { event.preventDefault(); selectedSearchIndex = Math.max(selectedSearchIndex - 1, 0); renderSearchResults(); }
+  if (event.key === "ArrowDown" && available.length) { event.preventDefault(); selectedSearchIndex = Math.min(selectedSearchIndex + 1, available.length - 1); renderSearchResults(false); }
+  if (event.key === "ArrowUp" && available.length) { event.preventDefault(); selectedSearchIndex = Math.max(selectedSearchIndex - 1, 0); renderSearchResults(false); }
   if (event.key === "Enter" && available[selectedSearchIndex]) { event.preventDefault(); openSearchResult(available[selectedSearchIndex].slug); }
 });
 window.addEventListener("keydown", (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); openSearch(); }
 });
-navToggle.addEventListener("click", openNavigation);
+navToggle.addEventListener("click", () => {
+  if (matchMedia("(max-width: 760px)").matches) return sidebarEl.classList.contains("open") ? closeNavigation() : openNavigation();
+  document.body.classList.toggle("nav-collapsed");
+  sidebarEl.inert = document.body.classList.contains('nav-collapsed');
+  navToggle.setAttribute("aria-expanded", String(!document.body.classList.contains("nav-collapsed")));
+});
+document.getElementById("navClose").addEventListener("click", () => { closeNavigation(); navToggle.focus(); });
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && sidebarEl.classList.contains("open")) { closeNavigation(); navToggle.focus(); }
+  if (event.key === "Tab" && sidebarEl.classList.contains("open")) {
+    const nodes = [...sidebarEl.querySelectorAll("a,button")].filter((node) => node.getClientRects().length);
+    if (event.shiftKey && document.activeElement === nodes[0]) { event.preventDefault(); nodes.at(-1).focus(); }
+    if (!event.shiftKey && document.activeElement === nodes.at(-1)) { event.preventDefault(); nodes[0].focus(); }
+  }
+});
+matchMedia("(max-width: 760px)").addEventListener("change", closeNavigation);
+closeNavigation();
 navBackdrop.addEventListener("click", closeNavigation);
 window.addEventListener("hashchange", updateFromHash);
 updateFromHash();

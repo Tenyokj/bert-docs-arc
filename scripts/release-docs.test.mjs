@@ -4,7 +4,7 @@ import test from "node:test";
 import { docs } from "../assets/docs-data.js";
 
 const paper = readFileSync(new URL("../whitepaper/BERTDAO-Protocol-Whitepaper.html", import.meta.url), "utf8");
-const candidates = docs.filter((doc) => doc.section === "BERT V2.4 / Arc Testnet rollout");
+const candidates = docs.filter((doc) => doc.legacySection === "BERT V2.4 / Arc Testnet rollout");
 
 test("documentation retains unique routes and three rollout pages with receipt-backed activation", () => {
   assert.equal(new Set(docs.map((doc) => doc.slug)).size, docs.length);

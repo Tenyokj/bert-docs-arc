@@ -180,7 +180,7 @@ NEXT_PUBLIC_VOTING_SYSTEM_ADDRESS=0xD008fC96902A9680FF77305881Ad6C6C075e7a68
 NEXT_PUBLIC_GRANT_MANAGER_ADDRESS=0xA110baB4562d59d8bb7eDA4a05E53F40c678ccB2
 NEXT_PUBLIC_VOTER_PROGRESSION_ADDRESS=0xF6EB65957bb5e363FCD6B84AAdf76E41Ba754E14
 NEXT_PUBLIC_REPUTATION_SYSTEM_ADDRESS=0x3594C46983460733F6470f7b61De2f3bB2918a81
-NEXT_PUBLIC_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.3.0
+NEXT_PUBLIC_SUBGRAPH_URL=https://api.studio.thegraph.com/query/1742046/bert-arc-testnet/v0.4.0
 NEXT_PUBLIC_V3_FACTORY_ADDRESS=0x23E023E0D8B3436319BC6e5e72615Bc7A0c6234E
 NEXT_PUBLIC_V3_ADMIN_ACTIONS_LIBRARY_ADDRESS=0xE0f9265aF9dFD29D259C468bCC1786AA47080089
 NEXT_PUBLIC_V3_EVENT_FROM_BLOCK=66809847
@@ -462,7 +462,7 @@ UPSTASH_REDIS_REST_TOKEN=...
       <table>
         <thead><tr><th>ID</th><th>Scenario</th><th>Expected onchain result</th><th>Negative assertion</th></tr></thead>
         <tbody>
-          <tr><td>V3-08</td><td>Binary YES wins.</td><td>YES less applicable Member-validation rewards is reserved for a 20/40/40 plan; only 20% releases initially. NO routes reserve.</td><td>Second settlement and Admin withdrawal of protected milestone reserves fail.</td></tr>
+          <tr><td>V3-08</td><td>Binary YES wins.</td><td>YES less applicable Member-validation rewards is reserved for a 20/40/40 plan. Settlement pays nothing in V3.2.1; initial 20% requires fresh Admin quorum and transfer. NO routes to reserve.</td><td>Second settlement and Admin withdrawal of protected milestone reserves fail.</td></tr>
           <tr><td>V3-09</td><td>Binary NO/tie wins.</td><td>NO-side refund liability exists; voter can claim exactly once.</td><td>YES voter cannot claim NO refund.</td></tr>
           <tr><td>V3-10</td><td>Admin creates and settles Slate round.</td><td>One deterministic winner; with non-zero winning support, full round escrow funds its protected execution plan; no validator share for Admin origin.</td><td>Member cannot vote twice/select two proposals in the same round.</td></tr>
           <tr><td>V3-11</td><td>Member Slate settles after validation.</td><td>Winning/losing proposal states and local reward route follow configured policy.</td><td>Unapproved Member proposal cannot enter Member Slate round.</td></tr>
