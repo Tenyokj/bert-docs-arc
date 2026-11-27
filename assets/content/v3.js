@@ -3,12 +3,12 @@ export const v3Docs = [
     slug: "v3-overview",
     section: "BERT V3 / Contract reference",
     group: "Architecture & deployment",
-    title: "V3.2 modular architecture",
+    title: "V3.2.1 modular architecture",
     summary: "Factory, thin Hub, isolated modules and Treasury boundaries for reviewable onchain Communities.",
     tags: ["v3.2", "architecture", "factory", "hub", "modules", "treasury", "usdc"],
     content: `
-      <p class="eyebrow">BERT V3.2 / Architecture</p><h1>One Community.<br /><span>Modular execution boundaries.</span></h1>
-      <p class="lead">V3.2 is a deployment system for independent Communities, not one global DAO contract. A Factory records a canonical deployment, a thin Hub owns immutable policy and Community time, dedicated modules own membership/proposals/voting/milestones, and a paired Treasury owns USDC accounting. An integration should treat these as separate trust boundaries.</p>
+      <p class="eyebrow">BERT V3.2.1 / Architecture</p><h1>One Community.<br /><span>Modular execution boundaries.</span></h1>
+      <p class="lead">V3.2.1 is a deployment system for independent Communities, not one global DAO contract. A Factory records a canonical deployment, a thin Hub owns immutable policy and Community time, dedicated modules own membership/proposals/voting/milestones, and a paired Treasury owns USDC accounting. An integration should treat these as separate trust boundaries.</p>
       <div class="protocol-illustration"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="orbit-node node-v2">V2 Rail</span><img src="assets/bert-logo.png" alt="BERT protocol logo" /><span class="orbit-node node-v3">V3 Community</span></div>
       <div class="contract-rail"><div><b>01</b><small>Discovery</small><strong>CommunityFactory</strong><span>Reserves configuration, deploys the paired Treasury/modules and registers the final Community pair.</span></div><div><b>02</b><small>Orchestration</small><strong>CommunityHub</strong><span>Owns immutable configuration, pause-aware Community time and quorum-protected Admin actions.</span></div><div><b>03</b><small>Runtime modules</small><strong>Membership, Proposal, Voting, Milestone</strong><span>Each capability is deployed separately rather than hidden inside a monolithic Hub.</span></div></div>
       <div class="callout warning"><strong>Current and historical deployments.</strong> Original immutable V3.1 Communities retain their original payout policy. The V3.2.1 release deployed on Arc Testnet on 25 October 2026 (Manager 2.0.1) excludes the execution recipient from reviews and adds fresh Admin quorum for every tranche; see <a href="#v3-tranche-authorizations">execution payment authorizations</a>. New Communities use the V3.2.1 Factory; older immutable instances are not upgraded.</div>
